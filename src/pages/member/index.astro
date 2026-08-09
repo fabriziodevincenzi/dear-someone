@@ -3,122 +3,300 @@ import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
 ---
 
-<Layout title="Your account — Dear Someone" description="Manage your Dear Someone membership, preferences and privacy choices.">
+<Layout title="Your account — Dear Someone" description="Manage your Dear Someone membership, preferences, consents and privacy choices.">
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">Dear Someone</a>
-      <nav class="flex items-center gap-5 text-sm text-muted-foreground" aria-label="Member navigation">
-        <a class="hidden underline-offset-4 hover:text-foreground hover:underline sm:inline" href="/member/settings">Account settings</a>
-        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/" data-sign-out>Sign out</a>
+      <nav class="flex items-center gap-4 text-sm" aria-label="Member navigation">
+        <a class={buttonVariants({ size: 'small' })} href="mailto:write@dearsomeone.net?subject=Dear%20Someone">Write a letter</a>
+        <a class="px-1 text-muted-foreground underline-offset-4 hover:text-foreground hover:underline" href="#account">Account</a>
       </nav>
     </div>
   </header>
 
-  <main class="shell py-14 sm:py-20">
-    <div class="flex flex-col justify-between gap-8 border-b border-border pb-10 sm:flex-row sm:items-end">
+  <main id="main-content" class="shell max-w-5xl py-12 sm:py-16">
+    <section id="account" class="flex flex-col justify-between gap-8 border-b border-border pb-10 sm:flex-row sm:items-end">
       <div>
-        <p class="eyebrow mb-5">Your account</p>
-        <h1 class="section-title">The practical details, kept small.</h1>
-        <p class="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">Dear Someone lives in your inbox. This space is only for your membership, preferences, consents and privacy choices.</p>
+        <p class="eyebrow mb-5">Account</p>
+        <h1 class="section-title balance max-w-3xl">Everything practical, in one place.</h1>
+        <p class="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">Your letters stay in your inbox. This is the small account space for your pace, preferences, consents, payments and privacy.</p>
       </div>
-      <div class="sm:text-right">
-        <p class="mb-3 text-sm text-muted-foreground">Signed in as <span class="text-foreground" data-account-email>you@example.com</span></p>
-        <a class={buttonVariants({ size: 'large' })} href="mailto:write@dearsomeone.net?subject=Dear%20Someone">Write a letter</a>
-      </div>
-    </div>
-
-    <section class="grid border-b border-border sm:grid-cols-2" aria-label="Account status">
-      <div class="border-b border-border py-7 sm:border-b-0 sm:border-r sm:pr-8">
-        <p class="eyebrow mb-3">Membership</p>
-        <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-membership-label>Free pace</p>
-        <p class="mt-2 text-sm leading-6 text-muted-foreground" data-membership-copy>One new correspondence every three months. Replies inside open conversations remain uncapped.</p>
-      </div>
-      <div class="py-7 sm:pl-8">
-        <p class="eyebrow mb-3">Email status</p>
-        <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-email-status>Verified</p>
-        <p class="mt-2 text-sm leading-6 text-muted-foreground">Your address is ready to send and receive. You can change it from account settings.</p>
+      <div class="shrink-0 sm:text-right">
+        <p class="text-sm text-muted-foreground">Signed in as</p>
+        <p class="mt-1 text-sm" data-account-email>you@example.com</p>
+        <button class="mt-3 border-b border-border pb-1 text-sm text-muted-foreground hover:border-foreground hover:text-foreground" type="button" data-sign-out>Sign out</button>
       </div>
     </section>
 
-    <section class="grid gap-8 border-b border-border py-10 md:grid-cols-[1fr_0.72fr] md:gap-16" aria-labelledby="inbox-heading">
+    <section id="membership" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="membership-heading">
+      <div>
+        <p class="eyebrow mb-4">Your access</p>
+        <h2 id="membership-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Membership</h2>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">Your pace determines how often a new correspondence can open. Replies inside an open conversation never use this allowance.</p>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
+          <div>
+            <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-membership-label>Free plan</p>
+            <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-copy>One new correspondence every three months.</p>
+          </div>
+          <span class="border border-border px-3 py-1 text-xs uppercase tracking-[0.12em] text-muted-foreground" data-membership-state>Active</span>
+        </div>
+
+        <div class="grid border-b border-border sm:grid-cols-2">
+          <div class="border-b border-border py-5 sm:border-b-0 sm:border-r sm:pr-6">
+            <p class="eyebrow mb-2">New openings</p>
+            <p class="m-0 text-sm leading-6" data-membership-pace>One every three months</p>
+          </div>
+          <div class="py-5 sm:pl-6">
+            <p class="eyebrow mb-2">Replies</p>
+            <p class="m-0 text-sm leading-6">Always welcome inside an open conversation</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 pt-6" data-membership-actions>
+          <a class={buttonVariants({ size: 'small' })} href="/sign-in/?mode=signup&plan=annual" data-membership-primary>Join annual membership</a>
+          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=cancel" data-membership-cancel>Cancel membership</a>
+          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=refund" data-membership-refund>Request a refund</a>
+        </div>
+        <p class="mt-4 text-xs leading-5 text-muted-foreground" data-membership-note>The annual membership flow will show the price for your market before payment. Payment integration is the next production step.</p>
+      </div>
+    </section>
+
+    <section id="profile" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="profile-heading">
+      <div>
+        <p class="eyebrow mb-4">Your details</p>
+        <h2 id="profile-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Profile and availability</h2>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">Only the practical details used to deliver and match letters. No public profile, interests or conversation history.</p>
+      </div>
+      <form class="grid gap-6" data-profile-form>
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div>
+            <p class="mb-2 text-sm text-muted-foreground">Email address</p>
+            <p class="m-0 text-sm" data-profile-email>you@example.com</p>
+            <a class="mt-2 inline-block text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
+          </div>
+          <label class="grid gap-2 text-sm" for="letter-language">
+            <span class="text-muted-foreground">Language for letters</span>
+            <select id="letter-language" name="languageCode" class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3">
+              <option value="en">English</option>
+              <option value="it">Italian</option>
+              <option value="uk">Ukrainian</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="pl">Polish</option>
+            </select>
+          </label>
+        </div>
+        <label class="flex items-start gap-3 text-sm leading-6">
+          <input class="mt-1" type="checkbox" name="availableToReceive" checked />
+          <span><strong class="font-medium">Available to receive</strong><br /><span class="text-muted-foreground">Keep me in the pool for a new letter when my membership pace allows it.</span></span>
+        </label>
+        <div class="flex flex-wrap items-center gap-4">
+          <button class="w-fit border-b border-foreground pb-1 text-sm" type="submit">Save details</button>
+          <p class="hidden text-sm text-accent" data-profile-note></p>
+        </div>
+      </form>
+    </section>
+
+    <section id="messages" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="messages-heading">
+      <div>
+        <p class="eyebrow mb-4">Your choices</p>
+        <h2 id="messages-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Messages and consents</h2>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">Operational emails are necessary for the service. Optional Journal notes remain your choice.</p>
+      </div>
+      <form class="grid gap-5 text-sm leading-6" data-consent-form>
+        <label class="flex items-start gap-3">
+          <input class="mt-1" type="checkbox" name="journalOptIn" />
+          <span><strong class="font-medium">Journal and product notes</strong><br /><span class="text-muted-foreground">Occasional notes about Dear Someone. Optional and revocable at any time.</span></span>
+        </label>
+        <p class="m-0 border-t border-border pt-5 text-muted-foreground"><strong class="font-medium text-foreground">Service emails</strong><br />Magic links, delivery notices, account security and subscription messages are necessary to provide the service and are not marketing consent.</p>
+        <div class="flex flex-wrap items-center gap-4">
+          <button class="w-fit border-b border-foreground pb-1 text-sm" type="submit">Save communication choices</button>
+          <p class="hidden text-sm text-accent" data-consent-note></p>
+        </div>
+      </form>
+    </section>
+
+    <section id="letters" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="letters-heading">
       <div>
         <p class="eyebrow mb-4">Email-first by design</p>
-        <h2 id="inbox-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Your letters stay in your inbox.</h2>
-        <p class="mt-4 max-w-xl leading-7 text-muted-foreground">There is no correspondence archive here, no activity score and no dashboard to keep checking. The account area exists to manage the few practical things the service needs.</p>
+        <h2 id="letters-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Your letters stay in your inbox.</h2>
       </div>
-      <div class="border-t border-border pt-5 md:border-t-0 md:border-l md:pl-8 md:pt-0">
-        <p class="text-sm text-muted-foreground">Need to change something?</p>
-        <a class="mt-2 inline-block font-serif text-2xl underline decoration-border underline-offset-8 hover:decoration-foreground" href="/member/settings">Open account settings →</a>
-      </div>
-    </section>
-
-    <section class="py-10" aria-labelledby="shortcuts-heading">
-      <p class="eyebrow mb-4">Account controls</p>
-      <h2 id="shortcuts-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">The things you can change.</h2>
-      <div class="mt-8 grid border-t border-border sm:grid-cols-2">
-        <a class="border-b border-border py-6 pr-8 no-underline hover:bg-surface sm:border-r" href="/member/settings#membership">
-          <p class="m-0 font-serif text-xl">Membership and payments</p>
-          <p class="mt-2 text-sm leading-6 text-muted-foreground">Open payment details, change plan, cancel or request a refund.</p>
-        </a>
-        <a class="border-b border-border py-6 sm:pl-8" href="/member/settings#consents">
-          <p class="m-0 font-serif text-xl">Consents and emails</p>
-          <p class="mt-2 text-sm leading-6 text-muted-foreground">Manage optional Journal and product communications.</p>
-        </a>
-        <a class="border-b border-border py-6 pr-8 no-underline hover:bg-surface sm:border-r" href="/member/settings#language-heading">
-          <p class="m-0 font-serif text-xl">Languages and availability</p>
-          <p class="mt-2 text-sm leading-6 text-muted-foreground">Keep matching preferences and receiving availability up to date.</p>
-        </a>
-        <a class="border-b border-border py-6 sm:pl-8" href="/member/settings#privacy">
-          <p class="m-0 font-serif text-xl">Privacy and deletion</p>
-          <p class="mt-2 text-sm leading-6 text-muted-foreground">Request a copy of your data or delete the account permanently.</p>
-        </a>
+      <div class="max-w-xl">
+        <p class="m-0 leading-7 text-muted-foreground">There is no correspondence archive here, no feed and no activity score. Read, reply and keep your letters in the email account you already use.</p>
+        <p class="mt-5 border-l border-border pl-5 text-sm leading-6 text-muted-foreground">When a new letter is available, it arrives at the address above. You can stop a conversation from the first letter whenever you want.</p>
       </div>
     </section>
 
-    <aside class="border-t border-border pt-6 text-sm leading-6 text-muted-foreground">This is a local prototype. Production will connect account status, payment actions, preferences and privacy requests to Supabase and the payment provider.</aside>
+    <section id="privacy" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="privacy-heading">
+      <div>
+        <p class="eyebrow mb-4">Control</p>
+        <h2 id="privacy-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Privacy</h2>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">Your rights remain available without an email exchange.</p>
+      </div>
+      <div class="flex flex-wrap items-start gap-4">
+        <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="button" data-privacy-request="access">Request my data</button>
+        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/privacy">Read the privacy notice</a>
+        <p class="hidden basis-full text-sm leading-6 text-accent" data-privacy-note></p>
+      </div>
+    </section>
+
+    <section id="close-account" class="grid gap-8 border-b border-accent py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="close-heading">
+      <div>
+        <p class="eyebrow mb-4 text-accent">Permanent action</p>
+        <h2 id="close-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Close your account</h2>
+      </div>
+      <form data-delete-account>
+        <p class="m-0 max-w-xl text-sm leading-6 text-muted-foreground">This starts a permanent deletion request. Active membership and correspondence data will follow the retention policy before removal.</p>
+        <button class="mt-5 inline-flex min-h-10 items-center justify-center rounded-[var(--radius-control)] border border-accent px-5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" type="submit">Request account deletion</button>
+        <p class="mt-4 hidden text-sm leading-6 text-accent" data-delete-note></p>
+      </form>
+    </section>
+
+    <aside class="pt-6 text-xs leading-5 text-muted-foreground">Payment actions, preferences, consent history and privacy requests are connected to the account prototype. Stripe subscription management and automated deletion processing are the next production integrations.</aside>
   </main>
 
   <script>
     import { supabase } from '../../lib/supabase';
 
-    const emailNode = document.querySelector<HTMLElement>('[data-account-email]');
+    const accountEmail = document.querySelector<HTMLElement>('[data-account-email]');
+    const profileEmail = document.querySelector<HTMLElement>('[data-profile-email]');
     const membershipLabel = document.querySelector<HTMLElement>('[data-membership-label]');
     const membershipCopy = document.querySelector<HTMLElement>('[data-membership-copy]');
-    const emailStatus = document.querySelector<HTMLElement>('[data-email-status]');
-    const signOut = document.querySelector<HTMLAnchorElement>('[data-sign-out]');
+    const membershipState = document.querySelector<HTMLElement>('[data-membership-state]');
+    const membershipPace = document.querySelector<HTMLElement>('[data-membership-pace]');
+    const membershipPrimary = document.querySelector<HTMLAnchorElement>('[data-membership-primary]');
+    const membershipCancel = document.querySelector<HTMLAnchorElement>('[data-membership-cancel]');
+    const membershipRefund = document.querySelector<HTMLAnchorElement>('[data-membership-refund]');
+    const membershipNote = document.querySelector<HTMLElement>('[data-membership-note]');
+    const profileForm = document.querySelector<HTMLFormElement>('[data-profile-form]');
+    const profileNote = document.querySelector<HTMLElement>('[data-profile-note]');
+    const consentForm = document.querySelector<HTMLFormElement>('[data-consent-form]');
+    const consentNote = document.querySelector<HTMLElement>('[data-consent-note]');
+    const privacyNote = document.querySelector<HTMLElement>('[data-privacy-note]');
+    const deleteForm = document.querySelector<HTMLFormElement>('[data-delete-account]');
+    const deleteNote = document.querySelector<HTMLElement>('[data-delete-note]');
+    const languageSelect = document.querySelector<HTMLSelectElement>('[name="languageCode"]');
+    const availableCheckbox = document.querySelector<HTMLInputElement>('[name="availableToReceive"]');
+    const journalCheckbox = document.querySelector<HTMLInputElement>('[name="journalOptIn"]');
+    const setNote = (element: HTMLElement | null, message: string, error = false) => {
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden', 'text-accent', 'text-destructive');
+      element.classList.add(error ? 'text-destructive' : 'text-accent');
+    };
 
-    const loadAccount = async () => {
-      if (!supabase) return;
-      const { data: sessionData } = await supabase.auth.getSession();
-      const session = sessionData.session;
-      if (!session) {
-        window.location.assign('/sign-in/');
-        return;
-      }
-      if (emailNode) emailNode.textContent = session.user.email || 'your verified email';
-      if (emailStatus) emailStatus.textContent = session.user.email_confirmed_at ? 'Verified' : 'Pending';
+    const setMembership = (status: string | undefined) => {
+      membershipCancel?.classList.add('hidden');
+      membershipRefund?.classList.add('hidden');
+      if (!membershipLabel || !membershipCopy || !membershipState || !membershipPace || !membershipPrimary) return;
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('account_status, plan')
-        .eq('id', session.user.id)
-        .maybeSingle();
-      if (profile?.account_status === 'annual') {
-        if (membershipLabel) membershipLabel.textContent = 'Annual membership';
-        if (membershipCopy) membershipCopy.textContent = 'One new correspondence every 24 hours. Replies inside open conversations remain uncapped.';
-      } else if (profile?.account_status === 'checkout_pending') {
-        if (membershipLabel) membershipLabel.textContent = 'Payment to finish';
-        if (membershipCopy) membershipCopy.textContent = 'Your account is ready. Complete payment from account settings to open the daily pace.';
+      if (status === 'annual') {
+        membershipLabel.textContent = 'Annual membership';
+        membershipCopy.textContent = 'One new correspondence can open every 24 hours.';
+        membershipState.textContent = 'Active';
+        membershipPace.textContent = 'One every 24 hours';
+        membershipPrimary.textContent = 'Manage subscription';
+        membershipPrimary.href = '/sign-in/?mode=cancel';
+        membershipCancel?.classList.remove('hidden');
+        membershipRefund?.classList.remove('hidden');
+        if (membershipNote) membershipNote.textContent = 'Subscription management will open through Stripe once payment integration is enabled.';
+      } else if (status === 'checkout_pending') {
+        membershipLabel.textContent = 'Annual membership';
+        membershipCopy.textContent = 'Your account is ready. Complete payment to open the daily pace.';
+        membershipState.textContent = 'Payment pending';
+        membershipPace.textContent = 'Daily opening after payment';
+        membershipPrimary.textContent = 'Complete membership';
+        membershipPrimary.href = '/sign-in/?mode=signup&plan=annual';
+      } else if (status === 'waitlisted') {
+        membershipLabel.textContent = 'Founding waitlist';
+        membershipCopy.textContent = 'Your place is saved. The opening date and eight-week free season will be announced by email.';
+        membershipState.textContent = 'Waitlisted';
+        membershipPace.textContent = 'Daily pace during the free season';
+        membershipPrimary.textContent = 'Back to Dear Someone';
+        membershipPrimary.href = '/';
+      } else if (status === 'delivery_paused') {
+        membershipLabel.textContent = 'Delivery paused';
+        membershipCopy.textContent = 'Your account is kept, but new openings are paused until you choose to resume.';
+        membershipState.textContent = 'Paused';
+        membershipPace.textContent = 'No new openings while paused';
+        membershipPrimary.textContent = 'Resume from profile';
+        membershipPrimary.href = '#profile';
+      } else {
+        membershipLabel.textContent = 'Free plan';
+        membershipCopy.textContent = 'One new correspondence every three months.';
+        membershipState.textContent = 'Active';
+        membershipPace.textContent = 'One every three months';
+        membershipPrimary.textContent = 'Join annual membership';
+        membershipPrimary.href = '/sign-in/?mode=signup&plan=annual';
       }
     };
 
-    signOut?.addEventListener('click', async (event) => {
-      if (!supabase) return;
-      event.preventDefault();
-      await supabase.auth.signOut();
+    const sessionResult = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+    const session = sessionResult.data.session;
+    if (!session || !supabase) {
+      window.location.assign('/sign-in/');
+    } else {
+      const client = supabase;
+      const email = session.user.email || 'your verified email';
+      if (accountEmail) accountEmail.textContent = email;
+      if (profileEmail) profileEmail.textContent = email;
+
+      const { data: profile } = await client.from('profiles').select('account_status').eq('id', session.user.id).maybeSingle();
+      const { data: preferences } = await client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle();
+      const { data: journalConsent } = await client.from('consent_events').select('granted').eq('user_id', session.user.id).eq('purpose', 'journal_marketing').order('created_at', { ascending: false }).limit(1).maybeSingle();
+
+      setMembership(profile?.account_status);
+      if (languageSelect && preferences?.language_code) languageSelect.value = preferences.language_code;
+      if (availableCheckbox && typeof preferences?.is_available_to_receive === 'boolean') availableCheckbox.checked = preferences.is_available_to_receive;
+      if (journalCheckbox && typeof journalConsent?.granted === 'boolean') journalCheckbox.checked = journalConsent.granted;
+
+      profileForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!languageSelect || !availableCheckbox) return;
+        const { error } = await client.from('member_preferences').upsert({
+          user_id: session.user.id,
+          country_code: preferences?.country_code ?? null,
+          market_currency: preferences?.market_currency ?? null,
+          language_code: languageSelect.value,
+          is_available_to_receive: availableCheckbox.checked,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id' });
+        setNote(profileNote, error ? 'We could not save those details. Please try again.' : 'Your details are saved.', Boolean(error));
+      });
+
+      consentForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!journalCheckbox) return;
+        const granted = journalCheckbox.checked;
+        const { error } = await client.from('consent_events').insert({
+          user_id: session.user.id,
+          purpose: 'journal_marketing',
+          granted,
+          policy_version: '2026-08-09',
+          consent_text: 'Optional Journal notes and product news.',
+          source: 'account',
+        });
+        setNote(consentNote, error ? 'We could not save that choice. Please try again.' : 'Your communication choice is saved.', Boolean(error));
+      });
+
+      document.querySelector<HTMLButtonElement>('[data-privacy-request="access"]')?.addEventListener('click', async () => {
+        const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: 'access' });
+        setNote(privacyNote, error ? 'We could not record the request. Please try again.' : 'Your access request is recorded. We will follow up by email.', Boolean(error));
+      });
+
+      deleteForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: 'deletion' });
+        setNote(deleteNote, error ? 'We could not record the deletion request. Please try again.' : 'Your deletion request is recorded. We will confirm the next steps by email.', Boolean(error));
+      });
+    }
+
+    document.querySelector<HTMLButtonElement>('[data-sign-out]')?.addEventListener('click', async () => {
+      if (supabase) await supabase.auth.signOut();
       window.location.assign('/');
     });
-
-    void loadAccount();
   </script>
 </Layout>
