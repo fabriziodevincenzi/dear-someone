@@ -4,7 +4,7 @@ A private correspondence club: one letter, one reader, maybe a reply.
 
 ## Local development
 
-Requirements: Node.js 22.12 or newer and pnpm 11.
+Requirements: Node.js 22.17.1 or newer and pnpm 11.
 
 ```sh
 pnpm install
