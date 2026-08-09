@@ -1,0 +1,222 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EmailPreview from '../../components/EmailPreview.astro';
+import { buttonVariants } from '../../components/ui/Button';
+import { currencyByCountry, fallbackMarket, formatAnnualPrice, marketForCountry } from '../../lib/market-pricing';
+
+// The static preview starts in EUR; deployment can pass a CDN country header once the site is server-rendered.
+const initialMarket = marketForCountry();
+const initialPrice = formatAnnualPrice(initialMarket.amount, initialMarket.currency);
+const marketData = Object.fromEntries(Object.keys(currencyByCountry).map((country) => [country, marketForCountry(country)]));
+
+const steps = [
+  {
+    number: '01',
+    title: 'Write from your inbox',
+    body: 'Send a plain-text letter from the email address you already use. No app, profile, or public post.',
+  },
+  {
+    number: '02',
+    title: 'A compatible reader is chosen at random',
+    body: 'We choose one available member who can read your language. There is no catalogue to browse and no matching by interests. Your real email address stays hidden.',
+  },
+  {
+    number: '03',
+    title: 'A letter may find you too',
+    body: 'When another member is matched with you, the letter arrives in your normal inbox from a private alias. You can read it without creating a profile or exposing your address.',
+  },
+  {
+    number: '04',
+    title: 'Reply, stop, or let it end',
+    body: 'You can answer in your own words, choose to stop the correspondence, or leave room for silence. None of those choices is a score.',
+  },
+];
+
+const timelineStages = [
+  {
+    label: 'The beginning',
+    eyebrow: 'Complete',
+    title: 'The first room filled',
+    body: 'The opening group gave the service enough readers and writers for a letter to find a real person.',
+  },
+  {
+    label: 'The opening',
+    eyebrow: 'Complete',
+    title: 'Dear Someone opened',
+    body: 'The service moved from a small beginning to an open correspondence club. New members can join without an application.',
+  },
+  {
+    label: 'Now',
+    eyebrow: 'Open to everyone',
+    title: 'Choose your pace',
+    body: 'Start on Free or make more room with annual membership. You can change pace whenever you want.',
+  },
+];
+---
+
+<Layout title="Dear Someone — One letter. One reader." description="A private correspondence club where one letter reaches one unknown reader. No profiles, no feed, no judgment.">
+  <header class="border-b border-border">
+    <div class="shell flex min-h-20 items-center justify-between gap-6">
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">
+        Dear Someone
+      </a>
+      <nav class="hidden items-center gap-8 text-sm text-muted-foreground md:flex" aria-label="Main navigation">
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#how-it-works">How it works</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#timeline">Timeline</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#membership">Membership</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/blog/">Journal</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a class="hidden text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline sm:inline" href="/sign-in/">Log in</a>
+        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/sign-in/?mode=signup&plan=free">Sign up</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="border-b border-border py-16 sm:py-24 lg:py-32">
+      <div class="shell grid items-end gap-16 lg:grid-cols-[1.08fr_0.78fr] lg:gap-20">
+        <div>
+          <p class="eyebrow mb-7">Dear Someone is open</p>
+          <h1 class="display balance">One letter. One reader. Maybe a reply.</h1>
+          <p class="mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
+            Write to someone you do not know, from the quiet of your own inbox. No profiles to perform for. No feed to keep up with.
+          </p>
+          <div class="mt-9 flex flex-wrap items-center gap-3">
+            <a class={buttonVariants({ size: 'large' })} href="/sign-in/?mode=signup&plan=free">Start free</a>
+            <a class={buttonVariants({ variant: 'quiet', size: 'large' })} href="#how-it-works">See how it works</a>
+          </div>
+          <p class="mt-5 max-w-md text-sm text-muted-foreground">Start free with one new correspondence every three months, or make more room with annual membership and a new opening every 24 hours.</p>
+        </div>
+
+        <EmailPreview />
+      </div>
+    </section>
+
+    <section class="border-b border-border py-20 sm:py-28" id="how-it-works">
+      <div class="shell">
+        <div class="grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:gap-20">
+          <div>
+            <p class="eyebrow mb-5">How it works</p>
+            <h2 class="section-title balance">A small ritual, not another platform.</h2>
+          </div>
+          <p class="max-w-2xl self-end text-lg leading-8 text-muted-foreground">Dear Someone carries the letter and protects both addresses. Everything that matters happens between two people, by email.</p>
+        </div>
+
+        <ol class="mt-16 border-t border-border">
+          {steps.map((step) => (
+            <li class="grid gap-4 border-b border-border py-8 md:grid-cols-[5rem_0.65fr_1fr] md:gap-10 md:py-10">
+              <span class="eyebrow pt-1" aria-hidden="true">{step.number}</span>
+              <h3 class="m-0 font-serif text-2xl font-normal tracking-[-0.025em]">{step.title}</h3>
+              <p class="m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="border-b border-border py-20 sm:py-28" id="timeline">
+      <div class="shell">
+        <div class="grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:gap-20">
+          <div>
+            <p class="eyebrow mb-5">The first season</p>
+            <h2 class="section-title balance">The beginning is complete. The room is open.</h2>
+          </div>
+          <p class="max-w-2xl self-end text-lg leading-8 text-muted-foreground">The first group got the correspondence moving. Now the founding season is behind us and anyone can choose a way in.</p>
+        </div>
+
+        <div class="relative mt-16">
+          <div class="absolute bottom-0 left-4 top-0 border-l border-accent/40 md:bottom-auto md:left-0 md:right-0 md:top-4 md:border-l-0 md:border-t" aria-hidden="true"></div>
+          <div class="relative grid gap-12 md:grid-cols-3 md:gap-10">
+            {timelineStages.map((stage, index) => (
+              <article class="relative pl-12 md:pl-0 md:pt-12">
+                <span class:list={[
+                  'absolute left-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs md:left-0',
+                  index === timelineStages.length - 1 ? 'border-accent bg-accent text-primary-foreground' : 'border-accent bg-background text-accent',
+                ]} aria-label={index === timelineStages.length - 1 ? 'Current stage' : 'Completed stage'}>
+                  {index + 1}
+                </span>
+                <p class="eyebrow mb-3">{stage.label}</p>
+                <p class="mb-5 text-xs uppercase tracking-[0.12em] text-accent">{index === timelineStages.length - 1 ? 'Current stage · ' : ''}{stage.eyebrow}</p>
+                <h3 class="m-0 font-serif text-2xl font-normal tracking-[-0.025em]">{stage.title}</h3>
+                <p class="mt-4 m-0 leading-7 text-muted-foreground">{stage.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-b border-border py-20 sm:py-28" id="membership">
+      <div class="shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
+        <div>
+          <p class="eyebrow mb-5">Membership</p>
+          <h2 class="section-title balance">Choose how you want to begin.</h2>
+          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Start free and keep the ritual occasional, or choose annual membership when you want a new opening available every day.</p>
+        </div>
+        <div class="grid gap-8 border-t border-border pt-8 sm:grid-cols-2 sm:gap-10">
+          <div class="flex flex-col">
+            <p class="eyebrow mb-4">Free</p>
+            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">One correspondence every three months.</h3>
+            <p class="mt-4 text-sm leading-6 text-muted-foreground">The date follows your own sign-up day. Replies and open conversations continue without a cap.</p>
+            <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=free">Start free</a>
+          </div>
+          <div class="flex flex-col border-t border-border pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
+            <p class="eyebrow mb-4 text-accent">Annual membership</p>
+            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]" data-market-price>{initialPrice} <span class="text-base text-muted-foreground">/ year</span></h3>
+            <ul class="mt-5 grid gap-2 text-sm leading-6 text-muted-foreground">
+              <li>One new opening every 24 hours.</li>
+              <li>Up to a year's worth of chances to write and receive.</li>
+              <li>Replies inside open conversations never use the cadence.</li>
+            </ul>
+            <a class={buttonVariants({ size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=annual" data-join-membership>Join annual membership</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 sm:py-28">
+      <div class="shell grid gap-10 md:grid-cols-2 md:gap-20">
+        <div>
+          <p class="eyebrow mb-5">Already a member?</p>
+          <h2 class="section-title">Everything important stays in your inbox.</h2>
+        </div>
+        <div class="self-end">
+          <p class="text-lg leading-8 text-muted-foreground">Your private area is for membership, consents, language and receiving preferences, privacy requests, and account deletion. The correspondence itself remains where it belongs — in your email.</p>
+          <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-6'} href="/sign-in/">Log in to your account</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-border py-8">
+    <div class="shell flex flex-col gap-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      <p class="m-0">© 2026 Dear Someone</p>
+      <p class="m-0 font-serif text-base italic text-foreground/75">Someone who pays attention without asking you to perform.</p>
+      <div class="flex gap-5">
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/blog/">Journal</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/privacy">Privacy</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/terms">Terms</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<script is:inline define:vars={{ marketData, fallbackMarket }}>
+  const region = navigator.language.split('-')[1]?.toUpperCase();
+  const selected = (region && marketData[region]) || fallbackMarket;
+  const formatted = new Intl.NumberFormat(navigator.language, {
+    style: 'currency',
+    currency: selected.currency,
+    maximumFractionDigits: selected.currency === 'AUD' ? 2 : 0,
+  }).format(selected.amount);
+
+  document.querySelectorAll('[data-market-price]').forEach((element) => {
+    element.firstChild.textContent = `${formatted} `;
+  });
+
+  const membershipLink = document.querySelector('[data-join-membership]');
+  if (membershipLink instanceof HTMLAnchorElement && region) {
+    membershipLink.href = `/sign-in/?mode=signup&plan=annual&market=${region}`;
+  }
+</script>

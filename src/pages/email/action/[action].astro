@@ -1,0 +1,22 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { emailActions } from '../../../lib/email-actions';
+
+export function getStaticPaths() {
+  return Object.entries(emailActions).map(([action, copy]) => ({ params: { action }, props: { copy } }));
+}
+
+const copy = Astro.props.copy ?? emailActions[Astro.params.action as keyof typeof emailActions] ?? emailActions.stop;
+---
+
+<Layout title={`${copy.label} — Dear Someone`} description="A Dear Someone correspondence action.">
+  <main class="shell min-h-[78vh] max-w-3xl py-16 sm:py-24 lg:py-32">
+    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/email/you-have-a-letter/">← Back to the letter</a>
+    <div class="pt-24 sm:pt-32">
+      <p class="eyebrow mb-6">{copy.label}</p>
+      <h1 class="section-title balance">{copy.title}</h1>
+      <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">{copy.body}</p>
+      <p class="mt-8 max-w-2xl text-sm leading-6 text-muted-foreground">This local prototype does not send an action yet. In production, each action will be tied to the private conversation alias in the email.</p>
+    </div>
+  </main>
+</Layout>

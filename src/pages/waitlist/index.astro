@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { buttonVariants } from '../../components/ui/Button';
+import { serviceIsOpen } from '../../lib/product-config';
+
+const openService = serviceIsOpen();
+---
+
+<Layout title={openService ? 'Dear Someone is open' : "You're on the waitlist — Dear Someone"} description="Dear Someone is opening slowly so every letter finds a reader.">
+  <main class="shell min-h-[82vh] py-16 sm:py-24 lg:py-32">
+    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/">← Back home</a>
+    <div class="mx-auto max-w-2xl pt-24 text-center sm:pt-32">
+      {openService ? (
+        <>
+          <p class="eyebrow mb-6">The service is open</p>
+          <h1 class="section-title balance">Your wait is over.</h1>
+          <p class="mx-auto mt-8 max-w-xl text-lg leading-8 text-muted-foreground">You are part of the founding group: your first 8 weeks include the daily opening pace. New members can join on the free plan and switch to annual membership whenever they want.</p>
+          <p class="mt-8 font-serif text-2xl italic">Think of something you would like to say to someone new.</p>
+        </>
+      ) : (
+        <>
+          <p class="eyebrow mb-6">You’re on the list</p>
+          <h1 class="section-title balance">We’ll write when the first small group is ready.</h1>
+          <p class="mx-auto mt-8 max-w-xl text-lg leading-8 text-muted-foreground">Dear Someone is opening slowly so every first letter has a real chance of finding its reader. There is no application and no selection — just a little patience while the room fills.</p>
+          <p class="mt-8 font-serif text-2xl italic">Until then, think of something you would like to say to someone new.</p>
+        </>
+      )}
+      <div class="mt-10 flex justify-center">
+        <a class={buttonVariants({ variant: openService ? 'primary' : 'outline' })} href={openService ? '/launch/' : '/'}>{openService ? 'Enter Dear Someone' : 'Return to Dear Someone'}</a>
+      </div>
+    </div>
+  </main>
+</Layout>

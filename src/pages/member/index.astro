@@ -1,0 +1,124 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { buttonVariants } from '../../components/ui/Button';
+---
+
+<Layout title="Your account — Dear Someone" description="Manage your Dear Someone membership, preferences and privacy choices.">
+  <header class="border-b border-border">
+    <div class="shell flex min-h-20 items-center justify-between gap-6">
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">Dear Someone</a>
+      <nav class="flex items-center gap-5 text-sm text-muted-foreground" aria-label="Member navigation">
+        <a class="hidden underline-offset-4 hover:text-foreground hover:underline sm:inline" href="/member/settings">Account settings</a>
+        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/" data-sign-out>Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell py-14 sm:py-20">
+    <div class="flex flex-col justify-between gap-8 border-b border-border pb-10 sm:flex-row sm:items-end">
+      <div>
+        <p class="eyebrow mb-5">Your account</p>
+        <h1 class="section-title">The practical details, kept small.</h1>
+        <p class="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">Dear Someone lives in your inbox. This space is only for your membership, preferences, consents and privacy choices.</p>
+      </div>
+      <div class="sm:text-right">
+        <p class="mb-3 text-sm text-muted-foreground">Signed in as <span class="text-foreground" data-account-email>you@example.com</span></p>
+        <a class={buttonVariants({ size: 'large' })} href="mailto:write@dearsomeone.net?subject=Dear%20Someone">Write a letter</a>
+      </div>
+    </div>
+
+    <section class="grid border-b border-border sm:grid-cols-2" aria-label="Account status">
+      <div class="border-b border-border py-7 sm:border-b-0 sm:border-r sm:pr-8">
+        <p class="eyebrow mb-3">Membership</p>
+        <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-membership-label>Free pace</p>
+        <p class="mt-2 text-sm leading-6 text-muted-foreground" data-membership-copy>One new correspondence every three months. Replies inside open conversations remain uncapped.</p>
+      </div>
+      <div class="py-7 sm:pl-8">
+        <p class="eyebrow mb-3">Email status</p>
+        <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-email-status>Verified</p>
+        <p class="mt-2 text-sm leading-6 text-muted-foreground">Your address is ready to send and receive. You can change it from account settings.</p>
+      </div>
+    </section>
+
+    <section class="grid gap-8 border-b border-border py-10 md:grid-cols-[1fr_0.72fr] md:gap-16" aria-labelledby="inbox-heading">
+      <div>
+        <p class="eyebrow mb-4">Email-first by design</p>
+        <h2 id="inbox-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Your letters stay in your inbox.</h2>
+        <p class="mt-4 max-w-xl leading-7 text-muted-foreground">There is no correspondence archive here, no activity score and no dashboard to keep checking. The account area exists to manage the few practical things the service needs.</p>
+      </div>
+      <div class="border-t border-border pt-5 md:border-t-0 md:border-l md:pl-8 md:pt-0">
+        <p class="text-sm text-muted-foreground">Need to change something?</p>
+        <a class="mt-2 inline-block font-serif text-2xl underline decoration-border underline-offset-8 hover:decoration-foreground" href="/member/settings">Open account settings →</a>
+      </div>
+    </section>
+
+    <section class="py-10" aria-labelledby="shortcuts-heading">
+      <p class="eyebrow mb-4">Account controls</p>
+      <h2 id="shortcuts-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">The things you can change.</h2>
+      <div class="mt-8 grid border-t border-border sm:grid-cols-2">
+        <a class="border-b border-border py-6 pr-8 no-underline hover:bg-surface sm:border-r" href="/member/settings#membership">
+          <p class="m-0 font-serif text-xl">Membership and payments</p>
+          <p class="mt-2 text-sm leading-6 text-muted-foreground">Open payment details, change plan, cancel or request a refund.</p>
+        </a>
+        <a class="border-b border-border py-6 sm:pl-8" href="/member/settings#consents">
+          <p class="m-0 font-serif text-xl">Consents and emails</p>
+          <p class="mt-2 text-sm leading-6 text-muted-foreground">Manage optional Journal and product communications.</p>
+        </a>
+        <a class="border-b border-border py-6 pr-8 no-underline hover:bg-surface sm:border-r" href="/member/settings#language-heading">
+          <p class="m-0 font-serif text-xl">Languages and availability</p>
+          <p class="mt-2 text-sm leading-6 text-muted-foreground">Keep matching preferences and receiving availability up to date.</p>
+        </a>
+        <a class="border-b border-border py-6 sm:pl-8" href="/member/settings#privacy">
+          <p class="m-0 font-serif text-xl">Privacy and deletion</p>
+          <p class="mt-2 text-sm leading-6 text-muted-foreground">Request a copy of your data or delete the account permanently.</p>
+        </a>
+      </div>
+    </section>
+
+    <aside class="border-t border-border pt-6 text-sm leading-6 text-muted-foreground">This is a local prototype. Production will connect account status, payment actions, preferences and privacy requests to Supabase and the payment provider.</aside>
+  </main>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    const emailNode = document.querySelector<HTMLElement>('[data-account-email]');
+    const membershipLabel = document.querySelector<HTMLElement>('[data-membership-label]');
+    const membershipCopy = document.querySelector<HTMLElement>('[data-membership-copy]');
+    const emailStatus = document.querySelector<HTMLElement>('[data-email-status]');
+    const signOut = document.querySelector<HTMLAnchorElement>('[data-sign-out]');
+
+    const loadAccount = async () => {
+      if (!supabase) return;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const session = sessionData.session;
+      if (!session) {
+        window.location.assign('/sign-in/');
+        return;
+      }
+      if (emailNode) emailNode.textContent = session.user.email || 'your verified email';
+      if (emailStatus) emailStatus.textContent = session.user.email_confirmed_at ? 'Verified' : 'Pending';
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('account_status, plan')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      if (profile?.account_status === 'annual') {
+        if (membershipLabel) membershipLabel.textContent = 'Annual membership';
+        if (membershipCopy) membershipCopy.textContent = 'One new correspondence every 24 hours. Replies inside open conversations remain uncapped.';
+      } else if (profile?.account_status === 'checkout_pending') {
+        if (membershipLabel) membershipLabel.textContent = 'Payment to finish';
+        if (membershipCopy) membershipCopy.textContent = 'Your account is ready. Complete payment from account settings to open the daily pace.';
+      }
+    };
+
+    signOut?.addEventListener('click', async (event) => {
+      if (!supabase) return;
+      event.preventDefault();
+      await supabase.auth.signOut();
+      window.location.assign('/');
+    });
+
+    void loadAccount();
+  </script>
+</Layout>

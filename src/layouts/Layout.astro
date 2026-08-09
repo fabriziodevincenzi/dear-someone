@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Dear Someone — One letter. One reader.',
+  description = 'A private correspondence club where one letter reaches one unknown reader. No profiles, no feed, no judgment.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f5f0e7" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a
+      class="sr-only fixed left-3 top-3 z-50 bg-foreground px-4 py-2 text-background focus:not-sr-only"
+      href="#main-content"
+    >
+      Skip to content
+    </a>
+    <slot />
+  </body>
+</html>

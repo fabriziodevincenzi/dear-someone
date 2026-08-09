@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+---
+
+<Layout title="Access your account — Dear Someone" description="Create or access your private Dear Someone account with a one-time email link.">
+  <main class="shell min-h-[82vh] max-w-xl py-16 sm:py-24 lg:py-32">
+    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/launch-after-free/">← Back to Dear Someone</a>
+    <div class="pt-24 sm:pt-32">
+      <p class="eyebrow mb-6" data-flow-eyebrow>Private area</p>
+      <h1 class="section-title balance" data-flow-title>A link, not a password.</h1>
+      <p class="mt-8 text-lg leading-8 text-muted-foreground" data-flow-description>Enter the email address connected to your account. We will send a one-time link that opens your private area.</p>
+
+      <div class="mt-8 hidden border-y border-border py-5" data-plan-summary>
+        <p class="eyebrow mb-3">Your starting plan</p>
+        <p class="font-serif text-2xl" data-plan-name>Free</p>
+        <p class="mt-2 text-sm leading-6 text-muted-foreground" data-plan-description>One new correspondence every three months. No payment required.</p>
+      </div>
+
+      <form class="mt-10 border-t border-border pt-8" data-magic-link-form>
+        <label class="mb-2 block text-sm font-medium" for="sign-in-email">Email address</label>
+        <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
+          <Input id="sign-in-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
+          <Button type="submit" size="large" data-submit-label>Send my link</Button>
+        </div>
+
+        <div class="mt-6 hidden grid gap-4 border-t border-border pt-6 text-sm leading-6" data-signup-consents>
+          <label class="flex items-start gap-3">
+            <input class="mt-1" type="checkbox" name="termsAccepted" data-terms-checkbox />
+            <span>I have read and accept the <a class="underline underline-offset-4" href="/terms">Terms of Service</a>.</span>
+          </label>
+          <label class="flex items-start gap-3 text-muted-foreground">
+            <input class="mt-1" type="checkbox" name="journalOptIn" value="yes" />
+            <span>Send me occasional Journal notes and product news too. This is optional.</span>
+          </label>
+          <p class="m-0 text-xs leading-5 text-muted-foreground">We use your address to create the account, verify your mailbox and operate the service. Read the <a class="underline underline-offset-4" href="/privacy">Privacy notice</a>.</p>
+        </div>
+
+        <p class="mt-3 text-xs leading-5 text-muted-foreground" data-flow-helper>The link will be single-use and expire shortly. We will never ask you to create or remember a password.</p>
+        <p class="mt-5 hidden text-sm leading-6 text-accent" data-magic-link-note>In the local prototype, this is where the confirmation state appears. Production will send the link through the transactional email provider.</p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+    import { fallbackMarket, marketForCountry } from '../../lib/market-pricing';
+
+    const params = new URLSearchParams(window.location.search);
+    const isSignup = params.get('mode') === 'signup';
+    const plan = params.get('plan') === 'annual' ? 'annual' : 'free';
+    const region = (params.get('market') || navigator.language.split('-')[1] || '').toUpperCase();
+    const market = marketForCountry(region) || fallbackMarket;
+    const formattedPrice = new Intl.NumberFormat(navigator.language, {
+      style: 'currency',
+      currency: market.currency,
+      maximumFractionDigits: market.currency === 'AUD' ? 2 : 0,
+    }).format(market.amount);
+
+    const eyebrow = document.querySelector<HTMLElement>('[data-flow-eyebrow]')!;
+    const title = document.querySelector<HTMLElement>('[data-flow-title]')!;
+    const description = document.querySelector<HTMLElement>('[data-flow-description]')!;
+    const summary = document.querySelector<HTMLElement>('[data-plan-summary]')!;
+    const planName = document.querySelector<HTMLElement>('[data-plan-name]')!;
+    const planDescription = document.querySelector<HTMLElement>('[data-plan-description]')!;
+    const signupConsents = document.querySelector<HTMLElement>('[data-signup-consents]')!;
+    const termsCheckbox = document.querySelector<HTMLInputElement>('[data-terms-checkbox]')!;
+    const submitLabel = document.querySelector<HTMLElement>('[data-submit-label]')!;
+    const note = document.querySelector<HTMLElement>('[data-magic-link-note]');
+    const form = document.querySelector<HTMLFormElement>('[data-magic-link-form]')!;
+    const signupIntentKey = 'dear-someone:signup-intent';
+
+    if (isSignup) {
+      eyebrow.textContent = 'Create your account';
+      title.textContent = plan === 'annual' ? 'Start with membership.' : 'Start for free.';
+      description.textContent = plan === 'annual'
+        ? `Enter your email to create your account. We will verify your address first, then continue to annual membership at ${formattedPrice} / year.`
+        : 'Enter your email to create a free account. Verify your address and start writing without entering payment details.';
+      planName.textContent = plan === 'annual' ? `Annual membership · ${formattedPrice} / year` : 'Free plan';
+      planDescription.textContent = plan === 'annual'
+        ? 'One new opening every 24 hours. Payment happens only after email verification.'
+        : 'One new correspondence every three months. No payment required.';
+      summary.classList.remove('hidden');
+      signupConsents.classList.remove('hidden');
+      termsCheckbox.required = true;
+      submitLabel.textContent = plan === 'annual' ? 'Continue with email' : 'Create free account';
+    }
+
+    const showNote = (message: string, tone: 'accent' | 'error' = 'accent') => {
+      if (!note) return;
+      note.textContent = message;
+      note.classList.remove('hidden', 'text-accent', 'text-destructive');
+      note.classList.add(tone === 'error' ? 'text-destructive' : 'text-accent');
+    };
+
+    const completeSignup = async (session: { access_token: string; user?: { user_metadata?: Record<string, unknown> } }) => {
+      if (!supabase) return;
+      const rawIntent = window.localStorage.getItem(signupIntentKey);
+      let intent: Record<string, unknown>;
+      if (!rawIntent) {
+        const metadata = session.user?.user_metadata;
+        if (metadata?.plan_intent !== 'free' && metadata?.plan_intent !== 'annual') {
+          window.location.assign('/member/');
+          return;
+        }
+        intent = {
+          source: 'signup',
+          plan: metadata.plan_intent,
+          countryCode: metadata.market_country ?? null,
+          marketCurrency: metadata.market_currency ?? null,
+          languageCode: navigator.language || 'en',
+          journalOptIn: metadata.journal_opt_in === true,
+          termsAccepted: metadata.terms_accepted === true,
+        };
+      } else {
+        try {
+          intent = JSON.parse(rawIntent);
+        } catch {
+          window.localStorage.removeItem(signupIntentKey);
+          return;
+        }
+      }
+      if (!intent) {
+        window.location.assign('/member/');
+        return;
+      }
+      const { error } = await supabase.functions.invoke('complete-signup', {
+        body: intent,
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) {
+        showNote('Your email is verified, but we could not finish setting up the account. Please try again from this page.', 'error');
+        return;
+      }
+      window.localStorage.removeItem(signupIntentKey);
+      showNote('Your email is verified. Your private area is ready to open.');
+      window.setTimeout(() => window.location.assign('/member/'), 450);
+    };
+
+    // A magic-link callback returns to this page with the session in the URL
+    // fragment. The session is persisted by the Supabase browser client.
+    supabase?.auth.onAuthStateChange((event, session) => {
+      const hasCallbackToken = window.location.hash.includes('access_token');
+      if (session && (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && hasCallbackToken))) {
+        if (hasCallbackToken) {
+          window.history.replaceState({}, document.title, '/sign-in/');
+        }
+        window.setTimeout(() => void completeSignup(session), 0);
+      }
+    });
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (isSignup && termsCheckbox && !termsCheckbox.checked) return;
+
+      const formData = new FormData(form);
+      const email = String(formData.get('email') || '').trim().toLowerCase();
+      if (!email) return;
+
+      if (!supabase) {
+        showNote('Supabase is not configured in this local environment.', 'error');
+        return;
+      }
+
+      const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      showNote('Sending your one-time link…');
+
+      if (isSignup) {
+        window.localStorage.setItem(signupIntentKey, JSON.stringify({
+          source: 'signup',
+          plan,
+          countryCode: region || null,
+          marketCurrency: market.currency,
+          languageCode: navigator.language || 'en',
+          journalOptIn: formData.get('journalOptIn') === 'yes',
+          termsAccepted: formData.get('termsAccepted') === 'on',
+        }));
+      }
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: isSignup,
+          emailRedirectTo: `${window.location.origin}/sign-in/`,
+          data: {
+            plan_intent: isSignup ? plan : null,
+            market_country: region || null,
+            market_currency: market.currency,
+            journal_opt_in: formData.get('journalOptIn') === 'yes',
+            terms_accepted: isSignup && formData.get('termsAccepted') === 'on',
+          },
+        },
+      });
+
+      if (submitButton) submitButton.disabled = false;
+      if (error) {
+        window.localStorage.removeItem(signupIntentKey);
+        showNote(error.message || 'We could not send the link. Please try again.', 'error');
+        return;
+      }
+
+      showNote('Check your inbox. The link is single-use and will open your private area.');
+    });
+  </script>
+</Layout>

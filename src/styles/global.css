@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-interface);
+  --font-serif: var(--font-letter);
+}
+
+:root {
+  --background: #f5f0e7;
+  --surface: #faf7f0;
+  --foreground: #211f1b;
+  --muted: #eae3d7;
+  --muted-foreground: #6c665d;
+  --border: #cec5b7;
+  --input: #bfb5a5;
+  --primary: #25221d;
+  --primary-hover: #484239;
+  --primary-foreground: #fffaf1;
+  --accent: #9b5943;
+  --ring: #9b5943;
+  --radius-control: 0.1875rem;
+  --font-interface: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-letter: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-interface);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.shell {
+  width: min(100% - 2rem, 74rem);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.display {
+  max-width: 13ch;
+  margin: 0;
+  font-family: var(--font-letter);
+  font-size: clamp(3.1rem, 8vw, 6.8rem);
+  font-weight: 400;
+  letter-spacing: -0.052em;
+  line-height: 0.94;
+}
+
+.section-title {
+  margin: 0;
+  font-family: var(--font-letter);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

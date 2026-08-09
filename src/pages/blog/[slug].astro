@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { blogArticles, getArticle } from '../../lib/blog';
+
+export function getStaticPaths() {
+  return blogArticles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const currentArticle = article ?? getArticle(Astro.params.slug ?? '');
+
+if (!currentArticle) {
+  return Astro.redirect('/blog/');
+}
+---
+
+<Layout title={`${currentArticle.title} — Dear Someone`} description={currentArticle.description}>
+  <header class="border-b border-border">
+    <div class="shell flex min-h-20 items-center justify-between gap-6">
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">Dear Someone</a>
+      <a class="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" href="/blog/">← Journal</a>
+    </div>
+  </header>
+
+  <main class="shell max-w-3xl py-16 sm:py-24 lg:py-32">
+    <p class="eyebrow mb-6">{currentArticle.category} · {currentArticle.readingTime}</p>
+    <h1 class="section-title balance">{currentArticle.title}</h1>
+    <p class="mt-8 text-lg leading-8 text-muted-foreground">{currentArticle.description}</p>
+    <p class="mt-5 text-sm text-muted-foreground"><time datetime={currentArticle.publishedAt}>{currentArticle.publishedAt}</time></p>
+
+    <article class="mt-14 border-t border-border pt-10 sm:mt-16 sm:pt-12">
+      {currentArticle.paragraphs.map((paragraph) => <p class="max-w-2xl font-serif text-xl leading-9 text-foreground/90">{paragraph}</p>)}
+    </article>
+
+    <aside class="mt-14 border-t border-border pt-6 text-sm leading-6 text-muted-foreground">
+      The journal is part of Dear Someone’s main domain. It is a place to explain the choices behind a quieter way to correspond.
+    </aside>
+  </main>
+</Layout>

@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { buttonVariants } from '../../components/ui/Button';
+---
+
+<Layout title="You have a letter — Dear Someone" description="A preview of the Dear Someone letter notification email.">
+  <main class="min-h-[85vh] bg-[#e9e2d6] px-4 py-12 sm:px-8 sm:py-20">
+    <div class="mx-auto max-w-[40rem]">
+      <p class="eyebrow mb-5 text-center">Email preview · no tracking pixels</p>
+      <article class="border border-border bg-surface">
+        <header class="flex items-center justify-between border-b border-border px-5 py-5 sm:px-9">
+          <p class="m-0 font-serif text-xl">Dear Someone</p>
+          <p class="eyebrow m-0">A letter for you</p>
+        </header>
+        <div class="px-5 py-10 sm:px-14 sm:py-14">
+          <span class="inline-block border border-accent px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-accent">New</span>
+          <h1 class="mt-7 font-serif text-4xl font-normal tracking-[-0.04em]">You have a letter.</h1>
+          <p class="mt-8 font-serif text-xl italic leading-8 text-foreground/85">This morning the rain stopped just before I left home. For a few minutes, every window on my street held the same pale light…</p>
+          <div class="mt-10 border-t border-border pt-5 text-sm leading-6 text-muted-foreground">No profile. No address shared.</div>
+        </div>
+        <footer class="border-t border-border px-5 py-6 sm:px-9">
+          <p class="m-0 text-xs leading-5 text-muted-foreground">You can reply directly to this email. Your real address stays hidden unless you both choose to continue outside Dear Someone.</p>
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/email/action/stop/">I don’t wish to continue</a>
+            <a class={buttonVariants({ variant: 'quiet', size: 'small' })} href="/email/action/report/">Report this letter</a>
+            <a class={buttonVariants({ variant: 'quiet', size: 'small' })} href="/email/action/continue/">I would like to continue directly</a>
+          </div>
+        </footer>
+      </article>
+      <p class="mt-6 text-center text-xs text-muted-foreground">This is a design preview. In production, the letter arrives in your normal inbox.</p>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Privacy — Dear Someone" description="Dear Someone privacy information.">
+  <main class="shell max-w-4xl min-h-[70vh] py-20 sm:py-28">
+    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/">← Back home</a>
+    <p class="eyebrow mb-5 mt-14">Privacy notice · implementation draft</p>
+    <h1 class="section-title">Privacy</h1>
+    <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">
+      Dear Someone is designed to collect as little as possible. This implementation draft makes the consent choices visible now; the controller identity, providers, contact details and final retention periods will be completed before the public waitlist opens.
+    </p>
+
+    <div class="mt-16 grid gap-10 border-t border-border pt-10 sm:grid-cols-2 sm:gap-x-12">
+      <section>
+        <h2 class="font-serif text-2xl font-normal tracking-[-0.025em]">What we collect</h2>
+        <p class="mt-4 leading-7 text-muted-foreground">Your waitlist email address, when you joined, your subscription status and the communication preferences you selected. The Journal preference is stored separately from the waitlist request.</p>
+      </section>
+      <section>
+        <h2 class="font-serif text-2xl font-normal tracking-[-0.025em]">Why we use it</h2>
+        <p class="mt-4 leading-7 text-muted-foreground">To maintain the waitlist and send the practical messages needed to open the service. Journal notes and product news are sent only when you choose the separate optional checkbox.</p>
+      </section>
+      <section>
+        <h2 class="font-serif text-2xl font-normal tracking-[-0.025em]">Legal bases</h2>
+        <p class="mt-4 leading-7 text-muted-foreground">The final notice will document the applicable basis for the requested waitlist service and the separate consent basis for optional Journal communications. These purposes are never bundled into one required acceptance.</p>
+      </section>
+      <section id="rights">
+        <h2 class="font-serif text-2xl font-normal tracking-[-0.025em]">Your controls</h2>
+        <p class="mt-4 leading-7 text-muted-foreground">You can leave the waitlist, withdraw optional Journal consent, request access or ask for deletion. Withdrawal is as easy as giving consent and does not affect the practical messages you asked to receive while you remain on the waitlist.</p>
+      </section>
+    </div>
+
+    <section class="mt-16 border-t border-border pt-10">
+      <h2 class="font-serif text-2xl font-normal tracking-[-0.025em]">Operational principles</h2>
+      <ul class="mt-5 grid gap-3 leading-7 text-muted-foreground sm:grid-cols-2 sm:gap-x-12">
+        <li>Mailbox ownership may be confirmed with a double opt-in link.</li>
+        <li>No tracking pixels or open tracking in correspondence emails.</li>
+        <li>Consent records are purpose-specific, versioned and timestamped.</li>
+        <li>Data is deleted when its purpose and retention period end.</li>
+      </ul>
+    </section>
+  </main>
+</Layout>
