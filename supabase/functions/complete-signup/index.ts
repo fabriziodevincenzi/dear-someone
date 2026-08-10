@@ -14,6 +14,7 @@ type SignupPayload = {
   languageCode?: string | null;
   journalOptIn?: boolean;
   termsAccepted?: boolean;
+  privacyAcknowledged?: boolean;
 };
 
 const response = (body: Record<string, unknown>, status = 200) => new Response(JSON.stringify(body), {
@@ -76,6 +77,16 @@ Deno.serve(async (request) => {
   if (existingProfile?.account_status === 'closed') {
     return response({ error: 'This account is closed' }, 409);
   }
+  let alreadyWaitlisted = false;
+  if (source === 'waitlist') {
+    const { data: existingWaitlistEntry, error: existingWaitlistError } = await admin
+      .from('waitlist_entries')
+      .select('status')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (existingWaitlistError) return response({ error: existingWaitlistError.message }, 500);
+    alreadyWaitlisted = existingWaitlistEntry?.status === 'active' || existingWaitlistEntry?.status === 'converted';
+  }
   const protectedStatuses = new Set(['annual', 'delivery_paused']);
   const nextStatus = existingProfile && protectedStatuses.has(existingProfile.account_status)
     ? existingProfile.account_status
@@ -110,7 +121,7 @@ Deno.serve(async (request) => {
   }
 
   const consentVersion = '2026-08-09';
-  const recordConsent = async (purpose: 'terms' | 'waitlist_operational' | 'journal_marketing', granted: boolean) => {
+  const recordConsent = async (purpose: 'terms' | 'waitlist_operational' | 'journal_marketing' | 'privacy_acknowledgement', granted: boolean) => {
     const { data: existing, error: lookupError } = await admin
       .from('consent_events')
       .select('id')
@@ -126,7 +137,9 @@ Deno.serve(async (request) => {
       ? 'I have read and accept the Terms of Service.'
       : purpose === 'journal_marketing'
         ? 'I agree to receive occasional Journal notes and product news.'
-        : 'I agree to receive the operational emails needed to manage my waitlist place.';
+        : purpose === 'privacy_acknowledgement'
+          ? 'I acknowledge the Dear Someone Privacy Notice.'
+          : 'I agree to receive the operational emails needed to manage my waitlist place.';
     const { error } = await admin.from('consent_events').insert({
       user_id: user.id,
       purpose,
@@ -141,10 +154,11 @@ Deno.serve(async (request) => {
   try {
     if (source === 'waitlist') await recordConsent('waitlist_operational', true);
     if (payload.termsAccepted) await recordConsent('terms', true);
+    if (payload.privacyAcknowledged) await recordConsent('privacy_acknowledgement', true);
     if (payload.journalOptIn) await recordConsent('journal_marketing', true);
   } catch (error) {
     return response({ error: error instanceof Error ? error.message : 'Could not record consent' }, 500);
   }
 
-  return response({ ok: true, status: nextStatus });
+  return response({ ok: true, status: nextStatus, alreadyWaitlisted });
 });

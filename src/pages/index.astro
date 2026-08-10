@@ -39,13 +39,13 @@ const timelineStages = [
     label: 'When the room is ready',
     eyebrow: 'Founding group first',
     title: 'The service opens',
-    body: 'We will announce the opening date by email. Waitlist members go first: 8 weeks are free at the daily opening pace, followed by a founding price for their first paid year. New members can start on Free or choose annual membership.',
+    body: "We'll announce the opening date by email. Waitlist members go first, writing up to once a day for 8 weeks — free. After that, they move to a founding price for their first paid year. Anyone joining after them can start free too, or go straight to annual.",
   },
   {
     label: 'After 8 weeks',
-    eyebrow: 'Choose your pace',
-    title: 'You choose your pace',
-    body: 'After the 8 weeks, founding members choose Free or annual membership at the founding first-year price. New members can move from Free to annual whenever they want.',
+    eyebrow: 'Choose your plan',
+    title: 'Free stays light. Annual removes the limit.',
+    body: 'When the season ends, founding members choose: stay on Free — one correspondence every 3 months, always — or move to annual, at the founding price, with no limit on how often you can write.',
   },
 ];
 
@@ -63,7 +63,7 @@ const currentTimelineStage = openService ? 1 : 0;
       <nav class="hidden items-center gap-8 text-sm text-muted-foreground md:flex" aria-label="Main navigation">
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#how-it-works">How it works</a>
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#timeline">Timeline</a>
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#membership">Membership</a>
+        {openService && <a class="underline-offset-4 hover:text-foreground hover:underline" href="#membership">Membership</a>}
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="/blog/">Journal</a>
       </nav>
       <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="#waitlist">Join the waitlist</a>
@@ -155,7 +155,7 @@ const currentTimelineStage = openService ? 1 : 0;
       </div>
     </section>
 
-    <section class="border-b border-border py-20 sm:py-28" id="membership">
+    {openService && <section class="border-b border-border py-20 sm:py-28" id="membership">
       <div class="shell grid gap-16 lg:grid-cols-2 lg:gap-24">
         <div>
           <p class="eyebrow mb-5">Membership</p>
@@ -177,7 +177,7 @@ const currentTimelineStage = openService ? 1 : 0;
           </div>
         </div>
       </div>
-    </section>
+    </section>}
 
     <section class="py-20 sm:py-28" id="waitlist">
       <div class="shell grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-24">
@@ -202,28 +202,37 @@ const currentTimelineStage = openService ? 1 : 0;
           </div>
         ) : (
           <form class="relative self-end overflow-hidden border border-accent/60 bg-surface p-6 sm:p-8" data-waitlist-form>
-            <span class="absolute right-6 top-6 border border-accent px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-accent sm:right-8 sm:top-8">Email only</span>
-            <p class="eyebrow mb-5">First step</p>
-            <h3 class="max-w-md font-serif text-3xl font-normal leading-tight tracking-[-0.03em] sm:text-4xl">Give the first letter somewhere to arrive.</h3>
-            <p class="mt-5 max-w-md leading-7 text-muted-foreground">Leave your email and we’ll write when the first small group is ready. No profile, no application, no noise.</p>
-            <div class="mt-8">
-              <label class="mb-2 block text-sm font-medium" for="email">The address we should write to</label>
-              <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
-                <Input id="email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required className="bg-background" />
-                <Button type="submit" size="large">Save my place</Button>
+            <span class="absolute right-6 top-6 border border-accent px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-accent sm:right-8 sm:top-8">Registration</span>
+            <div data-waitlist-fields>
+              <p class="eyebrow mb-5">Register your place</p>
+              <h3 class="max-w-md font-serif text-3xl font-normal leading-tight tracking-[-0.03em] sm:text-4xl">Give the first letter somewhere to arrive.</h3>
+              <p class="mt-5 max-w-md leading-7 text-muted-foreground">Create your Dear Someone account and reserve a place in the first group. We’ll verify your email before saving it.</p>
+              <div class="mt-8">
+                <label class="mb-2 block text-sm font-medium" for="email">Email address</label>
+                <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
+                  <Input id="email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required aria-describedby="waitlist-privacy" className="bg-background" />
+                  <Button type="submit" size="large">Register for the waitlist</Button>
+                </div>
               </div>
+              <label class="mt-6 flex items-start gap-3 text-sm leading-6">
+                <input class="mt-1" type="checkbox" name="termsAccepted" required />
+                <span>I have read and accept the <a class="underline underline-offset-4" href="/terms">Terms of Service</a> and acknowledge the <a class="underline underline-offset-4" href="/privacy">Privacy notice</a>.</span>
+              </label>
+              <label class="mt-6 flex items-start gap-3 text-sm leading-6 text-muted-foreground">
+                <input class="mt-1" type="checkbox" name="journalOptIn" value="yes" />
+                <span>Send me occasional Journal notes and product news too. This is optional.</span>
+              </label>
+              <input class="absolute -left-[9999px] h-px w-px opacity-0" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <p class="mt-4 text-xs leading-5 text-muted-foreground" id="waitlist-privacy" data-waitlist-note>
+                We’ll use your address for the waitlist and the operational emails needed to manage it. You can leave at any time.
+              </p>
             </div>
-            <label class="mt-6 flex items-start gap-3 text-sm leading-6">
-              <input class="mt-1" type="checkbox" name="termsAccepted" required />
-              <span>I have read and accept the <a class="underline underline-offset-4" href="/terms">Terms of Service</a>.</span>
-            </label>
-            <label class="mt-6 flex items-start gap-3 text-sm leading-6 text-muted-foreground">
-              <input class="mt-1" type="checkbox" name="journalOptIn" value="yes" />
-              <span>Send me occasional Journal notes and product news too. This is optional.</span>
-            </label>
-            <p class="mt-4 text-xs leading-5 text-muted-foreground" data-waitlist-note>
-              We’ll use your address for practical waitlist emails you asked for. You can leave the waitlist at any time. <a class="underline underline-offset-4 hover:text-foreground" href="/privacy">Privacy notice</a>
-            </p>
+            <div class="hidden" data-waitlist-success aria-live="polite">
+              <p class="eyebrow mb-5">You’re registered</p>
+              <h3 class="max-w-md font-serif text-3xl font-normal leading-tight tracking-[-0.03em] sm:text-4xl" data-waitlist-success-title>Your place is saved.</h3>
+              <p class="mt-5 max-w-md leading-7 text-muted-foreground" data-waitlist-success-copy>Check your inbox for the confirmation link. We’ll write when the first small group is ready.</p>
+              <a class="mt-7 inline-flex text-sm underline underline-offset-4 hover:text-foreground" href="/sign-in/">Already registered? Open your account</a>
+            </div>
           </form>
         )}
       </div>
@@ -247,7 +256,12 @@ const currentTimelineStage = openService ? 1 : 0;
 
     const form = document.querySelector<HTMLFormElement>('[data-waitlist-form]');
     const note = document.querySelector<HTMLElement>('[data-waitlist-note]');
+    const fields = document.querySelector<HTMLElement>('[data-waitlist-fields]');
+    const success = document.querySelector<HTMLElement>('[data-waitlist-success]');
+    const successTitle = document.querySelector<HTMLElement>('[data-waitlist-success-title]');
+    const successCopy = document.querySelector<HTMLElement>('[data-waitlist-success-copy]');
     const intentKey = 'dear-someone:signup-intent';
+    const lastWaitlistEmailKey = 'dear-someone:waitlist-email';
 
     const showNote = (message: string, error = false) => {
       if (!note) return;
@@ -256,7 +270,16 @@ const currentTimelineStage = openService ? 1 : 0;
       note.classList.toggle('text-muted-foreground', !error);
     };
 
-    const finishWaitlistSignup = async (session: { access_token: string; user?: { user_metadata?: Record<string, unknown> } }) => {
+    const showSuccess = (alreadyRegistered = false) => {
+      if (fields) fields.classList.add('hidden');
+      if (success) success.classList.remove('hidden');
+      if (alreadyRegistered) {
+        if (successTitle) successTitle.textContent = 'You were already on the waitlist.';
+        if (successCopy) successCopy.textContent = 'Your place is still active. Use the link in your inbox, or open your account if you need to sign in.';
+      }
+    };
+
+    const finishWaitlistSignup = async (session: { access_token: string; user?: { email?: string; user_metadata?: Record<string, unknown> } }) => {
       if (!supabase) return;
       const rawIntent = window.localStorage.getItem(intentKey);
       let intent: Record<string, unknown>;
@@ -271,6 +294,7 @@ const currentTimelineStage = openService ? 1 : 0;
           languageCode: metadata.language_code ?? navigator.language ?? 'en',
           journalOptIn: metadata.journal_opt_in === true,
           termsAccepted: metadata.terms_accepted === true,
+          privacyAcknowledged: metadata.privacy_acknowledged === true,
         };
       } else {
         try {
@@ -280,7 +304,7 @@ const currentTimelineStage = openService ? 1 : 0;
           return;
         }
       }
-      const { error } = await supabase.functions.invoke('complete-signup', {
+      const { data: completion, error } = await supabase.functions.invoke('complete-signup', {
         body: intent,
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
@@ -289,7 +313,8 @@ const currentTimelineStage = openService ? 1 : 0;
         return;
       }
       window.localStorage.removeItem(intentKey);
-      showNote('Your place is saved. We’ll write when the first small group is ready.');
+      window.localStorage.setItem(lastWaitlistEmailKey, String(session.user?.email || ''));
+      showSuccess(completion?.alreadyWaitlisted === true);
     };
 
     supabase?.auth.onAuthStateChange((event, session) => {
@@ -305,8 +330,17 @@ const currentTimelineStage = openService ? 1 : 0;
       event.preventDefault();
       const data = new FormData(form);
       const email = String(data.get('email') || '').trim().toLowerCase();
+      const honeypot = String(data.get('website') || '').trim();
       if (!email || !supabase) {
         showNote('The waitlist is not connected in this local environment.', true);
+        return;
+      }
+
+      if (honeypot) return;
+
+      const lastSubmittedAt = Number(window.localStorage.getItem('dear-someone:waitlist-last-submitted') || '0');
+      if (Date.now() - lastSubmittedAt < 60_000) {
+        showNote('A confirmation link was just requested. Please wait a moment before trying again.', true);
         return;
       }
 
@@ -320,7 +354,9 @@ const currentTimelineStage = openService ? 1 : 0;
         languageCode: navigator.language || 'en',
         journalOptIn: data.get('journalOptIn') === 'yes',
         termsAccepted: data.get('termsAccepted') === 'on',
+        privacyAcknowledged: data.get('termsAccepted') === 'on',
       }));
+      window.localStorage.setItem('dear-someone:waitlist-last-submitted', String(Date.now()));
 
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -333,6 +369,7 @@ const currentTimelineStage = openService ? 1 : 0;
             language_code: navigator.language || 'en',
             journal_opt_in: data.get('journalOptIn') === 'yes',
             terms_accepted: data.get('termsAccepted') === 'on',
+            privacy_acknowledged: data.get('termsAccepted') === 'on',
           },
         },
       });
@@ -342,7 +379,7 @@ const currentTimelineStage = openService ? 1 : 0;
         showNote(error.message || 'We could not send the link. Please try again.', true);
         return;
       }
-      showNote('Check your inbox to confirm your place on the waitlist.');
+      showNote('Check your inbox to confirm your registration.');
     });
   </script>
 </Layout>
