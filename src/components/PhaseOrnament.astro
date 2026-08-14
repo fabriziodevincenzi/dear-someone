@@ -10,11 +10,37 @@ const { phase } = Astro.props;
   {phase === 'write' ? (
     <svg class="h-auto w-full max-w-sm text-accent/60" viewBox="0 0 320 190" fill="none" data-phase-svg="write">
       <defs>
-        <g id="write-ghost-person"><circle cx="18" cy="14" r="10" /><path d="M2 76c1-22 8-34 16-34s15 12 16 34" /></g>
-        <g id="write-short-person"><circle cx="18" cy="14" r="10" /><path d="M8 12c1-8 5-12 10-12s10 4 10 12c-4-3-7-4-10-4s-6 1-10 4Z" /></g>
-        <g id="write-curly-person"><circle cx="18" cy="14" r="10" /><path d="M8 11c0-7 5-12 10-12s10 5 10 12l-3-3-3 3-4-3-4 3-3-3Z" /></g>
-        <g id="write-long-person"><circle cx="18" cy="14" r="10" /><path d="M8 16C4 5 9-1 18-1s14 7 10 18l-4 5V10c-3 2-8 2-12 0v12l-4-6Z" /></g>
-        <g id="write-bun-person"><circle cx="18" cy="14" r="10" /><circle cx="27" cy="3" r="5" /><path d="M8 12c1-8 5-12 10-12s10 4 10 12c-4-3-7-4-10-4s-6 1-10 4Z" /></g>
+        <g id="write-ghost-person">
+          <circle cx="18" cy="12" r="7" />
+          <path d="M11 11c0-5 3-8 7-8s7 3 7 8" />
+          <path d="M8 59c1-17 4-25 10-25s9 8 10 25" />
+          <path d="M11 37 5 51m20-14 6 14" stroke-linecap="round" />
+        </g>
+        <g id="write-short-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <path d="M9 11c0-7 4-11 9-11s9 4 9 11c-4-3-6-4-9-4s-5 1-9 4Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <g id="write-curly-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <path d="M9 11c0-7 4-11 9-11s9 4 9 11l-3-3-3 3-3-3-3 3-3-3Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <g id="write-long-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <path d="M9 15C5 4 10-1 18-1s13 6 10 17l-4 6V9c-3 2-8 2-12 0v14l-3-5Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <g id="write-bun-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <circle cx="28" cy="2" r="5" fill="currentColor" />
+          <path d="M9 11c0-7 4-11 9-11s9 4 9 11c-4-3-6-4-9-4s-5 1-9 4Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
       </defs>
 
       <g stroke="currentColor" stroke-width="1" opacity="0.58">
@@ -53,11 +79,37 @@ const { phase } = Astro.props;
   ) : (
     <svg class="h-auto w-full max-w-sm text-accent/60" viewBox="0 0 320 190" fill="none" data-phase-svg="receive">
       <defs>
-        <g id="receive-ghost-person"><circle cx="18" cy="14" r="10" /><path d="M2 76c1-22 8-34 16-34s15 12 16 34" /></g>
-        <g id="receive-short-person"><circle cx="18" cy="14" r="10" /><path d="M8 12c1-8 5-12 10-12s10 4 10 12c-4-3-7-4-10-4s-6 1-10 4Z" /></g>
-        <g id="receive-curly-person"><circle cx="18" cy="14" r="10" /><path d="M8 11c0-7 5-12 10-12s10 5 10 12l-3-3-3 3-4-3-4 3-3-3Z" /></g>
-        <g id="receive-long-person"><circle cx="18" cy="14" r="10" /><path d="M8 16C4 5 9-1 18-1s14 7 10 18l-4 5V10c-3 2-8 2-12 0v12l-4-6Z" /></g>
-        <g id="receive-bun-person"><circle cx="18" cy="14" r="10" /><circle cx="27" cy="3" r="5" /><path d="M8 12c1-8 5-12 10-12s10 4 10 12c-4-3-7-4-10-4s-6 1-10 4Z" /></g>
+        <g id="receive-ghost-person">
+          <circle cx="18" cy="12" r="7" />
+          <path d="M11 11c0-5 3-8 7-8s7 3 7 8" />
+          <path d="M8 59c1-17 4-25 10-25s9 8 10 25" />
+          <path d="M11 37 5 51m20-14 6 14" stroke-linecap="round" />
+        </g>
+        <g id="receive-short-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <path d="M9 11c0-7 4-11 9-11s9 4 9 11c-4-3-6-4-9-4s-5 1-9 4Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <g id="receive-curly-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <path d="M9 11c0-7 4-11 9-11s9 4 9 11l-3-3-3 3-3-3-3 3-3-3Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <g id="receive-long-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <path d="M9 15C5 4 10-1 18-1s13 6 10 17l-4 6V9c-3 2-8 2-12 0v14l-3-5Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <g id="receive-bun-person">
+          <circle cx="18" cy="12" r="8" fill="currentColor" />
+          <circle cx="28" cy="2" r="5" fill="currentColor" />
+          <path d="M9 11c0-7 4-11 9-11s9 4 9 11c-4-3-6-4-9-4s-5 1-9 4Z" fill="currentColor" />
+          <path d="M7 61c0-19 5-29 11-29s11 10 11 29Z" fill="currentColor" />
+          <path d="M9 38 4 52m25-14 5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </g>
       </defs>
 
       <g stroke="currentColor" stroke-width="1" opacity="0.52">
