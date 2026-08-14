@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import EmailPreview from '../components/EmailPreview.astro';
-import PhaseOrnament from '../components/PhaseOrnament.astro';
 import { Button, buttonVariants } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { serviceIsOpen, waitlistConfig, waitlistCountIsPublic } from '../lib/product-config';
@@ -121,7 +120,7 @@ const currentTimelineStage = openService ? 1 : 0;
         <div class="mt-16 grid gap-12">
           {perspectives.map((perspective) => (
             <section class="border-t border-border pt-6" aria-labelledby={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`}>
-              <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.65fr)] lg:gap-16">
+              <div>
                 <div>
                   <div>
                     <p class="eyebrow mb-1 text-accent">{perspective.label}</p>
@@ -139,8 +138,6 @@ const currentTimelineStage = openService ? 1 : 0;
                     ))}
                   </ol>
                 </div>
-
-                <PhaseOrnament phase={perspective.label === 'When you write' ? 'write' : 'receive'} />
               </div>
             </section>
           ))}
