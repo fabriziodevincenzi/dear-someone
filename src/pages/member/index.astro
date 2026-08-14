@@ -1,9 +1,29 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
+
+const languages = [
+  ['en', 'English'],
+  ['it', 'Italian'],
+  ['uk', 'Ukrainian'],
+  ['es', 'Spanish'],
+  ['fr', 'French'],
+  ['de', 'German'],
+  ['pl', 'Polish'],
+  ['pt', 'Portuguese'],
+  ['nl', 'Dutch'],
+  ['ja', 'Japanese'],
+];
+
+const proficiencies = [
+  ['basic', 'Basic'],
+  ['good', 'Good'],
+  ['fluent', 'Fluent'],
+  ['native', 'Native'],
+];
 ---
 
-<Layout title="Your account — Dear Someone" description="Manage your Dear Someone membership, preferences, consents and privacy choices.">
+<Layout title="Your account — Dear Someone" description="Manage your Dear Someone membership, practical details, consents and privacy choices.">
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">Dear Someone</a>
@@ -32,66 +52,77 @@ import { buttonVariants } from '../../components/ui/Button';
       <div>
         <p class="eyebrow mb-4">Your access</p>
         <h2 id="membership-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Membership</h2>
-        <p class="mt-3 text-sm leading-6 text-muted-foreground">Your pace determines how often a new correspondence can open. Replies inside an open conversation never use this allowance.</p>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">Your plan controls how often you can start a new correspondence. Everyone can receive up to one new letter a day, and replies inside an open conversation are always welcome.</p>
       </div>
       <div>
         <div class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
           <div>
             <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-membership-label>Free plan</p>
-            <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-copy>One new correspondence every three months.</p>
+            <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-copy>Free stays light: one new correspondence every three months.</p>
           </div>
           <span class="border border-border px-3 py-1 text-xs uppercase tracking-[0.12em] text-muted-foreground" data-membership-state>Active</span>
         </div>
 
         <div class="grid border-b border-border sm:grid-cols-2">
           <div class="border-b border-border py-5 sm:border-b-0 sm:border-r sm:pr-6">
-            <p class="eyebrow mb-2">New openings</p>
+            <p class="eyebrow mb-2">Starting letters</p>
             <p class="m-0 text-sm leading-6" data-membership-pace>One every three months</p>
           </div>
           <div class="py-5 sm:pl-6">
-            <p class="eyebrow mb-2">Replies</p>
-            <p class="m-0 text-sm leading-6">Always welcome inside an open conversation</p>
+            <p class="eyebrow mb-2">Receiving and replies</p>
+            <p class="m-0 text-sm leading-6">Up to one new letter a day; replies are always open</p>
           </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-4 pt-6" data-membership-actions>
-          <a class={buttonVariants({ size: 'small' })} href="/sign-in/?mode=signup&plan=annual" data-membership-primary>Join annual membership</a>
-          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=cancel" data-membership-cancel>Cancel membership</a>
+          <a class={buttonVariants({ size: 'small' })} href="/sign-in/?mode=signup&plan=annual" data-membership-primary>Move to annual membership</a>
+          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=cancel" data-membership-cancel>Manage or cancel</a>
           <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=refund" data-membership-refund>Request a refund</a>
         </div>
-        <p class="mt-4 text-xs leading-5 text-muted-foreground" data-membership-note>The annual membership flow will show the price for your market before payment. Payment integration is the next production step.</p>
+        <p class="mt-4 text-xs leading-5 text-muted-foreground" data-membership-note>The account keeps your access and choices together. Payment actions will open through Stripe when connected.</p>
       </div>
     </section>
 
     <section id="profile" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="profile-heading">
       <div>
-        <p class="eyebrow mb-4">Your details</p>
-        <h2 id="profile-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Profile and availability</h2>
-        <p class="mt-3 text-sm leading-6 text-muted-foreground">Only the practical details used to deliver and match letters. No public profile, interests or conversation history.</p>
+        <p class="eyebrow mb-4">Practical details</p>
+        <h2 id="profile-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Delivery details</h2>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">The practical details used to deliver and match letters. There is no public profile, interests list or conversation archive.</p>
       </div>
       <form class="grid gap-6" data-profile-form>
-        <div class="grid gap-6 sm:grid-cols-2">
-          <div>
-            <p class="mb-2 text-sm text-muted-foreground">Email address</p>
-            <p class="m-0 text-sm" data-profile-email>you@example.com</p>
-            <a class="mt-2 inline-block text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
-          </div>
-          <label class="grid gap-2 text-sm" for="letter-language">
-            <span class="text-muted-foreground">Language for letters</span>
-            <select id="letter-language" name="languageCode" class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3">
-              <option value="en">English</option>
-              <option value="it">Italian</option>
-              <option value="uk">Ukrainian</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="pl">Polish</option>
-            </select>
-          </label>
+        <div>
+          <p class="mb-2 text-sm text-muted-foreground">Email address</p>
+          <p class="m-0 text-sm" data-profile-email>you@example.com</p>
+          <a class="mt-2 inline-block text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
         </div>
+
+        <fieldset class="grid gap-4 border-0 p-0">
+          <legend class="text-sm text-muted-foreground">Languages for letters</legend>
+          <p class="m-0 text-xs leading-5 text-muted-foreground">Tell us which languages you can comfortably write and read. You can update these at any time.</p>
+          <div class="grid gap-3" data-language-list></div>
+          <template data-language-template>
+            <div class="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end" data-language-row>
+              <label class="grid gap-2 text-sm">
+                <span class="text-muted-foreground">Language</span>
+                <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3" data-language-select>
+                  {languages.map(([value, label]) => <option value={value}>{label}</option>)}
+                </select>
+              </label>
+              <label class="grid gap-2 text-sm">
+                <span class="text-muted-foreground">Level</span>
+                <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3" data-proficiency-select>
+                  {proficiencies.map(([value, label]) => <option value={value}>{label}</option>)}
+                </select>
+              </label>
+              <button class="w-fit border-b border-border pb-1 text-sm text-muted-foreground hover:border-foreground hover:text-foreground" type="button" data-remove-language>Remove</button>
+            </div>
+          </template>
+          <button class="w-fit border-b border-foreground pb-1 text-sm" type="button" data-add-language>Add another language</button>
+        </fieldset>
+
         <label class="flex items-start gap-3 text-sm leading-6">
           <input class="mt-1" type="checkbox" name="availableToReceive" checked />
-          <span><strong class="font-medium">Available to receive</strong><br /><span class="text-muted-foreground">Keep me in the pool for a new letter when my membership pace allows it.</span></span>
+          <span><strong class="font-medium">Keep me in the receiving pool</strong><br /><span class="text-muted-foreground">Keep me in the pool to receive a new letter (up to one a day, for everyone — this isn't limited by your plan).</span></span>
         </label>
         <div class="flex flex-wrap items-center gap-4">
           <button class="w-fit border-b border-foreground pb-1 text-sm" type="submit">Save details</button>
@@ -104,14 +135,17 @@ import { buttonVariants } from '../../components/ui/Button';
       <div>
         <p class="eyebrow mb-4">Your choices</p>
         <h2 id="messages-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Messages and consents</h2>
-        <p class="mt-3 text-sm leading-6 text-muted-foreground">Operational emails are necessary for the service. Optional Journal notes remain your choice.</p>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">The service messages you need come first. Optional Journal notes remain your choice.</p>
       </div>
       <form class="grid gap-5 text-sm leading-6" data-consent-form>
+        <div class="border-b border-border pb-5">
+          <p class="m-0"><strong class="font-medium">Service emails</strong></p>
+          <p class="mt-1 m-0 text-muted-foreground">Magic links, delivery notices, account security and subscription messages are necessary to provide the service. They are not marketing consent and cannot be switched off while your account is open.</p>
+        </div>
         <label class="flex items-start gap-3">
           <input class="mt-1" type="checkbox" name="journalOptIn" />
           <span><strong class="font-medium">Journal and product notes</strong><br /><span class="text-muted-foreground">Occasional notes about Dear Someone. Optional and revocable at any time.</span></span>
         </label>
-        <p class="m-0 border-t border-border pt-5 text-muted-foreground"><strong class="font-medium text-foreground">Service emails</strong><br />Magic links, delivery notices, account security and subscription messages are necessary to provide the service and are not marketing consent.</p>
         <div class="flex flex-wrap items-center gap-4">
           <button class="w-fit border-b border-foreground pb-1 text-sm" type="submit">Save communication choices</button>
           <p class="hidden text-sm text-accent" data-consent-note></p>
@@ -125,8 +159,25 @@ import { buttonVariants } from '../../components/ui/Button';
         <h2 id="letters-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Your letters stay in your inbox.</h2>
       </div>
       <div class="max-w-xl">
-        <p class="m-0 leading-7 text-muted-foreground">There is no correspondence archive here, no feed and no activity score. Read, reply and keep your letters in the email account you already use.</p>
-        <p class="mt-5 border-l border-border pl-5 text-sm leading-6 text-muted-foreground">When a new letter is available, it arrives at the address above. You can stop a conversation from the first letter whenever you want.</p>
+        <p class="m-0 leading-7 text-muted-foreground">There is no feed here, and nothing compares you to anyone else. Just a quick picture of your own letters:</p>
+        <div class="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-border py-5 sm:grid-cols-3">
+          <div>
+            <p class="eyebrow mb-2">Started</p>
+            <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-stat-started>0</p>
+            <p class="mt-1 text-xs text-muted-foreground">correspondences</p>
+          </div>
+          <div>
+            <p class="eyebrow mb-2">Open now</p>
+            <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-stat-open>0</p>
+            <p class="mt-1 text-xs text-muted-foreground">correspondences</p>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <p class="eyebrow mb-2">Last letter</p>
+            <p class="m-0 font-serif text-xl tracking-[-0.03em]" data-stat-last>None yet</p>
+            <p class="mt-1 text-xs text-muted-foreground">sent or received</p>
+          </div>
+        </div>
+        <p class="mt-5 border-l border-border pl-5 text-sm leading-6 text-muted-foreground">Read, reply and keep your letters in the email account you already use. You can stop a conversation from its first letter whenever you want.</p>
       </div>
     </section>
 
@@ -134,7 +185,7 @@ import { buttonVariants } from '../../components/ui/Button';
       <div>
         <p class="eyebrow mb-4">Control</p>
         <h2 id="privacy-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Privacy</h2>
-        <p class="mt-3 text-sm leading-6 text-muted-foreground">Your rights remain available without an email exchange.</p>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">You don't need to email support to exercise your rights — use the buttons below to request your data or read how it's handled.</p>
       </div>
       <div class="flex flex-wrap items-start gap-4">
         <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="button" data-privacy-request="access">Request my data</button>
@@ -155,7 +206,7 @@ import { buttonVariants } from '../../components/ui/Button';
       </form>
     </section>
 
-    <aside class="pt-6 text-xs leading-5 text-muted-foreground">Payment actions, preferences, consent history and privacy requests are connected to the account prototype. Stripe subscription management and automated deletion processing are the next production integrations.</aside>
+    <aside class="pt-6 text-xs leading-5 text-muted-foreground">Payment actions, preference changes, consent history and privacy requests stay connected to this account. Stripe subscription management and automated deletion processing will be connected before launch.</aside>
   </main>
 
   <script>
@@ -178,9 +229,15 @@ import { buttonVariants } from '../../components/ui/Button';
     const privacyNote = document.querySelector<HTMLElement>('[data-privacy-note]');
     const deleteForm = document.querySelector<HTMLFormElement>('[data-delete-account]');
     const deleteNote = document.querySelector<HTMLElement>('[data-delete-note]');
-    const languageSelect = document.querySelector<HTMLSelectElement>('[name="languageCode"]');
+    const languageList = document.querySelector<HTMLElement>('[data-language-list]');
+    const languageTemplate = document.querySelector<HTMLTemplateElement>('[data-language-template]');
+    const addLanguageButton = document.querySelector<HTMLButtonElement>('[data-add-language]');
     const availableCheckbox = document.querySelector<HTMLInputElement>('[name="availableToReceive"]');
     const journalCheckbox = document.querySelector<HTMLInputElement>('[name="journalOptIn"]');
+    const statStarted = document.querySelector<HTMLElement>('[data-stat-started]');
+    const statOpen = document.querySelector<HTMLElement>('[data-stat-open]');
+    const statLast = document.querySelector<HTMLElement>('[data-stat-last]');
+
     const setNote = (element: HTMLElement | null, message: string, error = false) => {
       if (!element) return;
       element.textContent = message;
@@ -188,51 +245,115 @@ import { buttonVariants } from '../../components/ui/Button';
       element.classList.add(error ? 'text-destructive' : 'text-accent');
     };
 
-    const setMembership = (status: string | undefined) => {
+    const formatDate = (value: string | null | undefined) => {
+      if (!value) return null;
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(date);
+    };
+
+    const setMembership = (profile: { account_status?: string; founding_season_ends_at?: string | null; subscription_renews_at?: string | null } | null | undefined) => {
       membershipCancel?.classList.add('hidden');
       membershipRefund?.classList.add('hidden');
       if (!membershipLabel || !membershipCopy || !membershipState || !membershipPace || !membershipPrimary) return;
 
-      if (status === 'annual') {
+      const status = profile?.account_status ?? 'free';
+      const seasonEnd = formatDate(profile?.founding_season_ends_at);
+      const renewal = formatDate(profile?.subscription_renews_at);
+      membershipPrimary.href = '/sign-in/?mode=signup&plan=annual';
+      membershipPrimary.textContent = 'Move to annual membership';
+
+      if (status === 'waitlisted') {
+        membershipLabel.textContent = 'Founding waitlist';
+        membershipCopy.textContent = seasonEnd ? `You're on the founding waitlist — writing opens when your place comes up. The free founding season ends ${seasonEnd}.` : "You're on the founding waitlist — we'll announce when writing opens.";
+        membershipState.textContent = 'Waitlisted';
+        membershipPace.textContent = 'Writing opens with the founding group';
+        membershipPrimary.textContent = 'Back to Dear Someone';
+        membershipPrimary.href = '/';
+        if (membershipNote) membershipNote.textContent = 'Waitlist members go first and receive the eight-week founding season free, followed by the founding price for their first paid year.';
+      } else if (status === 'founding') {
+        membershipLabel.textContent = 'Founding season';
+        membershipCopy.textContent = seasonEnd ? `Founding season — you can start a new letter once a day, free, until ${seasonEnd}.` : 'Founding season — you can start a new letter once a day, free, while the season is open.';
+        membershipState.textContent = 'Founding';
+        membershipPace.textContent = 'One new letter every 24 hours';
+        membershipPrimary.textContent = 'Write a letter';
+        membershipPrimary.href = 'mailto:write@dearsomeone.net?subject=Dear%20Someone';
+        if (membershipNote) membershipNote.textContent = 'After the season, choose Free or annual at the founding price for your first paid year.';
+      } else if (status === 'annual') {
         membershipLabel.textContent = 'Annual membership';
-        membershipCopy.textContent = 'One new correspondence can open every 24 hours.';
+        membershipCopy.textContent = renewal ? `Annual membership — no limit on starting new letters. Renews ${renewal}.` : 'Annual membership — no limit on starting new letters.';
         membershipState.textContent = 'Active';
-        membershipPace.textContent = 'One every 24 hours';
+        membershipPace.textContent = 'No limit on starting letters';
         membershipPrimary.textContent = 'Manage subscription';
         membershipPrimary.href = '/sign-in/?mode=cancel';
         membershipCancel?.classList.remove('hidden');
         membershipRefund?.classList.remove('hidden');
-        if (membershipNote) membershipNote.textContent = 'Subscription management will open through Stripe once payment integration is enabled.';
+        if (membershipNote) membershipNote.textContent = 'Subscription changes, cancellation and eligible refund requests will open through Stripe when payment integration is enabled.';
       } else if (status === 'checkout_pending') {
         membershipLabel.textContent = 'Annual membership';
-        membershipCopy.textContent = 'Your account is ready. Complete payment to open the daily pace.';
+        membershipCopy.textContent = 'Your account is ready. Complete payment to remove the limit on starting new letters.';
         membershipState.textContent = 'Payment pending';
-        membershipPace.textContent = 'Daily opening after payment';
+        membershipPace.textContent = 'Unlimited after payment';
         membershipPrimary.textContent = 'Complete membership';
-        membershipPrimary.href = '/sign-in/?mode=signup&plan=annual';
-      } else if (status === 'waitlisted') {
-        membershipLabel.textContent = 'Founding waitlist';
-        membershipCopy.textContent = 'Your place is saved. The opening date and eight-week free season will be announced by email.';
-        membershipState.textContent = 'Waitlisted';
-        membershipPace.textContent = 'Daily pace during the free season';
-        membershipPrimary.textContent = 'Back to Dear Someone';
-        membershipPrimary.href = '/';
+        if (membershipNote) membershipNote.textContent = 'The secure payment step will open through Stripe.';
       } else if (status === 'delivery_paused') {
         membershipLabel.textContent = 'Delivery paused';
         membershipCopy.textContent = 'Your account is kept, but new openings are paused until you choose to resume.';
         membershipState.textContent = 'Paused';
         membershipPace.textContent = 'No new openings while paused';
-        membershipPrimary.textContent = 'Resume from profile';
+        membershipPrimary.textContent = 'Review delivery details';
         membershipPrimary.href = '#profile';
       } else {
         membershipLabel.textContent = 'Free plan';
-        membershipCopy.textContent = 'One new correspondence every three months.';
+        membershipCopy.textContent = 'Free plan — you can start a new letter every 3 months. Replies inside an open conversation are always unlimited, and you can receive new letters any time (up to one a day, like everyone).';
         membershipState.textContent = 'Active';
-        membershipPace.textContent = 'One every three months';
-        membershipPrimary.textContent = 'Join annual membership';
-        membershipPrimary.href = '/sign-in/?mode=signup&plan=annual';
+        membershipPace.textContent = 'One new letter every three months';
+        if (membershipNote) membershipNote.textContent = 'Move to annual whenever you want to remove the limit on starting new letters.';
       }
     };
+
+    const addLanguageRow = (languageCode = 'en', proficiency = 'good') => {
+      if (!languageList || !languageTemplate || languageList.children.length >= 10) return;
+      const fragment = languageTemplate.content.cloneNode(true) as DocumentFragment;
+      const row = fragment.querySelector<HTMLElement>('[data-language-row]');
+      const languageSelect = fragment.querySelector<HTMLSelectElement>('[data-language-select]');
+      const proficiencySelect = fragment.querySelector<HTMLSelectElement>('[data-proficiency-select]');
+      const removeButton = fragment.querySelector<HTMLButtonElement>('[data-remove-language]');
+      if (!row || !languageSelect || !proficiencySelect || !removeButton) return;
+      languageSelect.value = languageCode;
+      proficiencySelect.value = proficiency;
+      removeButton.addEventListener('click', () => {
+        row.remove();
+        updateLanguageControls();
+      });
+      languageList.appendChild(fragment);
+      updateLanguageControls();
+    };
+
+    const updateLanguageControls = () => {
+      if (!languageList || !addLanguageButton) return;
+      const rows = Array.from(languageList.querySelectorAll('[data-language-row]'));
+      addLanguageButton.classList.toggle('hidden', rows.length >= 10);
+      rows.forEach((row) => {
+        const remove = row.querySelector<HTMLButtonElement>('[data-remove-language]');
+        remove?.classList.toggle('invisible', rows.length === 1);
+      });
+    };
+
+    const readLanguageRows = () => {
+      if (!languageList) return [];
+      const seen = new Set<string>();
+      return Array.from(languageList.querySelectorAll('[data-language-row]')).flatMap((row, sortOrder) => {
+        const languageCode = row.querySelector<HTMLSelectElement>('[data-language-select]')?.value;
+        const proficiency = row.querySelector<HTMLSelectElement>('[data-proficiency-select]')?.value;
+        if (!languageCode || !proficiency || seen.has(languageCode)) return [];
+        seen.add(languageCode);
+        return [{ language_code: languageCode, proficiency, sort_order: sortOrder }];
+      });
+    };
+
+    addLanguageButton?.addEventListener('click', () => addLanguageRow());
+    addLanguageRow();
 
     const sessionResult = supabase ? await supabase.auth.getSession() : { data: { session: null } };
     const session = sessionResult.data.session;
@@ -244,37 +365,63 @@ import { buttonVariants } from '../../components/ui/Button';
       if (accountEmail) accountEmail.textContent = email;
       if (profileEmail) profileEmail.textContent = email;
 
-      const { data: profile } = await client.from('profiles').select('account_status').eq('id', session.user.id).maybeSingle();
-      const { data: preferences } = await client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle();
-      const { data: journalConsent } = await client.from('consent_events').select('granted').eq('user_id', session.user.id).eq('purpose', 'journal_marketing').order('created_at', { ascending: false }).limit(1).maybeSingle();
+      const [{ data: profile }, { data: preferences }, { data: savedLanguages }, { data: stats }, { data: journalConsent }] = await Promise.all([
+        client.from('profiles').select('account_status, founding_season_ends_at, subscription_renews_at').eq('id', session.user.id).maybeSingle(),
+        client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle(),
+        client.from('member_languages').select('language_code, proficiency, sort_order').eq('user_id', session.user.id).order('sort_order', { ascending: true }),
+        client.from('member_stats').select('correspondences_started_count, correspondences_open_count, last_letter_sent_at, last_letter_received_at').eq('user_id', session.user.id).maybeSingle(),
+        client.from('consent_events').select('granted').eq('user_id', session.user.id).eq('purpose', 'journal_marketing').order('created_at', { ascending: false }).limit(1).maybeSingle(),
+      ]);
 
-      setMembership(profile?.account_status);
-      if (languageSelect && preferences?.language_code) languageSelect.value = preferences.language_code;
+      setMembership(profile);
+      if (languageList && savedLanguages?.length) {
+        languageList.innerHTML = '';
+        savedLanguages.forEach((language) => addLanguageRow(language.language_code, language.proficiency));
+      } else if (languageList && preferences?.language_code) {
+        languageList.innerHTML = '';
+        addLanguageRow(preferences.language_code, 'good');
+      }
       if (availableCheckbox && typeof preferences?.is_available_to_receive === 'boolean') availableCheckbox.checked = preferences.is_available_to_receive;
       if (journalCheckbox && typeof journalConsent?.granted === 'boolean') journalCheckbox.checked = journalConsent.granted;
+      if (statStarted) statStarted.textContent = String(stats?.correspondences_started_count ?? 0);
+      if (statOpen) statOpen.textContent = String(stats?.correspondences_open_count ?? 0);
+      const lastActivity = [stats?.last_letter_sent_at, stats?.last_letter_received_at].filter(Boolean).sort().at(-1);
+      if (statLast) statLast.textContent = formatDate(lastActivity) ?? 'None yet';
 
       profileForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (!languageSelect || !availableCheckbox) return;
-        const { error } = await client.from('member_preferences').upsert({
+        const languagesToSave = readLanguageRows();
+        if (!languagesToSave.length) {
+          setNote(profileNote, 'Add at least one language before saving.', true);
+          return;
+        }
+        const { data: existingLanguages } = await client.from('member_languages').select('language_code').eq('user_id', session.user.id);
+        const selectedCodes = new Set(languagesToSave.map((language) => language.language_code));
+        for (const existing of existingLanguages ?? []) {
+          if (!selectedCodes.has(existing.language_code)) {
+            await client.from('member_languages').delete().eq('user_id', session.user.id).eq('language_code', existing.language_code);
+          }
+        }
+        const { error: languageError } = await client.from('member_languages').upsert(languagesToSave.map((language) => ({ ...language, user_id: session.user.id, updated_at: new Date().toISOString() })), { onConflict: 'user_id,language_code' });
+        const { error: preferenceError } = await client.from('member_preferences').upsert({
           user_id: session.user.id,
           country_code: preferences?.country_code ?? null,
           market_currency: preferences?.market_currency ?? null,
-          language_code: languageSelect.value,
-          is_available_to_receive: availableCheckbox.checked,
+          language_code: languagesToSave[0].language_code,
+          is_available_to_receive: availableCheckbox?.checked ?? true,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
+        const error = languageError || preferenceError;
         setNote(profileNote, error ? 'We could not save those details. Please try again.' : 'Your details are saved.', Boolean(error));
       });
 
       consentForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (!journalCheckbox) return;
-        const granted = journalCheckbox.checked;
         const { error } = await client.from('consent_events').insert({
           user_id: session.user.id,
           purpose: 'journal_marketing',
-          granted,
+          granted: journalCheckbox.checked,
           policy_version: '2026-08-09',
           consent_text: 'Optional Journal notes and product news.',
           source: 'account',

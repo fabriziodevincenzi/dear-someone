@@ -49,6 +49,7 @@ import { Input } from '../../components/ui/Input';
 
     const params = new URLSearchParams(window.location.search);
     const isSignup = params.get('mode') === 'signup';
+    const isChangeEmail = params.get('mode') === 'change-email';
     const plan = params.get('plan') === 'annual' ? 'annual' : 'free';
     const region = (params.get('market') || navigator.language.split('-')[1] || '').toUpperCase();
     const market = marketForCountry(region) || fallbackMarket;
@@ -67,6 +68,7 @@ import { Input } from '../../components/ui/Input';
     const signupConsents = document.querySelector<HTMLElement>('[data-signup-consents]')!;
     const termsCheckbox = document.querySelector<HTMLInputElement>('[data-terms-checkbox]')!;
     const submitLabel = document.querySelector<HTMLElement>('[data-submit-label]')!;
+    const flowHelper = document.querySelector<HTMLElement>('[data-flow-helper]');
     const note = document.querySelector<HTMLElement>('[data-magic-link-note]');
     const form = document.querySelector<HTMLFormElement>('[data-magic-link-form]')!;
     const signupIntentKey = 'dear-someone:signup-intent';
@@ -85,6 +87,14 @@ import { Input } from '../../components/ui/Input';
       signupConsents.classList.remove('hidden');
       termsCheckbox.required = true;
       submitLabel.textContent = plan === 'annual' ? 'Continue with email' : 'Create free account';
+    }
+
+    if (isChangeEmail) {
+      eyebrow.textContent = 'Account details';
+      title.textContent = 'A new address, confirmed by you.';
+      description.textContent = 'Enter the new email address for your Dear Someone account. We will send a confirmation link to that address before changing it.';
+      submitLabel.textContent = 'Send confirmation';
+      if (flowHelper) flowHelper.textContent = 'The current address stays active until you confirm the new one. You may receive a security notice at the current address too.';
     }
 
     const showNote = (message: string, tone: 'accent' | 'error' = 'accent') => {
@@ -146,7 +156,7 @@ import { Input } from '../../components/ui/Input';
         if (hasCallbackToken) {
           window.history.replaceState({}, document.title, '/sign-in/');
         }
-        window.setTimeout(() => void completeSignup(session), 0);
+        if (!isChangeEmail) window.setTimeout(() => void completeSignup(session), 0);
       }
     });
 
@@ -165,7 +175,25 @@ import { Input } from '../../components/ui/Input';
 
       const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
       if (submitButton) submitButton.disabled = true;
-      showNote('Sending your one-time link…');
+      showNote(isChangeEmail ? 'Sending the confirmation…' : 'Sending your one-time link…');
+
+      if (isChangeEmail) {
+        const { data: currentSession } = await supabase.auth.getSession();
+        if (!currentSession.session) {
+          if (submitButton) submitButton.disabled = false;
+          showNote('Sign in to your account before changing the email address.', 'error');
+          return;
+        }
+        const { error } = await supabase.auth.updateUser({ email });
+        if (submitButton) submitButton.disabled = false;
+        if (error) {
+          showNote(error.message || 'We could not start the email change. Please try again.', 'error');
+          return;
+        }
+        form.reset();
+        showNote('Check the new address. We will update your account after you confirm the link.');
+        return;
+      }
 
       if (isSignup) {
         window.localStorage.setItem(signupIntentKey, JSON.stringify({

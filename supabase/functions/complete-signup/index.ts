@@ -111,6 +111,19 @@ Deno.serve(async (request) => {
   }, { onConflict: 'user_id' });
   if (preferencesError) return response({ error: preferencesError.message }, 500);
 
+  const { error: languageError } = await admin.from('member_languages').upsert({
+    user_id: user.id,
+    language_code: languageCode,
+    proficiency: 'good',
+    sort_order: 0,
+  }, { onConflict: 'user_id,language_code' });
+  if (languageError) return response({ error: languageError.message }, 500);
+
+  const { error: statsError } = await admin.from('member_stats').upsert({
+    user_id: user.id,
+  }, { onConflict: 'user_id' });
+  if (statsError) return response({ error: statsError.message }, 500);
+
   if (source === 'waitlist') {
     const { error } = await admin.from('waitlist_entries').upsert({
       user_id: user.id,
