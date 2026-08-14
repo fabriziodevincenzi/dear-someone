@@ -54,11 +54,12 @@ const isAnimated = variant === 'animated';
       <div class="mt-5 grid gap-3 text-[0.72rem]">
         <div class="flex gap-3 border-b border-border pb-3"><span class="text-muted-foreground">To:</span><span class="font-medium">a stranger</span></div>
         <p class="m-0 pt-3 font-serif text-xl italic leading-8 text-foreground/85">Dear someone,</p>
-        <p class="m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85">Today I noticed how a small pause can change the shape of a whole morning…</p>
+        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85">Today I noticed how a small pause can change the shape of a whole morning…</p>
+        <span class="typing-caret" aria-hidden="true"></span>
       </div>
       <div class="mt-7 flex items-center justify-between border-t border-border pt-4 text-[0.7rem] text-muted-foreground">
         <span class="max-w-[15rem] leading-5">Your address stays private. They’ll never see your real address either.</span>
-        <span class="flex items-center gap-2 border border-accent bg-accent px-3 py-2 text-primary-foreground"><span>Send letter</span><span aria-hidden="true">→</span></span>
+        <span class="send-control relative flex items-center border border-accent bg-accent px-4 py-2 text-primary-foreground"><span>Send</span><span class="send-ripple" aria-hidden="true"></span></span>
       </div>
     </div>
 
@@ -147,7 +148,7 @@ const isAnimated = variant === 'animated';
     <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="2" aria-hidden="true"></span>
     <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="3" aria-hidden="true"></span>
     <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="4" aria-hidden="true"></span>
-    <span class="sr-only" aria-live="polite" data-frame-status>1 of 4: inbox</span>
+    <span class="sr-only" aria-live="polite" data-frame-status>1 of 4: write a letter</span>
   </div>}
 </article>
 
@@ -163,9 +164,9 @@ const isAnimated = variant === 'animated';
   }
 
   .compose-letter {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(0.6rem);
+    opacity: 1;
+    visibility: visible;
+    transform: none;
   }
 
   .sent-state,
@@ -175,15 +176,15 @@ const isAnimated = variant === 'animated';
   }
 
   .letter-label {
-    opacity: 0;
+    opacity: 1;
   }
 
   .inbox-label {
-    opacity: 1;
+    opacity: 0;
   }
 
   .unread-count {
-    opacity: 1;
+    opacity: 0;
   }
 
   .incoming-row {
@@ -193,8 +194,8 @@ const isAnimated = variant === 'animated';
   }
 
   .inbox-list {
-    visibility: visible;
-    opacity: 1;
+    visibility: hidden;
+    opacity: 0;
   }
 
   .mail-preview[data-email-variant="compose"] .compose-letter {
@@ -211,6 +212,15 @@ const isAnimated = variant === 'animated';
 
   .mail-preview[data-email-variant="compose"] .letter-label {
     opacity: 1;
+  }
+
+  .mail-preview[data-email-variant="compose"] .typed-letter {
+    clip-path: none;
+  }
+
+  .mail-preview[data-email-variant="compose"] .typing-caret,
+  .mail-preview[data-email-variant="compose"] .send-ripple {
+    display: none;
   }
 
   .mail-preview[data-email-variant="received"] .inbox-list,
@@ -230,6 +240,14 @@ const isAnimated = variant === 'animated';
     opacity: 1;
   }
 
+  .mail-preview[data-email-variant="received"] .inbox-label {
+    opacity: 1;
+  }
+
+  .mail-preview[data-email-variant="received"] .letter-label {
+    opacity: 0;
+  }
+
   .mail-preview[data-email-variant="compose"] .mail-progress,
   .mail-preview[data-email-variant="received"] .mail-progress {
     display: none;
@@ -246,6 +264,30 @@ const isAnimated = variant === 'animated';
 
   .mail-progress-dot[data-active="false"] {
     background-color: transparent;
+  }
+
+  .typed-letter {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  .typing-caret {
+    display: block;
+    width: 0.08rem;
+    height: 1.35rem;
+    margin-top: -0.2rem;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .send-ripple {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 1px solid var(--accent);
+    border-radius: 9999px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
   }
 
   .mail-preview.is-playing .inbox-list {
@@ -276,49 +318,29 @@ const isAnimated = variant === 'animated';
     animation: journey-open-letter 16s ease-in-out infinite;
   }
 
+  .mail-preview.is-playing .typed-letter {
+    animation: journey-typing 16s steps(42, end) infinite;
+  }
+
+  .mail-preview.is-playing .typing-caret {
+    animation: journey-caret 16s linear infinite;
+  }
+
+  .mail-preview.is-playing .send-control {
+    animation: journey-send-press 16s ease-in-out infinite;
+  }
+
+  .mail-preview.is-playing .send-ripple {
+    animation: journey-send-ripple 16s ease-out infinite;
+  }
+
   @keyframes journey-inbox {
-    0%, 17% {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    21%, 94% {
+    0%, 45% {
       opacity: 0;
       visibility: hidden;
       transform: translateY(-0.35rem);
     }
-    98%, 100% {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes journey-compose {
-    0%, 18% {
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(0.6rem);
-    }
-    23%, 42% {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    47%, 100% {
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-0.6rem);
-    }
-  }
-
-  @keyframes journey-sent {
-    0%, 47% {
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(0.45rem);
-    }
-    51%, 67% {
+    49%, 67% {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
@@ -330,46 +352,65 @@ const isAnimated = variant === 'animated';
     }
   }
 
-  @keyframes journey-unread {
-    0%, 18% {
+  @keyframes journey-compose {
+    0%, 17% {
       opacity: 1;
+      visibility: visible;
       transform: translateY(0);
     }
-    21%, 73% {
+    21%, 100% {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-0.6rem);
+    }
+  }
+
+  @keyframes journey-sent {
+    0%, 21% {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(0.45rem);
+    }
+    25%, 42% {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    47%, 100% {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-0.35rem);
+    }
+  }
+
+  @keyframes journey-unread {
+    0%, 45% {
       opacity: 0;
       transform: translateY(-0.25rem);
     }
-    76%, 100% {
+    49%, 100% {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
   @keyframes journey-letter-label {
-    0%, 20% {
-      opacity: 0;
-      transform: translateY(-0.45rem);
-    }
-    23%, 45% {
+    0%, 21% {
       opacity: 1;
       transform: translateY(0);
     }
-    48%, 100% {
+    25%, 100% {
       opacity: 0;
       transform: translateY(-0.45rem);
     }
   }
 
   @keyframes journey-inbox-label {
-    0%, 18% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    21%, 73% {
+    0%, 45% {
       opacity: 0;
       transform: translateY(-0.45rem);
     }
-    76%, 100% {
+    49%, 100% {
       opacity: 1;
       transform: translateY(0);
     }
@@ -393,6 +434,54 @@ const isAnimated = variant === 'animated';
     }
   }
 
+  @keyframes journey-typing {
+    0%, 2% {
+      clip-path: inset(0 100% 0 0);
+    }
+    15%, 17% {
+      clip-path: inset(0 0 0 0);
+    }
+    21%, 100% {
+      clip-path: inset(0 100% 0 0);
+    }
+  }
+
+  @keyframes journey-caret {
+    0%, 2%, 17%, 21%, 100% {
+      opacity: 0;
+    }
+    3%, 15% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes journey-send-press {
+    0%, 14% {
+      transform: scale(1);
+    }
+    15% {
+      transform: scale(0.94);
+    }
+    16%, 100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes journey-send-ripple {
+    0%, 14% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
+    15% {
+      opacity: 0.8;
+      transform: translate(-50%, -50%) scale(0.8);
+    }
+    20%, 100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.7);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mail-progress {
       display: none;
@@ -410,25 +499,34 @@ const isAnimated = variant === 'animated';
     }
 
     .compose-letter {
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      transform: none;
     }
 
     .sent-state,
-    .open-letter {
+    .open-letter,
+    .inbox-list {
       display: none;
     }
 
-    .inbox-list,
     .inbox-label,
     .unread-count {
-      opacity: 1;
-      visibility: visible;
+      opacity: 0;
+      visibility: hidden;
     }
 
     .letter-label {
-      opacity: 0;
+      opacity: 1;
+    }
+
+    .typed-letter {
+      clip-path: none;
+    }
+
+    .typing-caret,
+    .send-ripple {
+      display: none;
     }
   }
 </style>
@@ -436,8 +534,8 @@ const isAnimated = variant === 'animated';
 <script>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const journeyDuration = 16000;
-  const frameOffsets = [0, 3700, 8100, 11800];
-  const frameLabels = ['Inbox', 'Write a letter', 'Letter sent', 'A letter received'];
+  const frameOffsets = [0, 3700, 7600, 11800];
+  const frameLabels = ['Write a letter', 'Letter sent', 'Inbox', 'A letter received'];
 
   if (!reduceMotion) {
     document.querySelectorAll<HTMLElement>('[data-email-preview]:not([data-animation-ready])').forEach((preview) => {
