@@ -117,20 +117,20 @@ const currentTimelineStage = openService ? 1 : 0;
           </p>
         </div>
 
-        <div class="mt-16 grid gap-14">
+        <div class="mt-16 grid gap-12">
           {perspectives.map((perspective) => (
-            <section class="border-t border-border" aria-labelledby={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`}>
-              <div class="border-b border-border py-6">
-                <p class="eyebrow mb-3 text-accent">{perspective.label}</p>
+            <section class="border-t border-border pt-6" aria-labelledby={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`}>
+              <div>
+                <p class="eyebrow mb-1 text-accent">{perspective.label}</p>
                 <h3 id={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`} class="m-0 max-w-sm font-serif text-2xl font-normal tracking-[-0.025em]">{perspective.intro}</h3>
               </div>
-              <ol>
+              <ol class="mt-8 border-t border-border pt-4">
                 {perspective.steps.map((step) => (
-                  <li class="grid gap-4 border-b border-border py-7 sm:grid-cols-[3rem_1fr] sm:gap-6">
+                  <li class="mb-8 grid gap-2 last:mb-0 sm:grid-cols-[2.5rem_1fr] sm:gap-3">
                     <span class="eyebrow pt-1" aria-hidden="true">{step.number}</span>
                     <div>
                       <h4 class="m-0 font-serif text-xl font-normal tracking-[-0.025em]">{step.title}</h4>
-                      <p class="mt-3 m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
+                      <p class="mt-1 m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
                     </div>
                   </li>
                 ))}
