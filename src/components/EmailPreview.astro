@@ -27,10 +27,10 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
 
   <div class="flex items-center justify-between border-b border-border px-4 py-2.5 text-muted-foreground sm:px-5" aria-label="Email actions">
     <span class="relative grid overflow-hidden">
-      <span class="inbox-label eyebrow col-start-1 row-start-1">Inbox</span>
-      <span class="letter-label eyebrow col-start-1 row-start-1">New letter</span>
+      <span class="inbox-label eyebrow col-start-1 row-start-1">All mail</span>
+      <span class="letter-label eyebrow col-start-1 row-start-1">Compose</span>
     </span>
-    <div class="flex items-center gap-4" aria-hidden="true">
+    <div class="email-actions flex items-center gap-4" aria-hidden="true">
       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M4 7.5h16v12H4zM3 4.5h18v3H3zM9.5 11.5h5" />
       </svg>
@@ -53,10 +53,10 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
         <span class="border border-border px-2 py-1 text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">Draft</span>
       </div>
       <div class="mt-5 grid gap-3 text-[0.72rem]">
-        <div class="flex gap-3 border-b border-border pb-3"><span class="text-muted-foreground">To:</span><span class="font-medium">a stranger</span></div>
-        <p class="m-0 pt-3 font-serif text-xl italic leading-8 text-foreground/85">Dear someone,</p>
-        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85" aria-label={letterCopy}>{Array.from(letterCopy).map((character, index) => <span class="typed-character" data-typed-character data-character-index={index}>{character}</span>)}</p>
-        <span class="typing-caret" aria-hidden="true"></span>
+        <div class="flex gap-3 border-b border-border pb-3"><span class="text-muted-foreground">To:</span><span class="font-medium">write@getonereader.com</span></div>
+        <p class="eyebrow pt-3 text-accent">Write</p>
+        <p class="m-0 font-serif text-xl italic leading-8 text-foreground/85">Dear someone,</p>
+        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85" aria-label={letterCopy}>{Array.from(letterCopy).map((character, index) => <span class="typed-character" data-typed-character data-character-index={index}>{character}</span>)}<span class="typing-caret" aria-hidden="true"></span></p>
       </div>
       <div class="mt-7 flex items-center justify-between border-t border-border pt-4 text-[0.7rem] text-muted-foreground">
         <span class="max-w-[15rem] leading-5">Your address stays private. They’ll never see your real address either.</span>
@@ -67,7 +67,7 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
     <div class="sent-state col-start-1 row-start-1 px-4 py-5 sm:px-7 sm:py-6" aria-hidden="true">
       <div class="flex min-h-[15rem] flex-col items-center justify-center text-center">
         <span class="flex h-12 w-12 items-center justify-center rounded-full border border-accent text-xl text-accent">✓</span>
-        <p class="eyebrow mt-5 mb-3 text-accent">Letter sent</p>
+        <p class="eyebrow mt-5 mb-3 text-accent">Sent</p>
         <p class="m-0 max-w-xs font-serif text-2xl leading-tight">Somewhere, a stranger may be reading.</p>
         <p class="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">And one day, a letter may find its way back to you.</p>
       </div>
@@ -152,7 +152,7 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
       <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="4" aria-hidden="true"></span>
     </div>
     <span class="font-serif text-sm italic text-muted-foreground" data-frame-caption>Write a letter</span>
-    <span class="sr-only" aria-live="polite" data-frame-status>1 of 4: write a letter</span>
+    <span class="sr-only" aria-live="polite" data-frame-status>1 of 4: write to someone</span>
   </div>}
 </article>
 
@@ -223,6 +223,7 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
   }
 
   .mail-preview[data-email-variant="compose"] .typed-character {
+    display: inline;
     opacity: 1;
   }
 
@@ -279,19 +280,22 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
   }
 
   .typed-character {
+    display: none;
     opacity: 0;
     transition: opacity 80ms ease-out;
   }
 
   .typed-character.is-visible {
+    display: inline;
     opacity: 1;
   }
 
   .typing-caret {
-    display: block;
+    display: inline-block;
     width: 0.08rem;
     height: 1.35rem;
-    margin-top: -0.2rem;
+    margin-left: 0.1rem;
+    vertical-align: -0.22rem;
     background: var(--accent);
     opacity: 0;
   }
@@ -345,6 +349,10 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
 
   .mail-preview.is-playing .send-ripple {
     animation: journey-send-ripple 22s ease-out infinite;
+  }
+
+  .mail-preview.is-playing .email-actions {
+    animation: journey-actions 22s ease-in-out infinite;
   }
 
   @keyframes journey-inbox {
@@ -483,6 +491,21 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
     }
   }
 
+  @keyframes journey-actions {
+    0%, 21% {
+      opacity: 1;
+      visibility: visible;
+    }
+    25%, 70% {
+      opacity: 0;
+      visibility: hidden;
+    }
+    74%, 100% {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mail-progress {
       display: none;
@@ -526,6 +549,7 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
     }
 
     .typed-character {
+      display: inline;
       opacity: 1;
     }
 
@@ -540,7 +564,7 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const journeyDuration = 22000;
   const frameOffsets = [0, 5500, 10800, 16300];
-  const frameLabels = ['Write a letter', 'Letter sent', 'Inbox', 'A letter received'];
+  const frameLabels = ['Write to someone', 'On its way', 'Between the noise', 'A letter for you'];
 
   if (!reduceMotion) {
     document.querySelectorAll<HTMLElement>('[data-email-preview]:not([data-animation-ready])').forEach((preview) => {
