@@ -5,6 +5,7 @@ interface Props {
 
 const { variant = 'animated' } = Astro.props;
 const isAnimated = variant === 'animated';
+const letterCopy = 'Today I noticed how a small pause can change the shape of a whole morning…';
 ---
 
 <article class="mail-preview overflow-hidden border border-border bg-surface shadow-[0_18px_45px_-36px_rgba(33,31,27,0.55)]" aria-label={variant === 'compose' ? 'Example of writing a letter from your inbox' : variant === 'received' ? 'Example of receiving a private letter' : 'Example of writing and receiving a letter by email'} data-email-preview={isAnimated ? true : undefined} data-email-variant={variant}>
@@ -54,7 +55,9 @@ const isAnimated = variant === 'animated';
       <div class="mt-5 grid gap-3 text-[0.72rem]">
         <div class="flex gap-3 border-b border-border pb-3"><span class="text-muted-foreground">To:</span><span class="font-medium">a stranger</span></div>
         <p class="m-0 pt-3 font-serif text-xl italic leading-8 text-foreground/85">Dear someone,</p>
-        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85">Today I noticed how a small pause can change the shape of a whole morning…</p>
+        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85" aria-label={letterCopy}>
+          {Array.from(letterCopy).map((character, index) => <span class="typed-character" data-typed-character data-character-index={index}>{character}</span>)}
+        </p>
         <span class="typing-caret" aria-hidden="true"></span>
       </div>
       <div class="mt-7 flex items-center justify-between border-t border-border pt-4 text-[0.7rem] text-muted-foreground">
@@ -218,6 +221,10 @@ const isAnimated = variant === 'animated';
     clip-path: none;
   }
 
+  .mail-preview[data-email-variant="compose"] .typed-character {
+    opacity: 1;
+  }
+
   .mail-preview[data-email-variant="compose"] .typing-caret,
   .mail-preview[data-email-variant="compose"] .send-ripple {
     display: none;
@@ -267,7 +274,12 @@ const isAnimated = variant === 'animated';
   }
 
   .typed-letter {
-    clip-path: inset(0 100% 0 0);
+    white-space: pre-wrap;
+  }
+
+  .typed-character {
+    opacity: 0;
+    transition: opacity 80ms ease-out;
   }
 
   .typing-caret {
@@ -316,10 +328,6 @@ const isAnimated = variant === 'animated';
 
   .mail-preview.is-playing .open-letter {
     animation: journey-open-letter 16s ease-in-out infinite;
-  }
-
-  .mail-preview.is-playing .typed-letter {
-    animation: journey-typing 16s steps(42, end) infinite;
   }
 
   .mail-preview.is-playing .typing-caret {
@@ -434,18 +442,6 @@ const isAnimated = variant === 'animated';
     }
   }
 
-  @keyframes journey-typing {
-    0%, 2% {
-      clip-path: inset(0 100% 0 0);
-    }
-    15%, 17% {
-      clip-path: inset(0 0 0 0);
-    }
-    21%, 100% {
-      clip-path: inset(0 100% 0 0);
-    }
-  }
-
   @keyframes journey-caret {
     0%, 2%, 17%, 21%, 100% {
       opacity: 0;
@@ -524,6 +520,10 @@ const isAnimated = variant === 'animated';
       clip-path: none;
     }
 
+    .typed-character {
+      opacity: 1;
+    }
+
     .typing-caret,
     .send-ripple {
       display: none;
@@ -541,6 +541,7 @@ const isAnimated = variant === 'animated';
     document.querySelectorAll<HTMLElement>('[data-email-preview]:not([data-animation-ready])').forEach((preview) => {
       preview.dataset.animationReady = 'true';
       const dots = Array.from(preview.querySelectorAll<HTMLElement>('[data-frame-dot]'));
+      const typedCharacters = Array.from(preview.querySelectorAll<HTMLElement>('[data-typed-character]'));
       const frameStatus = preview.querySelector<HTMLElement>('[data-frame-status]');
       let frameTimers: number[] = [];
       let cycleTimer: number | undefined;
@@ -550,16 +551,22 @@ const isAnimated = variant === 'animated';
         if (frameStatus) frameStatus.textContent = `${frame} of 4: ${frameLabels[frame - 1]}`;
       };
 
+      const resetTyping = () => typedCharacters.forEach((character) => character.classList.remove('is-visible'));
+
       const clearCycle = () => {
         frameTimers.forEach((timer) => window.clearTimeout(timer));
         frameTimers = [];
         if (cycleTimer !== undefined) window.clearTimeout(cycleTimer);
         cycleTimer = undefined;
+        resetTyping();
       };
 
       const scheduleCycle = () => {
         clearCycle();
         setFrame(1);
+        typedCharacters.forEach((character, index) => {
+          frameTimers.push(window.setTimeout(() => character.classList.add('is-visible'), 180 + index * 24));
+        });
         frameOffsets.slice(1).forEach((offset, index) => {
           frameTimers.push(window.setTimeout(() => setFrame(index + 2), offset));
         });

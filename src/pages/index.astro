@@ -14,7 +14,6 @@ const perspectives = [
         number: '01',
         title: 'Write from your inbox',
         body: 'Send a plain-text letter from the email address you already use. No app, profile, or public post.',
-        mockup: 'compose',
       },
       {
         number: '02',
@@ -31,7 +30,6 @@ const perspectives = [
         number: '03',
         title: 'A letter may find you too',
         body: 'When another member is matched with you, the letter arrives in your normal inbox from a private alias. You can read it without creating a profile or exposing your address.',
-        mockup: 'received',
       },
       {
         number: '04',
@@ -119,7 +117,7 @@ const currentTimelineStage = openService ? 1 : 0;
           </p>
         </div>
 
-        <div class="mt-16 grid gap-12 md:grid-cols-2 md:gap-10">
+        <div class="mt-16 grid gap-14">
           {perspectives.map((perspective) => (
             <section class="border-t border-border" aria-labelledby={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`}>
               <div class="border-b border-border py-6">
@@ -133,7 +131,6 @@ const currentTimelineStage = openService ? 1 : 0;
                     <div>
                       <h4 class="m-0 font-serif text-xl font-normal tracking-[-0.025em]">{step.title}</h4>
                       <p class="mt-3 m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
-                      {step.mockup && <div class="mt-6 max-w-sm"><EmailPreview variant={step.mockup as 'compose' | 'received'} /></div>}
                     </div>
                   </li>
                 ))}
