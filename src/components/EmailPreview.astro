@@ -144,11 +144,14 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
     </div>
   </div>
 
-  {isAnimated && <div class="mail-progress flex items-center justify-center gap-2 border-t border-border px-4 py-3" role="group" aria-label="Letter journey">
-    <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent bg-accent" data-frame-dot="1" aria-hidden="true"></span>
-    <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="2" aria-hidden="true"></span>
-    <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="3" aria-hidden="true"></span>
-    <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="4" aria-hidden="true"></span>
+  {isAnimated && <div class="mail-progress flex flex-col items-center gap-2 border-t border-border px-4 py-3" role="group" aria-label="Letter journey">
+    <div class="flex items-center justify-center gap-2">
+      <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent bg-accent" data-frame-dot="1" aria-hidden="true"></span>
+      <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="2" aria-hidden="true"></span>
+      <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="3" aria-hidden="true"></span>
+      <span class="mail-progress-dot h-2.5 w-2.5 rounded-full border border-accent" data-frame-dot="4" aria-hidden="true"></span>
+    </div>
+    <span class="font-serif text-sm italic text-muted-foreground" data-frame-caption>Write a letter</span>
     <span class="sr-only" aria-live="polite" data-frame-status>1 of 4: write a letter</span>
   </div>}
 </article>
@@ -545,12 +548,14 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
       const dots = Array.from(preview.querySelectorAll<HTMLElement>('[data-frame-dot]'));
       const typedCharacters = Array.from(preview.querySelectorAll<HTMLElement>('[data-typed-character]'));
       const frameStatus = preview.querySelector<HTMLElement>('[data-frame-status]');
+      const frameCaption = preview.querySelector<HTMLElement>('[data-frame-caption]');
       let frameTimers: number[] = [];
       let cycleTimer: number | undefined;
 
       const setFrame = (frame: number) => {
         dots.forEach((dot) => dot.dataset.active = dot.dataset.frameDot === String(frame) ? 'true' : 'false');
         if (frameStatus) frameStatus.textContent = `${frame} of 4: ${frameLabels[frame - 1]}`;
+        if (frameCaption) frameCaption.textContent = frameLabels[frame - 1];
       };
 
       const resetTyping = () => typedCharacters.forEach((character) => character.classList.remove('is-visible'));
