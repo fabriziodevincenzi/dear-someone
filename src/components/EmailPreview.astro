@@ -55,9 +55,7 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
       <div class="mt-5 grid gap-3 text-[0.72rem]">
         <div class="flex gap-3 border-b border-border pb-3"><span class="text-muted-foreground">To:</span><span class="font-medium">a stranger</span></div>
         <p class="m-0 pt-3 font-serif text-xl italic leading-8 text-foreground/85">Dear someone,</p>
-        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85" aria-label={letterCopy}>
-          {Array.from(letterCopy).map((character, index) => <span class="typed-character" data-typed-character data-character-index={index}>{character}</span>)}
-        </p>
+        <p class="typed-letter m-0 max-w-md font-serif text-xl italic leading-8 text-foreground/85" aria-label={letterCopy}>{Array.from(letterCopy).map((character, index) => <span class="typed-character" data-typed-character data-character-index={index}>{character}</span>)}</p>
         <span class="typing-caret" aria-hidden="true"></span>
       </div>
       <div class="mt-7 flex items-center justify-between border-t border-border pt-4 text-[0.7rem] text-muted-foreground">
@@ -307,43 +305,43 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
   }
 
   .mail-preview.is-playing .inbox-list {
-    animation: journey-inbox 16s ease-in-out infinite;
+    animation: journey-inbox 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .compose-letter {
-    animation: journey-compose 16s ease-in-out infinite;
+    animation: journey-compose 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .sent-state {
-    animation: journey-sent 16s ease-in-out infinite;
+    animation: journey-sent 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .unread-count {
-    animation: journey-unread 16s ease-in-out infinite;
+    animation: journey-unread 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .letter-label {
-    animation: journey-letter-label 16s ease-in-out infinite;
+    animation: journey-letter-label 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .inbox-label {
-    animation: journey-inbox-label 16s ease-in-out infinite;
+    animation: journey-inbox-label 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .open-letter {
-    animation: journey-open-letter 16s ease-in-out infinite;
+    animation: journey-open-letter 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .typing-caret {
-    animation: journey-caret 16s linear infinite;
+    animation: journey-caret 22s linear infinite;
   }
 
   .mail-preview.is-playing .send-control {
-    animation: journey-send-press 16s ease-in-out infinite;
+    animation: journey-send-press 22s ease-in-out infinite;
   }
 
   .mail-preview.is-playing .send-ripple {
-    animation: journey-send-ripple 16s ease-out infinite;
+    animation: journey-send-ripple 22s ease-out infinite;
   }
 
   @keyframes journey-inbox {
@@ -537,8 +535,8 @@ const letterCopy = 'Today I noticed how a small pause can change the shape of a 
 
 <script>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const journeyDuration = 16000;
-  const frameOffsets = [0, 3700, 7600, 11800];
+  const journeyDuration = 22000;
+  const frameOffsets = [0, 5500, 10800, 16300];
   const frameLabels = ['Write a letter', 'Letter sent', 'Inbox', 'A letter received'];
 
   if (!reduceMotion) {

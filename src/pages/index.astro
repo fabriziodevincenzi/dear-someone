@@ -61,6 +61,29 @@ const timelineStages = [
   },
 ];
 
+const journeySteps = [
+  {
+    number: '01',
+    title: 'Write from your inbox',
+    body: 'A plain-text letter, with no profile to perform for.',
+  },
+  {
+    number: '02',
+    title: 'Let it go',
+    body: 'We pass it on without revealing your address.',
+  },
+  {
+    number: '03',
+    title: 'A reader is chosen',
+    body: 'One compatible reader, selected at random.',
+  },
+  {
+    number: '04',
+    title: 'A letter may find you too',
+    body: 'It arrives in your normal inbox from a private alias.',
+  },
+];
+
 const publicWaitlistCount = waitlistCountIsPublic();
 const openService = serviceIsOpen();
 const currentTimelineStage = openService ? 1 : 0;
@@ -101,7 +124,18 @@ const currentTimelineStage = openService ? 1 : 0;
           </p>
         </div>
 
-        <EmailPreview />
+        <div>
+          <EmailPreview />
+          <div class="mt-6 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border pt-6 sm:grid-cols-4 sm:gap-x-5">
+            {journeySteps.map((step) => (
+              <div>
+                <p class="eyebrow mb-3 text-accent">{step.number}</p>
+                <h3 class="m-0 font-serif text-lg font-normal leading-tight tracking-[-0.02em]">{step.title}</h3>
+                <p class="mt-2 m-0 text-sm leading-6 text-muted-foreground">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
 
