@@ -1,4 +1,4 @@
-# Dear Someone
+# One Reader
 
 A private correspondence club: one letter, one reader, maybe a reply.
 

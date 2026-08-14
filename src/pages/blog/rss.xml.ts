@@ -20,7 +20,7 @@ export const GET: APIRoute = ({ site }) => {
     `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
-    <title>Dear Someone Journal</title>
+    <title>One Reader Journal</title>
     <description>Notes on correspondence, attention, and making room for a human email.</description>
     <link>${baseUrl}/blog/</link>
     <language>en</language>${items}

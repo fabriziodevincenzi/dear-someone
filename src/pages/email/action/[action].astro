@@ -9,7 +9,7 @@ export function getStaticPaths() {
 const copy = Astro.props.copy ?? emailActions[Astro.params.action as keyof typeof emailActions] ?? emailActions.stop;
 ---
 
-<Layout title={`${copy.label} — Dear Someone`} description="A Dear Someone correspondence action.">
+<Layout title={`${copy.label} — One Reader`} description="A One Reader correspondence action.">
   <main class="shell min-h-[78vh] max-w-3xl py-16 sm:py-24 lg:py-32">
     <a class="text-sm text-muted-foreground underline underline-offset-4" href="/email/you-have-a-letter/">← Back to the letter</a>
     <div class="pt-24 sm:pt-32">

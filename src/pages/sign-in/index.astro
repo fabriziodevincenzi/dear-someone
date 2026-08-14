@@ -4,9 +4,9 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 ---
 
-<Layout title="Access your account — Dear Someone" description="Create or access your private Dear Someone account with a one-time email link.">
+<Layout title="Access your account — One Reader" description="Create or access your private One Reader account with a one-time email link.">
   <main class="shell min-h-[82vh] max-w-xl py-16 sm:py-24 lg:py-32">
-    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/launch-after-free/">← Back to Dear Someone</a>
+    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/launch-after-free/">← Back to One Reader</a>
     <div class="pt-24 sm:pt-32">
       <p class="eyebrow mb-6" data-flow-eyebrow>Private area</p>
       <h1 class="section-title balance" data-flow-title>A link, not a password.</h1>
@@ -92,7 +92,7 @@ import { Input } from '../../components/ui/Input';
     if (isChangeEmail) {
       eyebrow.textContent = 'Account details';
       title.textContent = 'A new address, confirmed by you.';
-      description.textContent = 'Enter the new email address for your Dear Someone account. We will send a confirmation link to that address before changing it.';
+      description.textContent = 'Enter the new email address for your One Reader account. We will send a confirmation link to that address before changing it.';
       submitLabel.textContent = 'Send confirmation';
       if (flowHelper) flowHelper.textContent = 'The current address stays active until you confirm the new one. You may receive a security notice at the current address too.';
     }

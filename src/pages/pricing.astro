@@ -7,10 +7,10 @@ const priceRows = Object.entries(priceGrid);
 const formatAmount = (amount: number, currency: string) => `${amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${currency}`;
 ---
 
-<Layout title="Prices — Dear Someone" description="Annual Dear Someone prices by currency, including the founding cohort rate.">
+<Layout title="Prices — One Reader" description="Annual One Reader prices by currency, including the founding cohort rate.">
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
-      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">Dear Someone</a>
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
       <a class="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" href="/launch/">← Service overview</a>
     </div>
   </header>
@@ -22,7 +22,7 @@ const formatAmount = (amount: number, currency: string) => `${amount.toLocaleStr
 
     <div class="mt-14 overflow-x-auto border-y border-border">
       <table class="w-full min-w-[38rem] border-collapse text-left text-sm">
-        <caption class="sr-only">Annual Dear Someone prices by currency</caption>
+        <caption class="sr-only">Annual One Reader prices by currency</caption>
         <thead>
           <tr class="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
             <th class="px-4 py-4 font-medium">Currency</th>
@@ -48,6 +48,6 @@ const formatAmount = (amount: number, currency: string) => `${amount.toLocaleStr
     </div>
 
     <p class="mt-6 max-w-2xl text-sm leading-6 text-muted-foreground">Ukraine has a separate declared-access path with a 100% promotion for the life of the subscription. The UAH row above is the reference price, not the amount due on that path.</p>
-    <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-8'} href="/launch/">Back to Dear Someone</a>
+    <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-8'} href="/launch/">Back to One Reader</a>
   </main>
 </Layout>

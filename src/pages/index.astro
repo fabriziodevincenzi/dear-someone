@@ -69,8 +69,8 @@ const currentTimelineStage = openService ? 1 : 0;
 <Layout>
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
-      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">
-        Dear Someone
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">
+        One Reader
       </a>
       <nav class="hidden items-center gap-8 text-sm text-muted-foreground md:flex" aria-label="Main navigation">
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#how-it-works">How it works</a>
@@ -85,7 +85,7 @@ const currentTimelineStage = openService ? 1 : 0;
     <section class="border-b border-border py-16 sm:py-24 lg:py-32">
       <div class="shell grid items-end gap-16 lg:grid-cols-[1.08fr_0.78fr] lg:gap-20">
         <div>
-          <p class="eyebrow mb-7">{openService ? 'Dear Someone is open' : 'Founding season · waitlist open'}</p>
+          <p class="eyebrow mb-7">{openService ? 'One Reader is open' : 'Founding season · waitlist open'}</p>
           <h1 class="display balance">One letter. One reader. Maybe a reply.</h1>
           <p class="mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
             Write to someone you do not know, from the quiet of your own inbox. No profiles to perform for. No feed to keep up with.
@@ -221,14 +221,14 @@ const currentTimelineStage = openService ? 1 : 0;
         {openService ? (
           <div class="self-end border-t border-border pt-8">
             <p class="m-0 text-lg leading-8">The first group is inside. New members can begin on Free now.</p>
-            <a class={buttonVariants({ size: 'large' }) + ' mt-6'} href="/launch/">Enter Dear Someone</a>
+            <a class={buttonVariants({ size: 'large' }) + ' mt-6'} href="/launch/">Enter One Reader</a>
           </div>
         ) : (
           <form class="relative self-end overflow-hidden border border-accent/60 bg-surface p-6 sm:p-8" data-waitlist-form>
             <div data-waitlist-fields>
               <p class="eyebrow mb-5">Register your place</p>
               <h3 class="max-w-md font-serif text-3xl font-normal leading-tight tracking-[-0.03em] sm:text-4xl">Give the first letter somewhere to arrive.</h3>
-              <p class="mt-5 max-w-md leading-7 text-muted-foreground">Create your Dear Someone account and reserve a place in the first group. We’ll verify your email before saving it.</p>
+              <p class="mt-5 max-w-md leading-7 text-muted-foreground">Create your One Reader account and reserve a place in the first group. We’ll verify your email before saving it.</p>
               <div class="mt-8">
                 <label class="mb-2 block text-sm font-medium" for="email">Email address</label>
                 <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -263,7 +263,7 @@ const currentTimelineStage = openService ? 1 : 0;
 
   <footer class="border-t border-border py-8">
     <div class="shell flex flex-col gap-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-      <p class="m-0">© 2026 Dear Someone</p>
+      <p class="m-0">© 2026 One Reader</p>
       <p class="m-0 font-serif text-base italic text-foreground/75">Someone who pays attention without asking you to perform.</p>
       <div class="flex gap-5">
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="/blog/">Journal</a>

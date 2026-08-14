@@ -151,7 +151,7 @@ Deno.serve(async (request) => {
       : purpose === 'journal_marketing'
         ? 'I agree to receive occasional Journal notes and product news.'
         : purpose === 'privacy_acknowledgement'
-          ? 'I acknowledge the Dear Someone Privacy Notice.'
+          ? 'I acknowledge the One Reader Privacy Notice.'
           : 'I agree to receive the operational emails needed to manage my waitlist place.';
     const { error } = await admin.from('consent_events').insert({
       user_id: user.id,

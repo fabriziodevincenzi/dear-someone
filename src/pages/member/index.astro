@@ -23,12 +23,12 @@ const proficiencies = [
 ];
 ---
 
-<Layout title="Your account — Dear Someone" description="Manage your Dear Someone membership, practical details, consents and privacy choices.">
+<Layout title="Your account — One Reader" description="Manage your One Reader membership, practical details, consents and privacy choices.">
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
-      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="Dear Someone, home">Dear Someone</a>
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
       <nav class="flex items-center gap-4 text-sm" aria-label="Member navigation">
-        <a class={buttonVariants({ size: 'small' })} href="mailto:write@dearsomeone.net?subject=Dear%20Someone">Write a letter</a>
+        <a class={buttonVariants({ size: 'small' })} href="mailto:write@getonereader.com?subject=One%20Reader">Write a letter</a>
         <a class="px-1 text-muted-foreground underline-offset-4 hover:text-foreground hover:underline" href="#account">Account</a>
       </nav>
     </div>
@@ -144,7 +144,7 @@ const proficiencies = [
         </div>
         <label class="flex items-start gap-3">
           <input class="mt-1" type="checkbox" name="journalOptIn" />
-          <span><strong class="font-medium">Journal and product notes</strong><br /><span class="text-muted-foreground">Occasional notes about Dear Someone. Optional and revocable at any time.</span></span>
+          <span><strong class="font-medium">Journal and product notes</strong><br /><span class="text-muted-foreground">Occasional notes about One Reader. Optional and revocable at any time.</span></span>
         </label>
         <div class="flex flex-wrap items-center gap-4">
           <button class="w-fit border-b border-foreground pb-1 text-sm" type="submit">Save communication choices</button>
@@ -268,7 +268,7 @@ const proficiencies = [
         membershipCopy.textContent = seasonEnd ? `You're on the founding waitlist — writing opens when your place comes up. The free founding season ends ${seasonEnd}.` : "You're on the founding waitlist — we'll announce when writing opens.";
         membershipState.textContent = 'Waitlisted';
         membershipPace.textContent = 'Writing opens with the founding group';
-        membershipPrimary.textContent = 'Back to Dear Someone';
+        membershipPrimary.textContent = 'Back to One Reader';
         membershipPrimary.href = '/';
         if (membershipNote) membershipNote.textContent = 'Waitlist members go first and receive the eight-week founding season free, followed by the founding price for their first paid year.';
       } else if (status === 'founding') {
@@ -277,7 +277,7 @@ const proficiencies = [
         membershipState.textContent = 'Founding';
         membershipPace.textContent = 'One new letter every 24 hours';
         membershipPrimary.textContent = 'Write a letter';
-        membershipPrimary.href = 'mailto:write@dearsomeone.net?subject=Dear%20Someone';
+        membershipPrimary.href = 'mailto:write@getonereader.com?subject=One%20Reader';
         if (membershipNote) membershipNote.textContent = 'After the season, choose Free or annual at the founding price for your first paid year.';
       } else if (status === 'annual') {
         membershipLabel.textContent = 'Annual membership';
