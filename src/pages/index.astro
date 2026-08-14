@@ -14,6 +14,7 @@ const perspectives = [
         number: '01',
         title: 'Write from your inbox',
         body: 'Send a plain-text letter from the email address you already use. No app, profile, or public post.',
+        mockup: 'compose',
       },
       {
         number: '02',
@@ -30,6 +31,7 @@ const perspectives = [
         number: '03',
         title: 'A letter may find you too',
         body: 'When another member is matched with you, the letter arrives in your normal inbox from a private alias. You can read it without creating a profile or exposing your address.',
+        mockup: 'received',
       },
       {
         number: '04',
@@ -113,7 +115,7 @@ const currentTimelineStage = openService ? 1 : 0;
             <h2 class="section-title balance">A small ritual, not another platform.</h2>
           </div>
           <p class="max-w-2xl self-end text-lg leading-8 text-muted-foreground">
-            Every member lives both sides of the exchange: you write first, and a letter may find you too. Dear Someone carries the letter and protects both addresses.
+            Every member lives both sides of the exchange: you write first, and a letter may find you too. One Reader carries the letter and protects both addresses.
           </p>
         </div>
 
@@ -131,6 +133,7 @@ const currentTimelineStage = openService ? 1 : 0;
                     <div>
                       <h4 class="m-0 font-serif text-xl font-normal tracking-[-0.025em]">{step.title}</h4>
                       <p class="mt-3 m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
+                      {step.mockup && <div class="mt-6 max-w-sm"><EmailPreview variant={step.mockup as 'compose' | 'received'} /></div>}
                     </div>
                   </li>
                 ))}
