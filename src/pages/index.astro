@@ -98,7 +98,7 @@ const currentTimelineStage = openService ? 1 : 0;
           <p class="mt-5 max-w-md text-sm text-muted-foreground">
             {openService
               ? 'New members start on the free pace and can move to annual membership whenever they want. Waitlist members begin with eight weeks of the daily opening pace.'
-              : 'The founding season is free for 8 weeks. After that, write for free once every three months or join for €18 a year. Waitlist members receive a special price for their first three paid years.'}
+              : 'Join the first group now and we’ll email you when the room is ready.'}
           </p>
         </div>
 
@@ -219,6 +219,9 @@ const currentTimelineStage = openService ? 1 : 0;
               ? 'New members can start free with one new correspondence every three months, then switch to annual membership at any time. There is no application and no selection.'
               : 'We are opening slowly so every first letter has a real chance of finding its reader. There is no application and no selection.'}
           </p>
+          {!openService && <p class="mt-5 max-w-lg leading-7 text-muted-foreground">
+            Joining the waitlist is free registration for One Reader — not just a notification list. When the service opens, your account will let you write up to once a day for 8 weeks at no cost. After that, you can stay on Free with one new correspondence every three months, or join the annual membership at a special founding price for your first three paid years.
+          </p>}
           <p class="mt-5 text-sm text-muted-foreground" aria-live="polite">
             {publicWaitlistCount
               ? `${waitlistConfig.count.toLocaleString('en-US')} people are waiting to write.`
