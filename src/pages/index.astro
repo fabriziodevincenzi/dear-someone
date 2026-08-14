@@ -5,26 +5,38 @@ import { Button, buttonVariants } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { serviceIsOpen, waitlistConfig, waitlistCountIsPublic } from '../lib/product-config';
 
-const steps = [
+const perspectives = [
   {
-    number: '01',
-    title: 'Write from your inbox',
-    body: 'Send a plain-text letter from the email address you already use. No app, profile, or public post.',
+    label: 'When you write',
+    intro: 'You begin the exchange from the inbox you already use.',
+    steps: [
+      {
+        number: '01',
+        title: 'Write from your inbox',
+        body: 'Send a plain-text letter from the email address you already use. No app, profile, or public post.',
+      },
+      {
+        number: '02',
+        title: 'A compatible reader is chosen at random',
+        body: 'We choose one available member who can read your language. There is no catalogue to browse and no matching by interests. Your real email address stays hidden.',
+      },
+    ],
   },
   {
-    number: '02',
-    title: 'A compatible reader is chosen at random',
-    body: 'We choose one available member who can read your language. There is no catalogue to browse and no matching by interests. Your real email address stays hidden.',
-  },
-  {
-    number: '03',
-    title: 'A letter may find you too',
-    body: 'When another member is matched with you, the letter arrives in your normal inbox from a private alias. You can read it without creating a profile or exposing your address.',
-  },
-  {
-    number: '04',
-    title: 'Reply, stop, or let it end',
-    body: 'You can answer in your own words, choose to stop the correspondence, or leave room for silence. None of those choices is a score.',
+    label: 'When you receive',
+    intro: 'The same quiet channel can bring a letter back to you.',
+    steps: [
+      {
+        number: '03',
+        title: 'A letter may find you too',
+        body: 'When another member is matched with you, the letter arrives in your normal inbox from a private alias. You can read it without creating a profile or exposing your address.',
+      },
+      {
+        number: '04',
+        title: 'Reply, stop, or let it end',
+        body: 'You can answer in your own words, choose to stop the correspondence, or leave room for silence. None of those choices is a score.',
+      },
+    ],
   },
 ];
 
@@ -39,13 +51,13 @@ const timelineStages = [
     label: 'When the room is ready',
     eyebrow: 'Founding group first',
     title: 'The service opens',
-    body: "We'll announce the opening date by email. Waitlist members go first, writing up to once a day for 8 weeks — free. After that, they move to a founding price for their first paid year. Anyone joining after them can start free too, or go straight to annual.",
+    body: "We'll announce the opening date by email. Waitlist members go first, writing up to once a day for 8 weeks — free. After that, they move to a special founding price for their first three paid years. Anyone joining after them can start free too, or go straight to annual.",
   },
   {
     label: 'After 8 weeks',
     eyebrow: 'Choose your plan',
     title: 'Free stays light. Annual removes the limit.',
-    body: 'When the season ends, founding members choose: stay on Free — one correspondence every 3 months, always — or move to annual, at the founding price, with no limit on how often you can write.',
+    body: 'When the season ends, founding members choose: stay on Free — one correspondence every 3 months, always — or move to annual, at the founding price for their first three paid years, with no limit on how often they can write.',
   },
 ];
 
@@ -64,7 +76,6 @@ const currentTimelineStage = openService ? 1 : 0;
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#how-it-works">How it works</a>
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#timeline">Timeline</a>
         {openService && <a class="underline-offset-4 hover:text-foreground hover:underline" href="#membership">Membership</a>}
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/blog/">Journal</a>
       </nav>
       <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="#waitlist">Join the waitlist</a>
     </div>
@@ -86,7 +97,7 @@ const currentTimelineStage = openService ? 1 : 0;
           <p class="mt-5 max-w-md text-sm text-muted-foreground">
             {openService
               ? 'New members start on the free pace and can move to annual membership whenever they want. Waitlist members begin with eight weeks of the daily opening pace.'
-              : 'The founding season is free for 8 weeks. After that, write for free once every three months or join for €18 a year.'}
+              : 'The founding season is free for 8 weeks. After that, write for free once every three months or join for €18 a year. Waitlist members receive a special price for their first three paid years.'}
           </p>
         </div>
 
@@ -102,19 +113,31 @@ const currentTimelineStage = openService ? 1 : 0;
             <h2 class="section-title balance">A small ritual, not another platform.</h2>
           </div>
           <p class="max-w-2xl self-end text-lg leading-8 text-muted-foreground">
-            Dear Someone carries the letter and protects both addresses. Everything that matters happens between two people, by email.
+            Every member lives both sides of the exchange: you write first, and a letter may find you too. Dear Someone carries the letter and protects both addresses.
           </p>
         </div>
 
-        <ol class="mt-16 border-t border-border">
-          {steps.map((step) => (
-            <li class="grid gap-4 border-b border-border py-8 md:grid-cols-[5rem_0.65fr_1fr] md:gap-10 md:py-10">
-              <span class="eyebrow pt-1" aria-hidden="true">{step.number}</span>
-              <h3 class="m-0 font-serif text-2xl font-normal tracking-[-0.025em]">{step.title}</h3>
-              <p class="m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
-            </li>
+        <div class="mt-16 grid gap-12 md:grid-cols-2 md:gap-10">
+          {perspectives.map((perspective) => (
+            <section class="border-t border-border" aria-labelledby={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`}>
+              <div class="border-b border-border py-6">
+                <p class="eyebrow mb-3 text-accent">{perspective.label}</p>
+                <h3 id={`perspective-${perspective.label.toLowerCase().replaceAll(' ', '-')}`} class="m-0 max-w-sm font-serif text-2xl font-normal tracking-[-0.025em]">{perspective.intro}</h3>
+              </div>
+              <ol>
+                {perspective.steps.map((step) => (
+                  <li class="grid gap-4 border-b border-border py-7 sm:grid-cols-[3rem_1fr] sm:gap-6">
+                    <span class="eyebrow pt-1" aria-hidden="true">{step.number}</span>
+                    <div>
+                      <h4 class="m-0 font-serif text-xl font-normal tracking-[-0.025em]">{step.title}</h4>
+                      <p class="mt-3 m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
 
@@ -173,7 +196,7 @@ const currentTimelineStage = openService ? 1 : 0;
           <div class="border-t border-border pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
             <p class="eyebrow mb-4 text-accent">Member</p>
             <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">€18 <span class="text-base text-muted-foreground">/ year</span></h3>
-            <p class="mt-4 text-sm leading-6 text-muted-foreground">One new correspondence every 24 hours. Founding members begin with an 8-week free season and receive their first renewal at €12.</p>
+            <p class="mt-4 text-sm leading-6 text-muted-foreground">One new correspondence every 24 hours. Founding members begin with an 8-week free season and keep their special price for the first three paid years.</p>
           </div>
         </div>
       </div>
@@ -202,7 +225,6 @@ const currentTimelineStage = openService ? 1 : 0;
           </div>
         ) : (
           <form class="relative self-end overflow-hidden border border-accent/60 bg-surface p-6 sm:p-8" data-waitlist-form>
-            <span class="absolute right-6 top-6 border border-accent px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-accent sm:right-8 sm:top-8">Registration</span>
             <div data-waitlist-fields>
               <p class="eyebrow mb-5">Register your place</p>
               <h3 class="max-w-md font-serif text-3xl font-normal leading-tight tracking-[-0.03em] sm:text-4xl">Give the first letter somewhere to arrive.</h3>

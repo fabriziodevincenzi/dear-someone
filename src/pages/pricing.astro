@@ -18,7 +18,7 @@ const formatAmount = (amount: number, currency: string) => `${amount.toLocaleStr
   <main class="shell max-w-5xl py-16 sm:py-24 lg:py-32">
     <p class="eyebrow mb-6">Annual membership</p>
     <h1 class="section-title balance max-w-3xl">One clear price, shown in the currency you use.</h1>
-    <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">The first number is the full annual price. The second is the founding-cohort price for the first paid year after the free season. Local prices are fixed amounts, not a live exchange-rate conversion.</p>
+    <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">The first number is the full annual price. The second is the founding-cohort price for the first three paid years after the free season. Local prices are fixed amounts, not a live exchange-rate conversion.</p>
 
     <div class="mt-14 overflow-x-auto border-y border-border">
       <table class="w-full min-w-[38rem] border-collapse text-left text-sm">
@@ -27,7 +27,7 @@ const formatAmount = (amount: number, currency: string) => `${amount.toLocaleStr
           <tr class="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
             <th class="px-4 py-4 font-medium">Currency</th>
             <th class="px-4 py-4 font-medium">Full price</th>
-            <th class="px-4 py-4 font-medium">Founding first year</th>
+            <th class="px-4 py-4 font-medium">Founding price · years 1–3</th>
             <th class="px-4 py-4 font-medium">Availability</th>
           </tr>
         </thead>
