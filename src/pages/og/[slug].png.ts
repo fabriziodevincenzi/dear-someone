@@ -50,44 +50,27 @@ const balanceTitle = (value: string, maxCharacters: number) => {
   return best ?? wrap(value, maxCharacters);
 };
 
-const limitLines = (value: string, maxCharacters: number, maxLines: number) => {
-  const lines = wrap(value, maxCharacters);
-  if (lines.length <= maxLines) return lines;
-  const visible = lines.slice(0, maxLines);
-  visible[maxLines - 1] = `${visible[maxLines - 1].replace(/[.,;:!?]+$/, '')}…`;
-  return visible;
-};
-
 export const GET: APIRoute = async ({ props }) => {
   const article = props.article;
   const titleLines = balanceTitle(article.title, 28);
   const titleFontSize = titleLines.length > 2 ? 64 : 80;
   const titleLineHeight = Math.round(titleFontSize * 1.08);
-  const subtitleLines = article.subtitle ? limitLines(article.subtitle, 58, 2) : [];
-  const subtitleStart = 224 + titleLines.length * titleLineHeight + 42;
+  const titleStart = titleLines.length === 1 ? 320 : titleLines.length === 2 ? 270 : 228;
   const titleMarkup = titleLines
-    .map((line, index) => `<text x="96" y="${224 + index * titleLineHeight}" class="title">${escapeXml(line)}</text>`)
-    .join('');
-  const subtitleMarkup = subtitleLines
-    .map((line, index) => `<text x="100" y="${subtitleStart + index * 42}" class="subtitle">${escapeXml(line)}</text>`)
+    .map((line, index) => `<text x="96" y="${titleStart + index * titleLineHeight}" class="title">${escapeXml(line)}</text>`)
     .join('');
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#f3eee4"/>
   <path d="M96 126H1104" stroke="#d4ccbb" stroke-width="1"/>
-  <text x="96" y="82" class="brand">One Reader</text>
-  <text x="364" y="82" class="separator">·</text>
-  <text x="382" y="82" class="section">JOURNAL</text>
+  <text x="96" y="82" class="brand"><tspan>One Reader</tspan><tspan dx="10" class="section">Journal</tspan></text>
   ${titleMarkup}
-  ${subtitleMarkup}
   <path d="M96 558H1104" stroke="#d4ccbb" stroke-width="1"/>
   <text x="96" y="598" class="footer">onereader.co/journal</text>
   <style>
-    .brand { fill:#1c1a16; font: 600 32px Georgia, serif; letter-spacing:-1px; }
-    .separator { fill:#8a8172; font: 400 25px Georgia, serif; }
-    .section { fill:#b2523a; font: 500 16px Inter, Arial, sans-serif; letter-spacing:1.28px; }
-    .title { fill:#1c1a16; font: 600 ${titleFontSize}px Georgia, serif; letter-spacing:-2.5px; }
-    .subtitle { fill:#8a8172; font: 400 29px Inter, Arial, sans-serif; }
+    .brand { fill:#1c1a16; font: 400 32px "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif; letter-spacing:-1px; }
+    .section { fill:#b2523a; font: 400 32px "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif; letter-spacing:-1px; }
+    .title { fill:#1c1a16; font: 400 ${titleFontSize}px "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif; letter-spacing:-2.5px; }
     .footer { fill:#8a8172; font: 400 15px Inter, Arial, sans-serif; letter-spacing:0; }
   </style>
 </svg>`;
