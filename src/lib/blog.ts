@@ -1,3 +1,5 @@
+import type { SiteLocale } from './i18n';
+
 export interface BlogArticle {
   slug: string;
   title: string;
@@ -5,7 +7,7 @@ export interface BlogArticle {
   publishedAt: string;
   updatedAt?: string;
   author: string;
-  language: string;
+  language: SiteLocale;
   readingTime: string;
   paragraphs: string[];
   image?: string;

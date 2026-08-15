@@ -53,6 +53,7 @@ export const priceGrid = {
   KRW: { full: 3_000, founding: 2_000 },
   UAH: { full: 800, founding: 600 },
   ILS: { full: 65, founding: 42 },
+  PLN: { full: 60, founding: 40 },
 } as const;
 
 export type PriceCurrency = keyof typeof priceGrid;

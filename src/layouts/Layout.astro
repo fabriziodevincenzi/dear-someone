@@ -9,6 +9,7 @@ interface Props {
   socialImageAlt?: string;
   ogType?: 'website' | 'article';
   locale?: SiteLocale | string;
+  alternateLocales?: Partial<Record<SiteLocale, string>>;
   referrerPolicy?: 'no-referrer';
 }
 
@@ -19,6 +20,7 @@ const {
   socialImageAlt,
   ogType = 'website',
   locale = 'en',
+  alternateLocales = {},
   referrerPolicy,
 } = Astro.props;
 
@@ -35,6 +37,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {referrerPolicy && <meta name="referrer" content={referrerPolicy} />}
     <meta name="theme-color" content="#f5f0e7" />
     <link rel="canonical" href={canonical} />
+    {Object.entries(alternateLocales).map(([alternateLocale, href]) => (
+      <link rel="alternate" hreflang={alternateLocale} href={href} />
+    ))}
+    {alternateLocales.en && <link rel="alternate" hreflang="x-default" href={alternateLocales.en} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
