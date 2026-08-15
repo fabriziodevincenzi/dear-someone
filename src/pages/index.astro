@@ -253,7 +253,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
                 <span>Send me occasional Journal notes and product news too. This is optional.</span>
               </label>
               {turnstileSiteKey && (
-                <div class="mt-6" data-turnstile-widget data-sitekey={turnstileSiteKey} aria-label="Security check"></div>
+                <div class="mt-6 flex justify-center sm:justify-start" data-turnstile-widget data-sitekey={turnstileSiteKey} aria-label="Security check"></div>
               )}
               <input class="absolute -left-[9999px] h-px w-px opacity-0" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <p class="mt-4 text-xs leading-5 text-muted-foreground" id="waitlist-privacy" data-waitlist-note>
@@ -318,6 +318,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     type TurnstileApi = {
       render: (element: HTMLElement, options: {
         sitekey: string;
+        theme: 'light' | 'dark' | 'auto';
+        size: 'normal' | 'compact' | 'flexible';
+        appearance: 'always' | 'execute' | 'interaction-only';
+        language: string;
         callback: (token: string) => void;
         'expired-callback': () => void;
         'error-callback': () => void;
@@ -331,6 +335,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       if (!turnstile || !captchaWidget || !sitekey || captchaWidget.dataset.rendered) return;
       captchaWidgetId = turnstile.render(captchaWidget, {
         sitekey,
+        theme: 'light',
+        size: 'compact',
+        appearance: 'always',
+        language: 'en',
         callback: (token) => { captchaToken = token; },
         'expired-callback': () => { captchaToken = null; },
         'error-callback': () => { captchaToken = null; showNote('The security check could not be completed. Please try again.', true); },
