@@ -53,9 +53,9 @@ const balanceTitle = (value: string, maxCharacters: number) => {
 export const GET: APIRoute = async ({ props }) => {
   const article = props.article;
   const titleLines = balanceTitle(article.title, 28);
-  const titleFontSize = titleLines.length > 2 ? 64 : 80;
+  const titleFontSize = titleLines.length > 2 ? 82 : 104;
   const titleLineHeight = Math.round(titleFontSize * 1.08);
-  const titleStart = titleLines.length === 1 ? 320 : titleLines.length === 2 ? 270 : 228;
+  const titleStart = titleLines.length === 1 ? 330 : titleLines.length === 2 ? 248 : 220;
   const titleMarkup = titleLines
     .map((line, index) => `<text x="96" y="${titleStart + index * titleLineHeight}" class="title">${escapeXml(line)}</text>`)
     .join('');
