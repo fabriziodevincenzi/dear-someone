@@ -19,8 +19,7 @@ if (!currentArticle) {
 }
 
 const articleUrl = new URL(`/journal/${currentArticle.slug}/`, Astro.site ?? Astro.url.origin);
-const socialImage = new URL(`/og/${currentArticle.slug}.png`, Astro.site ?? Astro.url.origin);
-socialImage.searchParams.set('v', currentArticle.updatedAt ?? '2026-08-15-card-3');
+const socialImage = new URL(`/og/v4/${currentArticle.slug}.png`, Astro.site ?? Astro.url.origin);
 const editorialImage = currentArticle.image
   ? new URL(currentArticle.image, Astro.site ?? Astro.url.origin).toString()
   : socialImage.toString();
