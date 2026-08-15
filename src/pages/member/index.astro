@@ -21,6 +21,23 @@ const proficiencies = [
   ['fluent', 'Fluent'],
   ['native', 'Native'],
 ];
+
+const birthMonths = [
+  [1, 'January'],
+  [2, 'February'],
+  [3, 'March'],
+  [4, 'April'],
+  [5, 'May'],
+  [6, 'June'],
+  [7, 'July'],
+  [8, 'August'],
+  [9, 'September'],
+  [10, 'October'],
+  [11, 'November'],
+  [12, 'December'],
+];
+
+const currentYear = new Date().getUTCFullYear();
 ---
 
 <Layout title="Your account — One Reader" description="Manage your One Reader membership, practical details, consents and privacy choices.">
@@ -28,7 +45,7 @@ const proficiencies = [
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
       <nav class="flex items-center gap-4 text-sm" aria-label="Member navigation">
-        <a class={buttonVariants({ size: 'small' })} href="mailto:write@getonereader.com?subject=One%20Reader">Write a letter</a>
+        <a class={buttonVariants({ size: 'small' })} href="mailto:write@onereader.co?subject=One%20Reader" data-write-letter>Write a letter</a>
         <a class="px-1 text-muted-foreground underline-offset-4 hover:text-foreground hover:underline" href="#account">Account</a>
       </nav>
     </div>
@@ -95,6 +112,26 @@ const proficiencies = [
           <p class="m-0 text-sm" data-profile-email>you@example.com</p>
           <a class="mt-2 inline-block text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
         </div>
+
+        <fieldset class="grid gap-4 border-y border-border py-5" data-birth-details>
+          <legend class="px-2 text-sm text-muted-foreground">Month and year of birth</legend>
+          <p class="m-0 text-xs leading-5 text-muted-foreground">Used only to keep 14–17 and adult matching pools separate. We do not ask for the day, and this information is never shown to another member.</p>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="grid gap-2 text-sm">
+              <span class="text-muted-foreground">Month</span>
+              <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3 disabled:opacity-60" name="birthMonth" required data-birth-month>
+                <option value="">Choose month</option>
+                {birthMonths.map(([value, label]) => <option value={value}>{label}</option>)}
+              </select>
+            </label>
+            <label class="grid gap-2 text-sm">
+              <span class="text-muted-foreground">Year</span>
+              <input class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3 disabled:opacity-60" type="number" name="birthYear" min={currentYear - 120} max={currentYear - 14} inputmode="numeric" placeholder={String(currentYear - 18)} required data-birth-year />
+            </label>
+          </div>
+          <p class="m-0 text-xs leading-5 text-muted-foreground" data-age-pool-status>Your account becomes eligible after you save these details.</p>
+          <p class="m-0 hidden text-xs leading-5 text-muted-foreground" data-birth-lock-note>These details are locked after saving. If they are inaccurate, use the correction request below so One Reader can update them safely.</p>
+        </fieldset>
 
         <fieldset class="grid gap-4 border-0 p-0">
           <legend class="text-sm text-muted-foreground">Languages for letters</legend>
@@ -189,6 +226,7 @@ const proficiencies = [
       </div>
       <div class="flex flex-wrap items-start gap-4">
         <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="button" data-privacy-request="access">Request my data</button>
+        <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="button" data-privacy-request="rectification">Correct my birth details</button>
         <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/privacy">Read the privacy notice</a>
         <p class="hidden basis-full text-sm leading-6 text-accent" data-privacy-note></p>
       </div>
@@ -233,6 +271,10 @@ const proficiencies = [
     const languageTemplate = document.querySelector<HTMLTemplateElement>('[data-language-template]');
     const addLanguageButton = document.querySelector<HTMLButtonElement>('[data-add-language]');
     const availableCheckbox = document.querySelector<HTMLInputElement>('[name="availableToReceive"]');
+    const birthMonthInput = document.querySelector<HTMLSelectElement>('[data-birth-month]');
+    const birthYearInput = document.querySelector<HTMLInputElement>('[data-birth-year]');
+    const agePoolStatus = document.querySelector<HTMLElement>('[data-age-pool-status]');
+    const birthLockNote = document.querySelector<HTMLElement>('[data-birth-lock-note]');
     const journalCheckbox = document.querySelector<HTMLInputElement>('[name="journalOptIn"]');
     const statStarted = document.querySelector<HTMLElement>('[data-stat-started]');
     const statOpen = document.querySelector<HTMLElement>('[data-stat-open]');
@@ -250,6 +292,48 @@ const proficiencies = [
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return null;
       return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(date);
+    };
+
+    const setBirthDetails = (details: {
+      birth_month?: number | null;
+      birth_year?: number | null;
+      adult_pool_eligible_at?: string | null;
+    }) => {
+      const saved = Boolean(details.birth_month && details.birth_year && details.adult_pool_eligible_at);
+      if (birthMonthInput) {
+        birthMonthInput.value = details.birth_month ? String(details.birth_month) : '';
+        birthMonthInput.disabled = saved;
+        birthMonthInput.required = !saved;
+      }
+      if (birthYearInput) {
+        birthYearInput.value = details.birth_year ? String(details.birth_year) : '';
+        birthYearInput.disabled = saved;
+        birthYearInput.required = !saved;
+      }
+      birthLockNote?.classList.toggle('hidden', !saved);
+      if (agePoolStatus) {
+        if (!saved) {
+          agePoolStatus.textContent = 'Your account becomes eligible after you save these details.';
+        } else {
+          const adultDate = new Date(`${details.adult_pool_eligible_at}T00:00:00Z`);
+          const isAdultPool = adultDate.getTime() <= Date.now();
+          agePoolStatus.textContent = isAdultPool
+            ? 'You are in the adult matching pool.'
+            : `You are in the 14–17 matching pool. New matches move to the adult pool on ${new Intl.DateTimeFormat(undefined, { dateStyle: 'long', timeZone: 'UTC' }).format(adultDate)}.`;
+        }
+      }
+      return saved;
+    };
+
+    const setWritingReady = (ready: boolean) => {
+      document.querySelectorAll<HTMLAnchorElement>('[data-write-letter]').forEach((link) => {
+        link.href = ready ? 'mailto:write@onereader.co?subject=One%20Reader' : '#profile';
+        link.textContent = ready ? 'Write a letter' : 'Complete your profile';
+      });
+      if (!ready && membershipPrimary?.href.startsWith('mailto:')) {
+        membershipPrimary.href = '#profile';
+        membershipPrimary.textContent = 'Complete your profile';
+      }
     };
 
     const setMembership = (profile: { account_status?: string; founding_season_ends_at?: string | null; subscription_renews_at?: string | null } | null | undefined) => {
@@ -270,20 +354,20 @@ const proficiencies = [
         membershipPace.textContent = 'Writing opens with the founding group';
         membershipPrimary.textContent = 'Back to One Reader';
         membershipPrimary.href = '/';
-        if (membershipNote) membershipNote.textContent = 'Waitlist members go first and receive the eight-week founding season free, followed by the founding price for their first paid year.';
+        if (membershipNote) membershipNote.textContent = 'Waitlist members go first and receive the eight-week founding season free, followed by the founding price for their first three paid years.';
       } else if (status === 'founding') {
         membershipLabel.textContent = 'Founding season';
         membershipCopy.textContent = seasonEnd ? `Founding season — you can start a new letter once a day, free, until ${seasonEnd}.` : 'Founding season — you can start a new letter once a day, free, while the season is open.';
         membershipState.textContent = 'Founding';
         membershipPace.textContent = 'One new letter every 24 hours';
         membershipPrimary.textContent = 'Write a letter';
-        membershipPrimary.href = 'mailto:write@getonereader.com?subject=One%20Reader';
-        if (membershipNote) membershipNote.textContent = 'After the season, choose Free or annual at the founding price for your first paid year.';
+        membershipPrimary.href = 'mailto:write@onereader.co?subject=One%20Reader';
+        if (membershipNote) membershipNote.textContent = 'After the season, choose Free or annual at the founding price for your first three paid years.';
       } else if (status === 'annual') {
         membershipLabel.textContent = 'Annual membership';
-        membershipCopy.textContent = renewal ? `Annual membership — no limit on starting new letters. Renews ${renewal}.` : 'Annual membership — no limit on starting new letters.';
+        membershipCopy.textContent = renewal ? `Annual membership — start one new letter every 24 hours. Renews ${renewal}.` : 'Annual membership — start one new letter every 24 hours.';
         membershipState.textContent = 'Active';
-        membershipPace.textContent = 'No limit on starting letters';
+        membershipPace.textContent = 'One new letter every 24 hours';
         membershipPrimary.textContent = 'Manage subscription';
         membershipPrimary.href = '/sign-in/?mode=cancel';
         membershipCancel?.classList.remove('hidden');
@@ -293,7 +377,7 @@ const proficiencies = [
         membershipLabel.textContent = 'Annual membership';
         membershipCopy.textContent = 'Your account is ready. Complete payment to remove the limit on starting new letters.';
         membershipState.textContent = 'Payment pending';
-        membershipPace.textContent = 'Unlimited after payment';
+        membershipPace.textContent = 'One new letter every 24 hours after payment';
         membershipPrimary.textContent = 'Complete membership';
         if (membershipNote) membershipNote.textContent = 'The secure payment step will open through Stripe.';
       } else if (status === 'delivery_paused') {
@@ -366,7 +450,7 @@ const proficiencies = [
       if (profileEmail) profileEmail.textContent = email;
 
       const [{ data: profile }, { data: preferences }, { data: savedLanguages }, { data: stats }, { data: journalConsent }] = await Promise.all([
-        client.from('profiles').select('account_status, founding_season_ends_at, subscription_renews_at').eq('id', session.user.id).maybeSingle(),
+        client.from('profiles').select('account_status, founding_season_ends_at, subscription_renews_at, birth_month, birth_year, service_eligible_at, adult_pool_eligible_at').eq('id', session.user.id).maybeSingle(),
         client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle(),
         client.from('member_languages').select('language_code, proficiency, sort_order').eq('user_id', session.user.id).order('sort_order', { ascending: true }),
         client.from('member_stats').select('correspondences_started_count, correspondences_open_count, last_letter_sent_at, last_letter_received_at').eq('user_id', session.user.id).maybeSingle(),
@@ -374,6 +458,8 @@ const proficiencies = [
       ]);
 
       setMembership(profile);
+      let birthDetailsSaved = setBirthDetails(profile ?? {});
+      setWritingReady(birthDetailsSaved);
       if (languageList && savedLanguages?.length) {
         languageList.innerHTML = '';
         savedLanguages.forEach((language) => addLanguageRow(language.language_code, language.proficiency));
@@ -394,6 +480,33 @@ const proficiencies = [
         if (!languagesToSave.length) {
           setNote(profileNote, 'Add at least one language before saving.', true);
           return;
+        }
+        if (!birthDetailsSaved) {
+          const birthMonth = Number(birthMonthInput?.value);
+          const birthYear = Number(birthYearInput?.value);
+          if (!Number.isInteger(birthMonth) || !Number.isInteger(birthYear)) {
+            setNote(profileNote, 'Choose your birth month and enter your birth year.', true);
+            return;
+          }
+          const serviceEligibleAt = new Date(Date.UTC(birthYear + 14, birthMonth, 1));
+          if (serviceEligibleAt.getTime() > Date.now()) {
+            setNote(profileNote, 'One Reader is available from age 14. Your account cannot enter a matching pool yet.', true);
+            return;
+          }
+          const { data: birthResult, error: birthError } = await client.functions.invoke('set-birth-details', {
+            body: { birthMonth, birthYear },
+          });
+          if (birthError) {
+            setNote(profileNote, 'We could not save your birth details. Please check them and try again.', true);
+            return;
+          }
+          birthDetailsSaved = setBirthDetails({
+            birth_month: birthMonth,
+            birth_year: birthYear,
+            adult_pool_eligible_at: birthResult?.adultPoolEligibleAt,
+          });
+          setMembership(profile);
+          setWritingReady(birthDetailsSaved);
         }
         const { data: existingLanguages } = await client.from('member_languages').select('language_code').eq('user_id', session.user.id);
         const selectedCodes = new Set(languagesToSave.map((language) => language.language_code));
@@ -429,9 +542,15 @@ const proficiencies = [
         setNote(consentNote, error ? 'We could not save that choice. Please try again.' : 'Your communication choice is saved.', Boolean(error));
       });
 
-      document.querySelector<HTMLButtonElement>('[data-privacy-request="access"]')?.addEventListener('click', async () => {
-        const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: 'access' });
-        setNote(privacyNote, error ? 'We could not record the request. Please try again.' : 'Your access request is recorded. We will follow up by email.', Boolean(error));
+      document.querySelectorAll<HTMLButtonElement>('[data-privacy-request]').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const requestType = button.dataset.privacyRequest === 'rectification' ? 'rectification' : 'access';
+          const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: requestType });
+          const success = requestType === 'rectification'
+            ? 'Your correction request is recorded. We will follow up by email before making any change.'
+            : 'Your access request is recorded. We will follow up by email.';
+          setNote(privacyNote, error ? 'We could not record the request. Please try again.' : success, Boolean(error));
+        });
       });
 
       deleteForm?.addEventListener('submit', async (event) => {

@@ -1,4 +1,5 @@
 ---
+import { buttonVariants } from '../../../components/ui/Button';
 import Layout from '../../../layouts/Layout.astro';
 import { emailActions } from '../../../lib/email-actions';
 
@@ -6,17 +7,124 @@ export function getStaticPaths() {
   return Object.entries(emailActions).map(([action, copy]) => ({ params: { action }, props: { copy } }));
 }
 
-const copy = Astro.props.copy ?? emailActions[Astro.params.action as keyof typeof emailActions] ?? emailActions.stop;
+const action = Astro.params.action as keyof typeof emailActions;
+const copy = Astro.props.copy ?? emailActions[action] ?? emailActions.stop;
+const canSubmit = action === 'stop' || action === 'report';
 ---
 
-<Layout title={`${copy.label} — One Reader`} description="A One Reader correspondence action.">
-  <main class="shell min-h-[78vh] max-w-3xl py-16 sm:py-24 lg:py-32">
-    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/email/you-have-a-letter/">← Back to the letter</a>
+<Layout
+  title={`${copy.label} — One Reader`}
+  description="A private One Reader correspondence action."
+  referrerPolicy="no-referrer"
+>
+  <main id="main-content" class="shell min-h-[78vh] max-w-3xl py-16 sm:py-24 lg:py-32" data-letter-action={action}>
+    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/">← One Reader</a>
     <div class="pt-24 sm:pt-32">
       <p class="eyebrow mb-6">{copy.label}</p>
       <h1 class="section-title balance">{copy.title}</h1>
       <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">{copy.body}</p>
-      <p class="mt-8 max-w-2xl text-sm leading-6 text-muted-foreground">This local prototype does not send an action yet. In production, each action will be tied to the private conversation alias in the email.</p>
+
+      {action === 'report' && (
+        <fieldset class="mt-10 grid max-w-2xl gap-3 border-y border-border py-6" data-report-categories>
+          <legend class="mb-2 pr-4 font-medium">What was wrong with this letter?</legend>
+          {[
+            ['sexual_explicit', 'Sexual or explicit content'],
+            ['harassment_threats', 'Harassment or threats'],
+            ['hate_discrimination', 'Hate or discrimination'],
+            ['personal_data', 'Requests for or exposure of personal information'],
+            ['spam_fraud', 'Spam, fraud or promotion'],
+            ['other', 'Something else that breaks the rules'],
+          ].map(([value, label]) => (
+            <label class="flex cursor-pointer items-start gap-3 text-sm leading-6">
+              <input class="mt-1 accent-[var(--accent)]" type="radio" name="report-category" value={value} />
+              <span>{label}</span>
+            </label>
+          ))}
+        </fieldset>
+      )}
+
+      {canSubmit ? (
+        <div class="mt-10">
+          <button class={buttonVariants({ variant: action === 'report' ? 'primary' : 'outline' })} type="button" data-confirm-action>
+            {action === 'report' ? 'Report and close correspondence' : 'End this correspondence'}
+          </button>
+          <p class="mt-5 min-h-6 max-w-2xl text-sm leading-6 text-muted-foreground" role="status" aria-live="polite" data-action-status>
+            Nothing happens until you confirm here.
+          </p>
+        </div>
+      ) : (
+        <p class="mt-10 max-w-2xl text-sm leading-6 text-muted-foreground">
+          Mutual direct contact is not active yet. For now, continue by replying to the private address in the letter.
+        </p>
+      )}
     </div>
   </main>
 </Layout>
+
+{canSubmit && (
+  <script>
+    import { supabase } from '../../../lib/supabase';
+
+    const container = document.querySelector<HTMLElement>('[data-letter-action]');
+    const button = document.querySelector<HTMLButtonElement>('[data-confirm-action]');
+    const status = document.querySelector<HTMLElement>('[data-action-status]');
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token') ?? '';
+    const action = container?.dataset.letterAction;
+
+    // The token is a private bearer credential. Keep it only in memory and out
+    // of browser history, copied URLs and referrer headers after this page loads.
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    const showStatus = (message: string, isError = false) => {
+      if (!status) return;
+      status.textContent = message;
+      status.classList.toggle('text-accent', isError);
+      status.classList.toggle('text-muted-foreground', !isError);
+    };
+
+    if (!token) {
+      if (button) button.disabled = true;
+      showStatus('This private link is missing or incomplete. Please use the link in the letter you received.', true);
+    }
+
+    button?.addEventListener('click', async () => {
+      if (!token || !supabase || (action !== 'stop' && action !== 'report')) {
+        showStatus('This action is not available right now. Please try the original link again.', true);
+        return;
+      }
+
+      const category = document.querySelector<HTMLInputElement>('input[name="report-category"]:checked')?.value;
+      if (action === 'report' && !category) {
+        showStatus('Choose the reason that best describes the letter.', true);
+        return;
+      }
+
+      button.disabled = true;
+      showStatus(action === 'report' ? 'Sending your report…' : 'Closing the correspondence…');
+      const { data, error } = await supabase.functions.invoke('letter-action', {
+        body: { token, ...(category ? { category } : {}) },
+      });
+
+      if (error || data?.ok !== true) {
+        button.disabled = false;
+        const expired = data?.error === 'expired_action_token';
+        showStatus(
+          expired
+            ? 'This private link has expired. Contact One Reader if you still need help.'
+            : 'We could not complete the action. Please try again in a moment.',
+          true,
+        );
+        return;
+      }
+
+      document.querySelector<HTMLElement>('[data-report-categories]')?.setAttribute('hidden', '');
+      button.setAttribute('hidden', '');
+      showStatus(
+        action === 'report'
+          ? 'Reported. The correspondence is closed and One Reader can review the letter.'
+          : 'The correspondence is closed. Its private reply addresses no longer work.',
+      );
+    });
+  </script>
+)}

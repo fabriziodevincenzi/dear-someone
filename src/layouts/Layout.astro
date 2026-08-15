@@ -4,11 +4,13 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  referrerPolicy?: 'no-referrer';
 }
 
 const {
   title = 'One Reader — One letter. One reader.',
   description = 'A private correspondence club where one letter reaches one unknown reader. No profiles, no feed, no judgment.',
+  referrerPolicy,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -20,6 +22,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    {referrerPolicy && <meta name="referrer" content={referrerPolicy} />}
     <meta name="theme-color" content="#f5f0e7" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

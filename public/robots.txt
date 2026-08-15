@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dearsomeone.net/sitemap-index.xml
+Sitemap: https://onereader.co/sitemap-index.xml

@@ -26,10 +26,10 @@ pnpm build
 - React is limited to server-rendered Shadcn-style UI primitives; no client JavaScript is shipped for them by default.
 - Editorial, near-monochrome design tokens live in `src/styles/global.css`.
 - The landing, privacy draft and terms placeholder are implemented.
-- The waitlist form is a local interaction prototype. Supabase persistence and email confirmation belong to Phase 2.
+- Supabase persistence, passwordless verification and `complete-signup` are connected to the active project.
 - The public waitlist counter is environment-driven and remains hidden until it reaches 100 people (`PUBLIC_WAITLIST_COUNT`).
-- Phase 1 prototype surfaces are available at `/waitlist/`, `/sign-in/`, `/member/`, `/member/settings/`, `/member/letters/` (email-first explanation), `/email/you-have-a-letter/`, `/email/action/*`, `/blog/`, `/blog/what-an-inbox-can-still-be-for/`, `/pricing/`, and `/ukraine/`.
-- The blog has a versioned first article and an RSS endpoint at `/blog/rss.xml`.
+- Phase 1 prototype surfaces are available at `/waitlist/`, `/sign-in/`, `/member/`, `/member/settings/`, `/member/letters/` (email-first explanation), `/email/you-have-a-letter/`, `/email/action/*`, `/journal/`, `/journal/what-an-inbox-can-still-be-for/`, `/pricing/`, and `/ukraine/`.
+- The Journal has a versioned first article and an RSS endpoint at `/blog/rss.xml` (kept as a stable feed URL).
 - The post-launch landing is prepared at `/launch/`; the current root `/` remains the waitlist landing until launch.
 - A non-destructive post-season preview is available at `/launch-after-free/`; it does not replace either the waitlist landing or the opening landing.
 
@@ -42,11 +42,24 @@ pnpm build
 - `src/lib/market-pricing.ts` maps a country-level market signal to a supported local annual price and falls back to EUR when a market price is not defined; the active copy remains English until translated routes are added.
 - The reserved-area authentication direction is now passwordless magic link; the local prototype does not issue real tokens yet.
 
-When the configured waitlist count reaches 100, the public copy switches to the open-service flow: founding waitlist members receive eight weeks at the daily opening pace; new members start on Free and can upgrade whenever they choose. Requests made while a cadence is full are queued; Free members are invited to switch to annual membership for the faster opening pace. Conversation aliases are planned to expire 30 days after the last exchange.
+When the configured waitlist count reaches 100, the public copy switches to the open-service flow: founding waitlist members receive eight weeks at the daily opening pace; new members start on Free and can upgrade whenever they choose. A new letter sent before its cadence is available is not retained or sent later automatically; the member receives the exact next date and must write again. Free members can consider annual membership for the faster opening pace, while replies and incoming letters remain available. Conversation aliases expire 30 days after the last exchange.
 
-The real Supabase, Stripe and Resend integrations are intentionally not faked in the local prototype. They are the next implementation gate once the open decisions in the implementative document are closed and credentials are available.
+The Supabase identity layer is live. The repository now contains the first production-oriented mail pipeline: a verified Resend webhook, durable Postgres jobs, atomic matching reservations, directional conversation aliases, envelope-encrypted letter content and a retrying worker. It remains dormant until the Resend domain, webhook and server-only secrets are configured. Stripe is still not integrated.
 
-Product decisions live in `dear-someone-project-spec.md`; visual direction lives in `dear-someone-design-brief.md`.
+## Mail pipeline
+
+- `resend-webhook` verifies Resend signatures, deduplicates events and enqueues inbound messages before acknowledging them.
+- `mail-worker` retrieves parsed content from Resend, rejects automatic or unauthenticated mail, removes quoted history and attachments, reserves a reader atomically, and sends a newly rendered HTML/plain-text message.
+- Transactional outcomes use a separate durable, idempotent outbox. In the default `preview` mode, the worker renders and stores the final HTML/plain-text message without sending it; `resend` mode is an explicit release-time switch.
+- The MVP outcome catalogue covers unknown senders without creating accounts, inactive or incomplete profiles, age eligibility, Free/daily cadence, empty or oversized letters, removed attachments, reader matching delays, final delivery failures, closed replies and privacy-request receipts.
+- Every delivered letter includes signed, letter-specific Stop and Report links. Both require an explicit confirmation page; reporting records a fixed category and closes the aliases without automatically suspending an account.
+- Alias tokens are directional, derived with an HMAC secret and stored only as SHA-256 hashes. They expire 30 days after the latest valid exchange.
+- Each letter gets a fresh AES-256-GCM data key. The data key is wrapped with a server-only AES-256 key before the encrypted content is stored.
+- The durable job table and all letter-domain tables have RLS enabled and are granted only to `service_role`.
+
+Required server-only configuration is documented in `.env.example`. Production also needs a scheduled invocation of `mail-worker` as a recovery path for jobs that outlive the immediate background invocation.
+
+Product decisions live in `dear-someone-project-spec.md`; the transactional-message inventory and implementation boundary live in `dear-someone-transactional-email-map.md`; visual direction lives in `dear-someone-design-brief.md`.
 
 ## Template attribution
 

@@ -9,7 +9,8 @@ export interface LanguageAbility {
 
 export interface MatchingMember {
   id: string;
-  adult: boolean;
+  agePool: 'minor' | 'adult';
+  ageEligible: boolean;
   active: boolean;
   availableToReceive: boolean;
   receivedLast30Days: number;
@@ -35,7 +36,9 @@ export function hasCompatibleLanguage(sender: MatchingMember, candidate: Matchin
 export function isEligibleCandidate(sender: MatchingMember, candidate: MatchingMember, recentPairIds: string[] = []) {
   return (
     sender.id !== candidate.id &&
-    candidate.adult &&
+    sender.ageEligible &&
+    candidate.ageEligible &&
+    sender.agePool === candidate.agePool &&
     candidate.active &&
     candidate.availableToReceive &&
     !sender.blockedMemberIds.includes(candidate.id) &&

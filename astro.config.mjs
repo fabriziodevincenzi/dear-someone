@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: process.env.SITE_URL ?? 'https://dearsomeone.net',
+  site: process.env.SITE_URL ?? 'https://onereader.co',
   output: 'static',
   compressHTML: true,
   i18n: {

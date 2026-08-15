@@ -51,6 +51,7 @@ Deno.serve(async (request) => {
   }
 
   const user = userData.user;
+  if (!user.email) return response({ error: 'A verified email address is required' }, 400);
   const source = payload.source === 'waitlist' ? 'waitlist' : 'signup';
   const requestedAnnual = payload.plan === 'annual';
   const accountStatus = source === 'waitlist' ? 'waitlisted' : requestedAnnual ? 'checkout_pending' : 'free';
@@ -87,7 +88,7 @@ Deno.serve(async (request) => {
     if (existingWaitlistError) return response({ error: existingWaitlistError.message }, 500);
     alreadyWaitlisted = existingWaitlistEntry?.status === 'active' || existingWaitlistEntry?.status === 'converted';
   }
-  const protectedStatuses = new Set(['annual', 'delivery_paused']);
+  const protectedStatuses = new Set(['founding', 'annual', 'delivery_paused']);
   const nextStatus = existingProfile && protectedStatuses.has(existingProfile.account_status)
     ? existingProfile.account_status
     : accountStatus;
@@ -98,8 +99,10 @@ Deno.serve(async (request) => {
     // Paid access is granted only by the payment webhook. An annual intent
     // remains checkout_pending until that server-side confirmation exists.
     plan: 'free',
+    email_address: user.email.trim().toLowerCase(),
     waitlist_joined_at: source === 'waitlist' ? new Date().toISOString() : undefined,
     email_verified_at: user.email_confirmed_at ?? new Date().toISOString(),
+    last_magic_link_redeemed_at: new Date().toISOString(),
   }, { onConflict: 'id' });
   if (profileError) return response({ error: profileError.message }, 500);
 
@@ -115,6 +118,8 @@ Deno.serve(async (request) => {
     user_id: user.id,
     language_code: languageCode,
     proficiency: 'good',
+    willing_to_write: true,
+    willing_to_read: true,
     sort_order: 0,
   }, { onConflict: 'user_id,language_code' });
   if (languageError) return response({ error: languageError.message }, 500);

@@ -26,3 +26,6 @@ export const blogArticles: BlogArticle[] = [
 ];
 
 export const getArticle = (slug: string) => blogArticles.find((article) => article.slug === slug);
+
+export const formatArticleDate = (date: string) =>
+  new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(`${date}T00:00:00Z`));

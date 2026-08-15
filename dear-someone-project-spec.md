@@ -27,9 +27,9 @@ Proposta di valore: *"One letter. One reader. Maybe a reply. No judgment."* — 
   1. Waitlist pubblica, con obiettivo/cap interno indicativo di **100 iscritti**. Il contatore resta **nascosto fino al 10% dell'obiettivo** (10 iscritti) — sotto quella soglia un numero piccolo toglie prova sociale invece di darla; raggiunta la soglia, il contatore va mostrato sempre. Quando il tetto viene raggiunto, il servizio parte: non si raccolgono altri iscritti in una coda separata.
   2. Gli iscritti alla waitlist entrano in una **coorte sincronizzata** con 8 settimane gratuite all'accesso del piano annuale (fino a una nuova corrispondenza al giorno). I nuovi membri che arrivano dopo l'apertura entrano invece sul piano Free (una nuova corrispondenza ogni tre mesi) e possono passare all'annuale in qualsiasi momento.
 - **Funnel di accesso unico**: ogni persona crea/verifica un solo account tramite email. Dopo la verifica può attivare immediatamente il piano Free senza pagamento oppure proseguire nello stesso account verso il checkout annuale localizzato. Se il pagamento annuale viene abbandonato o fallisce, l'account resta attivo sul piano Free: non esistono due registrazioni separate.
-- **Sconto per la coorte waitlist**: solo sul primo anno di rinnovo pagante (es. 12€ invece di 18€), non a vita — più sostenibile sui margini di un prodotto a 18€/anno, e permette di validare se le persone accettano il prezzo pieno dal secondo rinnovo. Uno status simbolico "founding member" (es. badge nell'area riservata) può mantenere il senso di riconoscimento senza vantaggi economici permanenti.
+- **Prezzo per la coorte waitlist**: il prezzo founding resta bloccato per i **primi tre anni pagati** (es. 12€ invece di 18€ per ciascuno dei primi tre cicli annuali). Dal quarto anno si applica il prezzo pieno comunicato prima del rinnovo. Lo status simbolico "founding member" (es. badge nell'area riservata) resta anche dopo la fine del vantaggio economico.
 - Fatturazione annuale preferita al mensile per ridurre l'incidenza delle commissioni di pagamento e rafforzare la percezione di "ingresso in un club". Da sottolineare in comunicazione: 18 euro l'anno equivalgono a meno di 5 centesimi al giorno.
-- Quando la cadenza del piano non consente una nuova apertura, la richiesta viene messa in coda. Per chi è sul piano Free, il messaggio spiega che l'annuale riduce l'attesa a una nuova apertura ogni 24 ore; le risposte dentro conversazioni già aperte non entrano mai in coda.
+- Quando la cadenza del piano non consente una nuova apertura, la lettera non viene conservata né inviata automaticamente più avanti. Il mittente riceve la data esatta in cui potrà riprovare e dovrà inviare una nuova lettera. Per chi è sul piano Free, il messaggio spiega con discrezione che l'annuale riduce l'attesa a una nuova apertura ogni 24 ore; ricezione e risposte dentro conversazioni già aperte restano disponibili.
 - Nel form waitlist l'email operativa richiesta per gestire l'iscrizione resta distinta dal consenso facoltativo a ricevere Journal e product news. Il consenso opzionale è separato, non preselezionato, versionato e revocabile con la stessa facilità con cui viene dato.
 - **Obiettivo di scala**: 15.000 utenti paganti è l'obiettivo dichiarato di lungo periodo. Il primo traguardo operativo è 1.000 paganti nel primo anno; con una conversione waitlist del 15-25% richiede indicativamente 4.000-6.500 iscritti alla waitlist.
 
@@ -48,7 +48,7 @@ Proposta di valore: *"One letter. One reader. Maybe a reply. No judgment."* — 
 - Un membro del **piano annuale** può inviare **una nuova lettera ogni 24 ore** (finestra mobile, non giorno di calendario). Comunicazione: non va presentato come una restrizione da app freemium, ma come conseguenza del fatto che ogni membro è anche l'unico lettore possibile di qualcun altro — copy indicativo vicino all'azione "Write a letter": *"You get one letter a day, because someone will be its only reader."*
 - Un membro del **piano gratuito** può aprire una nuova corrispondenza ogni tre mesi, calcolati dalla propria data di iscrizione. Questa è una cadenza di accesso, non un contatore comparativo.
 - Le risposte all'interno di una conversazione già aperta **non** consumano alcun limite e non hanno un numero massimo per conversazione.
-- Se la cadenza non è ancora disponibile, una nuova richiesta resta in coda fino alla prossima finestra utile; un membro Free viene invitato, senza pressione, a passare all'annuale.
+- Se la cadenza non è ancora disponibile, la nuova lettera viene rifiutata senza conservarne il testo e non partirà automaticamente più avanti. Il membro riceve la prossima data esatta e, se Free, un invito secondario e senza pressione a valutare l'annuale.
 - La verifica della casella tramite magic link diventa anche un segnale operativo di disponibilità a ricevere. Se tre link consecutivi non vengono utilizzati e non c'è altra attività email riconoscibile per 30 giorni, il membro entra nello stato **delivery paused**: non riceve nuove assegnazioni, ma non viene escluso, cancellato o considerato disinteressato. L'account e le conversazioni esistenti restano intatti. Il recupero avviene utilizzando un nuovo magic link, rispondendo dall'alias verificato della conversazione oppure cambiando email da una sessione già autenticata; finché il recupero non avviene, non si instradano nuove lettere verso una casella potenzialmente non più accessibile.
 - Se il destinatario non risponde, la lettera si chiude lì: non viene rimessa in circolo.
 - Regola culturale (non tecnicamente imposta): rispondere è una cortesia. Non viene introdotto un pulsante separato "I read you": chi vuole può scrivere una risposta breve con parole proprie. La lettura resta implicita; l'azione esplicita disponibile fin dalla prima email è interrompere la corrispondenza.
@@ -63,7 +63,7 @@ Scritta → Assegnata → Consegnata → {Rimbalzata | Ignorata | Riconosciuta |
 Risposta → Conversazione aperta → {Uscita concordata | Interrotta (blocco)}
 ```
 
-- **Scritta**: il membro invia il testo a `write@dearsomeone.net`.
+- **Scritta**: il membro invia il testo a `write@onereader.co`.
 - **Assegnata**: il motore di assegnazione casuale sceglie un destinatario idoneo (vedi §5).
 - **Consegnata**: la lettera arriva nella casella email del destinatario tramite alias.
 - **Rimbalzata**: consegna fallita (bounce).
@@ -104,8 +104,9 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 
 - **Livello 1 — disconnessione**: B può bloccare A in qualunque momento. Il blocco è un record separato `block(B, A)` controllato prima di ogni inoltro — non richiede la scadenza dell'alias della conversazione.
   - Se A tenta comunque di scrivere a B, riceve un messaggio rispettoso e generico: *"L'altra persona ha scelto di interrompere questa corrispondenza."* Nessun nome, nessun motivo.
-- **Livello 2 — segnalazione**: per contenuti problematici. Oltre al blocco automatico, alimenta uno **score interno di affidabilità**, mai visibile a nessun membro, che riduce silenziosamente la probabilità di essere scelto come mittente/destinatario futuro.
-  - Importante: lo score va alimentato **solo da segnalazioni reali**, non dal tasso di risposta — penalizzare chi semplicemente non risponde reintrodurrebbe la logica da social ("rispondi o vali meno") che il prodotto vuole rifiutare.
+- **Livello 2 — segnalazione**: per contenuti problematici. Chi riceve sceglie una categoria, la corrispondenza viene chiusa e la lettera già conservata in forma cifrata diventa disponibile per una revisione separata da parte di One Reader.
+  - La segnalazione non sospende automaticamente l'account e non alimenta score automatici. Eventuali limitazioni o esclusioni richiedono una decisione di moderazione basata sulle regole pubblicate, sul contenuto segnalato e sul contesto disponibile.
+  - La semplice assenza di risposta non è mai una segnalazione e non riduce l'affidabilità di un membro.
 - Procedura dedicata e prioritaria per contenuti che indicano pericolo immediato o autolesionismo.
 
 ---
@@ -140,7 +141,7 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 - **Europa**: i paesi dell'Eurozona usano il prezzo in EUR; la Finlandia rientra correttamente in questo gruppo. La Polonia usa un prezzo dedicato in PLN, non EUR.
 - **Ucraina**: UAH disponibile come valuta di presentazione, ma il percorso dedicato applica il coupon al 100%; mostrare comunque il prezzo pieno di riferimento e spiegare chiaramente la concessione.
 - **Cina**: esclusa dalla prima fase commerciale. Il prezzo CNY è comunque presente nella griglia completa di listino, ma non viene mostrato né attivato finché la deliverability verso i provider locali non supera un test dedicato.
-- **Griglia prezzi approvata** (prezzo annuale pieno / prezzo del primo anno della coorte): EUR 18/12, USD 21/12, GBP 18/12, CAD 29/12, AUD 29,50/12, DKK 145/90, ISK 2.600/1.400, NOK 245/145, SEK 245/145, JPY 3.280/2.186, CNY 140/94, CHF 18/12, TWD 669/445, KRW 3.000/2.000, UAH 800/600, ILS 65/42. L'accesso Ucraina resta un percorso separato con coupon al 100% per la sottoscrizione agevolata.
+- **Griglia prezzi approvata** (prezzo annuale pieno / prezzo founding applicato ai primi tre anni pagati): EUR 18/12, USD 21/12, GBP 18/12, CAD 29/12, AUD 29,50/12, DKK 145/90, ISK 2.600/1.400, NOK 245/145, SEK 245/145, JPY 3.280/2.186, CNY 140/94, CHF 18/12, TWD 669/445, KRW 3.000/2.000, UAH 800/600, ILS 65/42. L'accesso Ucraina resta un percorso separato con coupon al 100% per la sottoscrizione agevolata.
 
 ---
 
@@ -166,13 +167,13 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 - landing pre-lancio su `/` orientata alla waitlist e landing post-lancio preparata su `/launch/`, da rendere pubblica al cambio di fase;
 - blog editoriale Astro in `/blog/`, sul dominio principale, con tassonomia e contenuti versionati nel repository;
 - database dei membri e dello stato dell'iscrizione (scelta: **Supabase/Postgres**, con Row Level Security per applicare a livello di database le regole di retention e accesso ai contenuti di §7);
-- Stripe (o equivalente) per il pagamento annuale, con **prezzi multipli per valuta** (un `Price` dedicato per le valute prioritarie, non solo conversione automatica) e **Coupon Stripe a durata "once"** per applicare lo sconto di primo anno alla coorte waitlist senza intervento manuale sui rinnovi successivi;
+- Stripe (o equivalente) per il pagamento annuale, con **prezzi multipli per valuta** (un `Price` dedicato per le valute prioritarie, non solo conversione automatica) e una regola di billing deterministica che mantenga il prezzo founding per i primi tre cicli annuali e passi al prezzo pieno dal quarto;
 - sito in Astro con **i18n routing nativo** per le lingue previste (§8); lingua e valuta mostrate di default in base a rilevamento automatico (header `Accept-Language` per la lingua, paese dedotto via header di geolocalizzazione della CDN per la valuta — solo a livello di paese, non di posizione precisa), sempre sovrascrivibile con un selettore manuale salvato in cookie;
 - Resend (o equivalente) per ricezione e consegna email, con webhook che riceve le notifiche in arrivo;
 - motore di assegnazione casuale (§5);
 - alias non interpretabili per ogni conversazione;
 - funzioni di blocco, segnalazione e gestione amministrativa (§6);
-- **controllo del mittente**: non basarsi solo sul campo "Da" (falsificabile) — verificare SPF/DKIM/DMARC, valutare un indirizzo segreto per membro, ignorare autoresponder e cicli automatici. Alla ricezione su `write@dearsomeone.net` il sistema riconosce tre casi: **abbonato attivo** → la lettera viene assegnata e inoltrata in forma anonimizzata (indirizzo temporaneo → indirizzo temporaneo) a un altro abbonato, mai lo stesso mittente; **non abbonato** (mai stato membro) → la lettera resta in sospeso, si invita il mittente ad abbonarsi; **ex abbonato** (iscrizione scaduta/non rinnovata) → da trattare come caso a parte, non equiparabile a un nuovo utente: valutare un messaggio di invito al rinnovo dedicato prima di decidere se e come inoltrare la lettera in sospeso;
+- **controllo del mittente**: non basarsi solo sul campo "Da" (falsificabile) — verificare SPF/DKIM/DMARC, valutare un indirizzo segreto per membro, ignorare autoresponder e cicli automatici. Alla ricezione su `write@onereader.co` il sistema riconosce tre casi: **membro attivo** → la lettera viene assegnata e inoltrata in forma anonimizzata (indirizzo temporaneo → indirizzo temporaneo) a un altro membro idoneo, mai lo stesso mittente; **indirizzo sconosciuto** → non viene creato alcun account e non viene conservato il corpo della lettera: resta soltanto il tentativo minimo necessario per deduplica e anti-abuso, seguito da una sola email con il percorso di registrazione; **account chiuso** → la lettera non viene conservata o inoltrata e viene indicato il percorso previsto dalla policy per tornare al servizio;
 - **trattamento della lettera in uscita**: non inoltrare il messaggio originale integralmente — ricostruire una nuova email con solo il testo utile, senza intestazioni tecniche originali, cronologia citata, firme automatiche o allegati.
 
 ---
@@ -181,11 +182,11 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 
 - 100-200 membri nella coorte di lancio;
 - una sola lingua (inglese) nella primissima release, poi estensione secondo la roadmap di §8;
-- solo maggiorenni, solo testo;
+- persone dai 14 anni, con bacini 14–17 e 18+ separati, solo testo;
 - piano gratuito con una nuova corrispondenza ogni tre mesi, ancorata alla data di iscrizione;
 - piano annuale con una nuova corrispondenza ogni 24 ore;
 - assegnazione automatica secondo l'algoritmo di §5 (non manuale);
-- email tramite alias; integrazione Stripe reale e testata prima dell'apertura pagante; la coorte iniziale resta nella stagione gratuita di 8 settimane già decisa, poi accede al primo anno scontato;
+- email tramite alias; integrazione Stripe reale e testata prima dell'apertura pagante; la coorte iniziale resta nella stagione gratuita di 8 settimane già decisa, poi mantiene il prezzo founding per i primi tre anni pagati;
 - nessuna app, nessun profilo pubblico.
 
 ### Domande da validare con l'MVP
@@ -239,7 +240,7 @@ Il prodotto ha pochissime superfici UI (sito pubblico, checkout, verifica email,
 - Conversazioni aperte — default raccomandato: **più di una consentita**, senza contatore competitivo; da confermare prima del modello dati della fase 5.
 - Chiusura alias inattivo — decisione: **30 giorni dall'ultimo scambio**, indipendente dalla retention del contenuto a 24 mesi.
 - Toggle "leggo ma non scrivo in questa lingua" — default raccomandato: **post-MVP**; da riesaminare prima della seconda lingua.
-- Dati minimi oltre all'email — default raccomandato: dichiarazione 18+, lingue/livelli, paese o mercato dichiarato e disponibilità a ricevere; nessun nome reale richiesto. Da chiudere prima dello schema della fase 2.
+- Dati minimi oltre all'email: mese e anno di nascita, lingue/livelli, paese o mercato dichiarato e disponibilità a ricevere; nessun nome reale richiesto. Il giorno di nascita non viene raccolto. Il matching mantiene separati i bacini 14–17 e 18+, calcolando in modo conservativo il passaggio al bacino adulto dal primo giorno del mese successivo al mese del diciottesimo compleanno.
 - Importi locali — decisione: griglia completa definita per le valute elencate in §8; restano da chiudere solo IVA, arrotondamenti Stripe e quali mercati attivare operativamente per primi.
 - Gestione IVA e imposte per iscrizioni internazionali — da chiudere con consulenza fiscale e configurazione Stripe prima del primo pagamento reale.
 - Provider di hosting/CDN e regione dati — da chiudere prima di progettare header di geolocalizzazione, runtime server e deployment.
@@ -291,7 +292,7 @@ Le fasi sono ordinate per dipendenza. Le decisioni aperte del §14 diventano blo
 
 1. Implementare account maggiorenni, magic link, profilo lingue, disponibilità a ricevere e l'entitlement del piano (free / annual / founding season).
 2. Definire prezzi locali e trattamento IVA; creare Product/Price Stripe e webhook idempotenti.
-3. Implementare stagione gratuita, cadenza free ogni tre mesi, cadenza annuale ogni 24 ore, sconto `once` per il primo anno dei founding members e programma Ucraina `100% forever`.
+3. Implementare stagione gratuita, cadenza free ogni tre mesi, cadenza annuale ogni 24 ore, prezzo founding bloccato per i primi tre cicli annuali e programma Ucraina `100% forever`.
 4. Testare rinnovo, mancato pagamento, cancellazione, ex membro e Customer Portal.
 
 **Completata quando:** ogni evento Stripe produce uno stato membro deterministico e riconciliabile; nessun segreto raggiunge il client; i tre percorsi economici sono coperti da test.
@@ -316,7 +317,7 @@ Le fasi sono ordinate per dipendenza. Le decisioni aperte del §14 diventano blo
 
 ### Fase 6 — Sicurezza, moderazione e privacy operativa
 
-1. Implementare disconnessione, segnalazione, score interno basato solo su segnalazioni e uscita con doppio consenso.
+1. Implementare disconnessione, segnalazione con revisione umana e uscita con doppio consenso, senza score o sospensioni automatiche.
 2. Creare una console amministrativa minimale con accessi tracciati e principio del minimo privilegio.
 3. Definire procedura per pericolo immediato/autolesionismo, tempi di risposta e escalation.
 4. Testare cancellazione account, retention a 24 mesi e conservazione separata dei blocchi.
@@ -334,7 +335,7 @@ Le fasi sono ordinate per dipendenza. Le decisioni aperte del §14 diventano blo
 
 ### Fase 8 — Apertura pagante e crescita per mercato
 
-1. Aprire l'annuale ai nuovi membri, mantenere il piano gratuito trimestrale e applicare il primo anno scontato ai founding members.
+1. Aprire l'annuale ai nuovi membri, mantenere il piano gratuito trimestrale e applicare il prezzo founding ai primi tre anni pagati dei founding members.
 2. Attivare gradualmente i `Price` per NZD, SGD, HKD, INR e PLN senza mostrare mercati non ancora supportati operativamente.
 3. Aprire il percorso Ucraina gratuito con copy e supporto essenziale in ucraino.
 4. Localizzare una lingua alla volta seguendo domanda, densità del pool e deliverability; tenere la Cina fuori finché non supera un test dedicato.
