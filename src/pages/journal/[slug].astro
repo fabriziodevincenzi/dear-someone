@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
+import JournalFooter from '../../components/JournalFooter.astro';
 import { blogArticles, formatArticleDate, getArticle } from '../../lib/blog';
 
 export function getStaticPaths() {
@@ -16,21 +17,49 @@ const currentArticle = article ?? getArticle(Astro.params.slug ?? '');
 if (!currentArticle) {
   return Astro.redirect('/journal/');
 }
+
+const articleUrl = new URL(`/journal/${currentArticle.slug}/`, Astro.site ?? Astro.url.origin);
+const socialImage = new URL(`/og/${currentArticle.slug}.png`, Astro.site ?? Astro.url.origin);
+const editorialImage = currentArticle.image
+  ? new URL(currentArticle.image, Astro.site ?? Astro.url.origin).toString()
+  : socialImage.toString();
+const articleStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: currentArticle.title,
+  description: currentArticle.subtitle,
+  datePublished: currentArticle.publishedAt,
+  ...(currentArticle.updatedAt ? { dateModified: currentArticle.updatedAt } : {}),
+  inLanguage: currentArticle.language,
+  image: [editorialImage],
+  author: {
+    '@type': 'Organization',
+    name: currentArticle.author,
+    url: new URL('/', Astro.site ?? Astro.url.origin).toString(),
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'One Reader',
+    url: new URL('/', Astro.site ?? Astro.url.origin).toString(),
+  },
+  mainEntityOfPage: articleUrl.toString(),
+};
 ---
 
-<Layout title={`${currentArticle.title} — One Reader`} description={currentArticle.description}>
+<Layout title={`${currentArticle.title} — One Reader`} description={currentArticle.subtitle} socialImage={socialImage.toString()} socialImageAlt={`${currentArticle.title} — One Reader`} ogType="article" locale={currentArticle.language}>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(articleStructuredData)} />
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
-      <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="mailto:write@onereader.co">Write to someone →</a>
+      <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/">Write to someone</a>
     </div>
   </header>
 
   <main id="main-content" class="shell py-16 sm:py-24 lg:py-32">
     <header class="mx-auto max-w-3xl">
-      <p class="eyebrow mb-6 text-accent">Journal</p>
+      <a class="eyebrow mb-6 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/journal/">Journal</a>
       <h1 class="section-title balance">{currentArticle.title}</h1>
-      <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">{currentArticle.description}</p>
+      <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">{currentArticle.subtitle}</p>
       <p class="mt-5 text-sm text-muted-foreground">
         <time datetime={currentArticle.publishedAt}>{formatArticleDate(currentArticle.publishedAt)}</time> · {currentArticle.readingTime}
       </p>
@@ -39,8 +68,9 @@ if (!currentArticle) {
     <article class="mx-auto mt-14 max-w-[42rem] border-t border-border pt-10 sm:mt-16 sm:pt-12">
       {currentArticle.paragraphs.map((paragraph) => <p class="font-serif text-xl leading-9 text-foreground/90 sm:text-[1.35rem] sm:leading-10">{paragraph}</p>)}
       <div class="mt-14 border-t border-border pt-6">
-        <a class="text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="mailto:write@onereader.co">Write to someone →</a>
+        <a class="text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/">Write to someone</a>
       </div>
     </article>
   </main>
+  <JournalFooter />
 </Layout>

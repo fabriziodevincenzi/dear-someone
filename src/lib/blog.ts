@@ -1,20 +1,25 @@
 export interface BlogArticle {
   slug: string;
-  category: string;
   title: string;
-  description: string;
+  subtitle: string;
   publishedAt: string;
+  updatedAt?: string;
+  author: string;
+  language: string;
   readingTime: string;
   paragraphs: string[];
+  image?: string;
+  imageAlt?: string;
 }
 
 export const blogArticles: BlogArticle[] = [
   {
     slug: 'what-an-inbox-can-still-be-for',
-    category: 'Context',
     title: 'What an inbox can still be for',
-    description: 'A note on making room for an email that has no commercial reason to exist.',
+    subtitle: 'A note on the quiet possibilities of an email that has no commercial reason to exist.',
     publishedAt: '2026-08-08',
+    author: 'One Reader',
+    language: 'en',
     readingTime: '3 min read',
     paragraphs: [
       'Most messages arrive with a job to do. They ask us to buy, confirm, renew, click, or keep up. Over time, the inbox starts to feel less like a place where people meet and more like a place where obligations wait.',

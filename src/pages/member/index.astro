@@ -1,19 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
-
-const languages = [
-  ['en', 'English'],
-  ['it', 'Italian'],
-  ['uk', 'Ukrainian'],
-  ['es', 'Spanish'],
-  ['fr', 'French'],
-  ['de', 'German'],
-  ['pl', 'Polish'],
-  ['pt', 'Portuguese'],
-  ['nl', 'Dutch'],
-  ['ja', 'Japanese'],
-];
+import { languageOptions as languages } from '../../lib/i18n';
 
 const proficiencies = [
   ['basic', 'Basic'],

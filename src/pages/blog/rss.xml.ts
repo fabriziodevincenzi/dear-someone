@@ -8,7 +8,7 @@ export const GET: APIRoute = ({ site }) => {
       (article) => `
     <item>
       <title><![CDATA[${article.title}]]></title>
-      <description><![CDATA[${article.description}]]></description>
+      <description><![CDATA[${article.subtitle}]]></description>
       <link>${baseUrl}/journal/${article.slug}/</link>
       <guid>${baseUrl}/journal/${article.slug}/</guid>
       <pubDate>${new Date(`${article.publishedAt}T00:00:00Z`).toUTCString()}</pubDate>
