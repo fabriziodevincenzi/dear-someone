@@ -64,9 +64,10 @@ const timelineStages = [
 const publicWaitlistCount = waitlistCountIsPublic();
 const openService = serviceIsOpen();
 const currentTimelineStage = openService ? 1 : 0;
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
-<Layout>
+<Layout turnstileSiteKey={turnstileSiteKey}>
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">
@@ -251,6 +252,9 @@ const currentTimelineStage = openService ? 1 : 0;
                 <input class="mt-1" type="checkbox" name="journalOptIn" value="yes" />
                 <span>Send me occasional Journal notes and product news too. This is optional.</span>
               </label>
+              {turnstileSiteKey && (
+                <div class="mt-6" data-turnstile-widget data-sitekey={turnstileSiteKey} aria-label="Security check"></div>
+              )}
               <input class="absolute -left-[9999px] h-px w-px opacity-0" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <p class="mt-4 text-xs leading-5 text-muted-foreground" id="waitlist-privacy" data-waitlist-note>
                 We’ll use your address for the waitlist and the operational emails needed to manage it. You can leave at any time.
@@ -289,6 +293,9 @@ const currentTimelineStage = openService ? 1 : 0;
     const success = document.querySelector<HTMLElement>('[data-waitlist-success]');
     const successTitle = document.querySelector<HTMLElement>('[data-waitlist-success-title]');
     const successCopy = document.querySelector<HTMLElement>('[data-waitlist-success-copy]');
+    const captchaWidget = document.querySelector<HTMLElement>('[data-turnstile-widget]');
+    let captchaToken: string | null = null;
+    let captchaWidgetId: string | null = null;
     const intentKey = 'dear-someone:signup-intent';
     const lastWaitlistEmailKey = 'dear-someone:waitlist-email';
 
@@ -307,6 +314,32 @@ const currentTimelineStage = openService ? 1 : 0;
         if (successCopy) successCopy.textContent = 'Your place is still active. Use the link in your inbox, or open your account if you need to sign in.';
       }
     };
+
+    type TurnstileApi = {
+      render: (element: HTMLElement, options: {
+        sitekey: string;
+        callback: (token: string) => void;
+        'expired-callback': () => void;
+        'error-callback': () => void;
+      }) => string;
+      reset: (widgetId?: string) => void;
+    };
+
+    const renderCaptcha = () => {
+      const turnstile = (window as Window & { turnstile?: TurnstileApi }).turnstile;
+      const sitekey = captchaWidget?.dataset.sitekey;
+      if (!turnstile || !captchaWidget || !sitekey || captchaWidget.dataset.rendered) return;
+      captchaWidgetId = turnstile.render(captchaWidget, {
+        sitekey,
+        callback: (token) => { captchaToken = token; },
+        'expired-callback': () => { captchaToken = null; },
+        'error-callback': () => { captchaToken = null; showNote('The security check could not be completed. Please try again.', true); },
+      });
+      captchaWidget.dataset.rendered = 'true';
+    };
+
+    window.addEventListener('load', renderCaptcha, { once: true });
+    renderCaptcha();
 
     const finishWaitlistSignup = async (session: { access_token: string; user?: { email?: string; user_metadata?: Record<string, unknown> } }) => {
       if (!supabase) return;
@@ -361,11 +394,16 @@ const currentTimelineStage = openService ? 1 : 0;
       const email = String(data.get('email') || '').trim().toLowerCase();
       const honeypot = String(data.get('website') || '').trim();
       if (!email || !supabase) {
-        showNote('The waitlist is not connected in this local environment.', true);
+        showNote('The waitlist is not connected right now. Please try again shortly.', true);
         return;
       }
 
       if (honeypot) return;
+
+      if (captchaWidget && !captchaToken) {
+        showNote('Please complete the security check before registering.', true);
+        return;
+      }
 
       const lastSubmittedAt = Number(window.localStorage.getItem('dear-someone:waitlist-last-submitted') || '0');
       if (Date.now() - lastSubmittedAt < 60_000) {
@@ -392,6 +430,7 @@ const currentTimelineStage = openService ? 1 : 0;
         options: {
           shouldCreateUser: true,
           emailRedirectTo: `${window.location.origin}/`,
+          captchaToken: captchaToken ?? undefined,
           data: {
             source: 'waitlist',
             market_country: (navigator.language.split('-')[1] || '').toUpperCase() || null,
@@ -404,6 +443,9 @@ const currentTimelineStage = openService ? 1 : 0;
       });
       if (submitButton) submitButton.disabled = false;
       if (error) {
+        captchaToken = null;
+        const turnstile = (window as Window & { turnstile?: TurnstileApi }).turnstile;
+        if (turnstile && captchaWidgetId) turnstile.reset(captchaWidgetId);
         window.localStorage.removeItem(intentKey);
         showNote(error.message || 'We could not send the link. Please try again.', true);
         return;

@@ -11,6 +11,7 @@ interface Props {
   locale?: SiteLocale | string;
   alternateLocales?: Partial<Record<SiteLocale, string>>;
   referrerPolicy?: 'no-referrer';
+  turnstileSiteKey?: string;
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   locale = 'en',
   alternateLocales = {},
   referrerPolicy,
+  turnstileSiteKey,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -59,6 +61,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {socialImage && <meta name="twitter:image" content={socialImage} />}
     {socialImage && <meta name="twitter:image:src" content={socialImage} />}
     {socialImageAlt && <meta name="twitter:image:alt" content={socialImageAlt} />}
+    {turnstileSiteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>}
     <title>{title}</title>
   </head>
   <body>
