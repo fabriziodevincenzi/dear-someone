@@ -1,5 +1,7 @@
 ---
 lang: sv
+key: someone-who-owes-you-nothing
+slug: nagon-som-inte-ar-skyldig-dig-nagot
 title: Någon som inte är skyldig dig något
 meta-description: En notering om varför en främlings uppmärksamhet kan kännas klarare än en väns.
 publishedAt: '2026-08-15'

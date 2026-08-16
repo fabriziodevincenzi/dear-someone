@@ -1,5 +1,6 @@
 ---
 lang: uk
+key: someone-who-owes-you-nothing
 title: Хтось, хто нічим тобі не зобов'язаний
 meta-description: Нотатка про те, чому увага незнайомця може відчуватися яснішою за увагу друга.
 publishedAt: '2026-08-15'

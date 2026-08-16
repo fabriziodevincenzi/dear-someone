@@ -1,5 +1,7 @@
 ---
 lang: de
+key: someone-who-owes-you-nothing
+slug: jemand-der-dir-nichts-schuldet
 title: Jemand, der dir nichts schuldet
 meta-description: Eine Notiz darüber, warum die Aufmerksamkeit eines Fremden klarer wirken kann als die eines Freundes.
 publishedAt: '2026-08-15'

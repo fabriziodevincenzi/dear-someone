@@ -1,5 +1,6 @@
 ---
 lang: ja
+key: what-writing-does-before-anyone-answers
 title: 誰かが答える前に、書くことがしていること
 meta-description: 返事が来る前に——あるいは来なくても——書くという行為そのものに価値がある理由についてのノート。
 publishedAt: '2026-08-15'

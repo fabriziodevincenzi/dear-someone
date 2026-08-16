@@ -1,5 +1,7 @@
 ---
 lang: fr
+key: what-writing-does-before-anyone-answers
+slug: ce-que-fait-lecriture-avant-meme-quon-y-reponde
 title: Ce que fait l'écriture, avant même qu'on y réponde
 meta-description: Une note sur pourquoi l'acte d'écrire a sa propre valeur, bien avant qu'une réponse n'arrive — ou pas.
 publishedAt: '2026-08-15'

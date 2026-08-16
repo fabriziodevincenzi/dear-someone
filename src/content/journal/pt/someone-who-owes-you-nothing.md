@@ -1,5 +1,7 @@
 ---
 lang: pt
+key: someone-who-owes-you-nothing
+slug: alguem-que-nao-te-deve-nada
 title: Alguém que não te deve nada
 meta-description: Uma nota sobre porque a atenção de um desconhecido pode parecer mais límpida do que a de um amigo.
 publishedAt: '2026-08-15'

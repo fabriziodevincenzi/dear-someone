@@ -1,5 +1,6 @@
 ---
 lang: uk
+key: what-writing-does-before-anyone-answers
 title: Що робить лист, ще до будь-якої відповіді
 meta-description: Нотатка про те, чому сам акт написання має власну цінність, задовго до того, як прийде — або не прийде — відповідь.
 publishedAt: '2026-08-15'

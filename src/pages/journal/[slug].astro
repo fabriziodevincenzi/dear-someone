@@ -3,7 +3,8 @@ import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
 import JournalFooter from '../../components/JournalFooter.astro';
-import { getJournalEntries, getJournalDate, getJournalSlug, formatJournalDate, getJournalLocale, type JournalEntry } from '../../lib/journal';
+import { getJournalEntries, getJournalDate, getJournalKey, getJournalSlug, formatJournalDate, getJournalLocale, type JournalEntry } from '../../lib/journal';
+import { siteLocales } from '../../lib/i18n';
 
 export async function getStaticPaths() {
   const entries = await getJournalEntries('en');
@@ -11,11 +12,20 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: JournalEntry };
+const allEntries: JournalEntry[] = (await Promise.all(siteLocales.map((locale) => getJournalEntries(locale)))).flat();
 const { Content } = await render(entry);
 const slug = getJournalSlug(entry);
 const publishedAt = getJournalDate(entry);
 const articleUrl = new URL(`/journal/${slug}/`, Astro.site ?? Astro.url.origin);
 const socialImage = new URL(`/og/${slug}.png`, Astro.site ?? Astro.url.origin).toString();
+const alternateLocales = Object.fromEntries(
+  allEntries
+    .filter((candidate) => getJournalKey(candidate) === getJournalKey(entry))
+    .map((candidate) => {
+      const candidateLocale = getJournalLocale(candidate);
+      return [candidateLocale, new URL(`/${candidateLocale === 'en' ? '' : `${candidateLocale}/`}journal/${getJournalSlug(candidate)}/`, Astro.site ?? Astro.url.origin).toString()];
+    }),
+);
 const articleStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -31,7 +41,7 @@ const articleStructuredData = {
 };
 ---
 
-<Layout title={`${entry.data.title} — One Reader`} description={entry.data['meta-description']} ogType="article" locale="en" socialImage={socialImage} socialImageAlt={entry.data.title}>
+<Layout title={`${entry.data.title} — One Reader`} description={entry.data['meta-description']} ogType="article" locale="en" alternateLocales={alternateLocales} socialImage={socialImage} socialImageAlt={entry.data.title}>
   <script is:inline type="application/ld+json" set:html={JSON.stringify(articleStructuredData)} />
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">

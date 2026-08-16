@@ -1,5 +1,7 @@
 ---
 lang: no
+key: someone-who-owes-you-nothing
+slug: noen-som-ikke-skylder-deg-noe
 title: Noen som ikke skylder deg noe
 meta-description: En notat om hvorfor en fremmeds oppmerksomhet kan føles klarere enn en venns.
 publishedAt: '2026-08-15'

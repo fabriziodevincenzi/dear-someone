@@ -8,7 +8,9 @@ export const getJournalLocale = (entry: JournalEntry): SiteLocale => {
   return locale as SiteLocale;
 };
 
-export const getJournalSlug = (entry: JournalEntry) => entry.id.split('/').pop()?.replace(/\.md$/, '') ?? entry.id;
+export const getJournalKey = (entry: JournalEntry) => entry.data.key ?? entry.id.split('/').pop()?.replace(/\.md$/, '') ?? entry.id;
+
+export const getJournalSlug = (entry: JournalEntry) => entry.data.slug ?? getJournalKey(entry);
 
 export const getJournalDate = (entry: JournalEntry) => entry.data.publishedAt ?? '2026-08-15';
 
