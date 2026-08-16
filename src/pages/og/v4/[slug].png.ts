@@ -1,11 +1,13 @@
 import type { APIRoute } from 'astro';
-import { blogArticles } from '../../../lib/blog';
+import { getJournalEntries, getJournalSlug } from '../../../lib/journal';
 import { GET as renderSocialCard } from '../[slug].png';
 
-export function getStaticPaths() {
-  return blogArticles.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
+export async function getStaticPaths() {
+  const entries = await getJournalEntries();
+  const uniqueEntries = [...new Map(entries.map((entry) => [getJournalSlug(entry), entry])).values()];
+  return uniqueEntries.map((entry) => ({
+    params: { slug: getJournalSlug(entry) },
+    props: { entry },
   }));
 }
 

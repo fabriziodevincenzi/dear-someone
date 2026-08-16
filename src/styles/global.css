@@ -102,6 +102,24 @@ input {
   text-wrap: balance;
 }
 
+.prose-journal {
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
+  font-family: var(--font-letter);
+  font-size: clamp(1.18rem, 1.1rem + 0.35vw, 1.35rem);
+  line-height: 1.85;
+}
+
+.prose-journal p {
+  margin: 0 0 1.65em;
+}
+
+.prose-journal a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  text-underline-offset: 0.18em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -445,8 +445,13 @@ async function memberEmail(memberId: string) {
 
 function inboundRoute(email: ReceivedEmail): { kind: 'opening' } | { kind: 'reply'; token: string } {
   const addresses = [...(email.to ?? []), ...(email.received_for ?? [])].map(normalizeEmailAddress);
-  const writeAddress = (Deno.env.get('LETTER_WRITE_ADDRESS') ?? 'write@onereader.co').toLowerCase();
-  if (addresses.includes(writeAddress)) return { kind: 'opening' };
+  const configuredWriteAddress = (Deno.env.get('LETTER_WRITE_ADDRESS') ?? 'write@onereader.co').toLowerCase();
+  const inboundWriteAddresses = new Set([
+    configuredWriteAddress,
+    'write@onereader.co',
+    'write@letters.onereader.co',
+  ]);
+  if (addresses.some((address) => inboundWriteAddresses.has(address))) return { kind: 'opening' };
 
   const aliasDomain = (Deno.env.get('LETTER_ALIAS_DOMAIN') ?? 'reply.onereader.co').toLowerCase();
   for (const address of addresses) {

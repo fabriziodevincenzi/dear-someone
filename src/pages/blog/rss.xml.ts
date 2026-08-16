@@ -1,17 +1,17 @@
 import type { APIRoute } from 'astro';
-import { blogArticles } from '../../lib/blog';
+import { getJournalEntries, getJournalDate, getJournalSlug } from '../../lib/journal';
 
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
   const baseUrl = (site ?? new URL('https://onereader.co')).toString().replace(/\/$/, '');
-  const items = blogArticles
+  const items = (await getJournalEntries('en'))
     .map(
       (article) => `
     <item>
-      <title><![CDATA[${article.title}]]></title>
-      <description><![CDATA[${article.subtitle}]]></description>
-      <link>${baseUrl}/journal/${article.slug}/</link>
-      <guid>${baseUrl}/journal/${article.slug}/</guid>
-      <pubDate>${new Date(`${article.publishedAt}T00:00:00Z`).toUTCString()}</pubDate>
+      <title><![CDATA[${article.data.title}]]></title>
+      <description><![CDATA[${article.data['meta-description']}]]></description>
+      <link>${baseUrl}/journal/${getJournalSlug(article)}/</link>
+      <guid>${baseUrl}/journal/${getJournalSlug(article)}/</guid>
+      <pubDate>${new Date(`${getJournalDate(article)}T00:00:00Z`).toUTCString()}</pubDate>
     </item>`,
     )
     .join('');
