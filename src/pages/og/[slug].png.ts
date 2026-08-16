@@ -1,11 +1,13 @@
 import type { APIRoute } from 'astro';
 import sharp from 'sharp';
-import { blogArticles } from '../../lib/blog';
+import { getJournalEntries, getJournalSlug, type JournalEntry } from '../../lib/journal';
 
-export function getStaticPaths() {
-  return blogArticles.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
+export async function getStaticPaths() {
+  const entries = await getJournalEntries();
+  const uniqueEntries = [...new Map(entries.map((entry) => [getJournalSlug(entry), entry])).values()];
+  return uniqueEntries.map((entry) => ({
+    params: { slug: getJournalSlug(entry) },
+    props: { entry },
   }));
 }
 
@@ -51,8 +53,8 @@ const balanceTitle = (value: string, maxCharacters: number) => {
 };
 
 export const GET: APIRoute = async ({ props }) => {
-  const article = props.article;
-  const titleLines = balanceTitle(article.title, 28);
+  const entry = props.entry as JournalEntry;
+  const titleLines = balanceTitle(entry.data.title, 28);
   const titleFontSize = titleLines.length > 2 ? 82 : 104;
   const titleLineHeight = Math.round(titleFontSize * 1.08);
   const titleStart = titleLines.length === 1 ? 330 : titleLines.length === 2 ? 248 : 220;

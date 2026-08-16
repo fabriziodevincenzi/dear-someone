@@ -1,20 +1,37 @@
 ---
 import { render } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { buttonVariants } from '../../components/ui/Button';
-import JournalFooter from '../../components/JournalFooter.astro';
-import { getJournalEntries, getJournalDate, getJournalSlug, formatJournalDate, getJournalLocale, type JournalEntry } from '../../lib/journal';
+import Layout from '../../../layouts/Layout.astro';
+import { buttonVariants } from '../../../components/ui/Button';
+import JournalFooter from '../../../components/JournalFooter.astro';
+import {
+  formatJournalDate,
+  getJournalDate,
+  getJournalEntries,
+  getJournalLocale,
+  getJournalSlug,
+  type JournalEntry,
+} from '../../../lib/journal';
+import { siteLocales, type SiteLocale } from '../../../lib/i18n';
 
 export async function getStaticPaths() {
-  const entries = await getJournalEntries('en');
-  return entries.map((entry) => ({ params: { slug: getJournalSlug(entry) }, props: { entry } }));
+  const paths = [];
+  for (const lang of siteLocales.filter((locale) => locale !== 'en')) {
+    const entries = await getJournalEntries(lang);
+    paths.push(
+      ...entries.map((entry) => ({
+        params: { lang, slug: getJournalSlug(entry) },
+        props: { entry, lang },
+      })),
+    );
+  }
+  return paths;
 }
 
-const { entry } = Astro.props as { entry: JournalEntry };
+const { entry, lang } = Astro.props as { entry: JournalEntry; lang: SiteLocale };
 const { Content } = await render(entry);
 const slug = getJournalSlug(entry);
 const publishedAt = getJournalDate(entry);
-const articleUrl = new URL(`/journal/${slug}/`, Astro.site ?? Astro.url.origin);
+const articleUrl = new URL(`/${lang}/journal/${slug}/`, Astro.site ?? Astro.url.origin);
 const socialImage = new URL(`/og/${slug}.png`, Astro.site ?? Astro.url.origin).toString();
 const articleStructuredData = {
   '@context': 'https://schema.org',
@@ -31,7 +48,14 @@ const articleStructuredData = {
 };
 ---
 
-<Layout title={`${entry.data.title} — One Reader`} description={entry.data['meta-description']} ogType="article" locale="en" socialImage={socialImage} socialImageAlt={entry.data.title}>
+<Layout
+  title={`${entry.data.title} — One Reader`}
+  description={entry.data['meta-description']}
+  ogType="article"
+  locale={lang}
+  socialImage={socialImage}
+  socialImageAlt={entry.data.title}
+>
   <script is:inline type="application/ld+json" set:html={JSON.stringify(articleStructuredData)} />
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
@@ -42,18 +66,18 @@ const articleStructuredData = {
 
   <main id="main-content" class="shell py-16 sm:py-24 lg:py-32">
     <header class="mx-auto max-w-[42rem]">
-      <a class="eyebrow mb-6 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/journal/">Journal</a>
+      <a class="eyebrow mb-6 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href={`/${lang}/journal/`}>Journal</a>
       <h1 class="section-title balance">{entry.data.title}</h1>
       <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">{entry.data['meta-description']}</p>
       <p class="mt-5 text-sm text-muted-foreground">
-        <time datetime={publishedAt}>{formatJournalDate(publishedAt)}</time> · {entry.data.readingTime}
+        <time datetime={publishedAt}>{formatJournalDate(publishedAt, lang)}</time> · {entry.data.readingTime}
       </p>
     </header>
 
     <article class="prose-journal mx-auto mt-14 max-w-[42rem] border-t border-border pt-10 sm:mt-16 sm:pt-12">
       <Content />
       <div class="mt-14 flex flex-wrap items-center justify-between gap-5 border-t border-border pt-6">
-        <a class="text-sm text-muted-foreground underline decoration-border underline-offset-4 hover:text-foreground" href="/journal/">Back to Journal</a>
+        <a class="text-sm text-muted-foreground underline decoration-border underline-offset-4 hover:text-foreground" href={`/${lang}/journal/`}>Back to Journal</a>
         <a class="text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/">Write to someone</a>
       </div>
     </article>

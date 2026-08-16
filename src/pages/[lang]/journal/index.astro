@@ -1,13 +1,19 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { buttonVariants } from '../../components/ui/Button';
-import JournalFooter from '../../components/JournalFooter.astro';
-import { getJournalEntries, getJournalSlug } from '../../lib/journal';
+import Layout from '../../../layouts/Layout.astro';
+import { buttonVariants } from '../../../components/ui/Button';
+import JournalFooter from '../../../components/JournalFooter.astro';
+import { getJournalEntries, getJournalSlug } from '../../../lib/journal';
+import { siteLocales, type SiteLocale } from '../../../lib/i18n';
 
-const [latestArticle, ...earlierArticles] = await getJournalEntries('en');
+export function getStaticPaths() {
+  return siteLocales.filter((locale) => locale !== 'en').map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: SiteLocale };
+const [latestArticle, ...earlierArticles] = await getJournalEntries(lang);
 ---
 
-<Layout title="Journal — One Reader" description="Notes on writing to strangers, paying attention, and finding a way to begin.">
+<Layout title={`Journal — One Reader`} description="Notes on writing to strangers, paying attention, and finding a way to begin." locale={lang}>
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
@@ -17,25 +23,25 @@ const [latestArticle, ...earlierArticles] = await getJournalEntries('en');
 
   <main id="main-content" class="shell py-16 sm:py-24 lg:py-32">
     <div class="max-w-3xl">
-      <a class="eyebrow mb-5 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/journal/">Journal</a>
+      <a class="eyebrow mb-5 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href={`/${lang}/journal/`}>Journal</a>
       <h1 class="section-title balance max-w-3xl">Notes on writing to strangers, paying attention, and finding a way to begin.</h1>
       <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">
         Thoughts on correspondence, attention, and the strange, hopeful work of beginning a conversation with someone you do not know.
       </p>
     </div>
 
-    <section class="mt-16 max-w-3xl border-y border-border py-8 sm:mt-20 sm:py-10" aria-labelledby="featured-heading">
+    {latestArticle && <section class="mt-16 max-w-3xl border-y border-border py-8 sm:mt-20 sm:py-10" aria-labelledby="featured-heading">
       <p class="eyebrow mb-4 text-accent">Featured note</p>
       <h2 id="featured-heading" class="font-serif text-3xl font-normal tracking-[-0.03em] sm:text-4xl">{latestArticle.data.title}</h2>
       <p class="mt-3 max-w-2xl leading-7 text-muted-foreground">{latestArticle.data['meta-description']}</p>
-      <a class="mt-6 inline-block text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href={`/journal/${getJournalSlug(latestArticle)}/`}>Read the note →</a>
-    </section>
+      <a class="mt-6 inline-block text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href={`/${lang}/journal/${getJournalSlug(latestArticle)}/`}>Read the note →</a>
+    </section>}
 
     {earlierArticles.length > 0 && <section class="mt-16 max-w-3xl" aria-labelledby="earlier-heading">
       <p id="earlier-heading" class="eyebrow mb-5">Earlier notes</p>
       <div class="border-t border-border">
         {earlierArticles.map((article) => (
-          <a class="flex items-baseline justify-between gap-6 border-b border-border py-5 no-underline transition-colors hover:text-accent" href={`/journal/${getJournalSlug(article)}/`}>
+          <a class="flex items-baseline justify-between gap-6 border-b border-border py-5 no-underline transition-colors hover:text-accent" href={`/${lang}/journal/${getJournalSlug(article)}/`}>
             <span class="font-serif text-2xl font-normal tracking-[-0.025em]">{article.data.title}</span>
             <time class="shrink-0 text-sm text-muted-foreground" datetime={article.data.publishedAt}>{article.data.publishedAt}</time>
           </a>
