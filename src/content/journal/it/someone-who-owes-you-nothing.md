@@ -1,5 +1,7 @@
 ---
 lang: it
+key: someone-who-owes-you-nothing
+slug: qualcuno-che-non-ti-deve-nulla
 title: Qualcuno che non ti deve nulla
 meta-description: Una nota sul perché l'attenzione di uno sconosciuto può sembrare più limpida di quella di un amico.
 publishedAt: '2026-08-15'

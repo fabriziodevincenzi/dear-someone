@@ -1,5 +1,7 @@
 ---
 lang: no
+key: what-writing-does-before-anyone-answers
+slug: hva-skriving-gjor-for-noen-svarer
 title: Hva skriving gjør, før noen svarer
 meta-description: En notat om hvorfor det å skrive har sin egen verdi, lenge før et svar kommer — eller ikke.
 publishedAt: '2026-08-15'

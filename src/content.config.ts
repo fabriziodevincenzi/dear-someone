@@ -10,6 +10,8 @@ const journal = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/journal' }),
   schema: z.object({
     lang: z.string(),
+    key: z.string().min(1).optional(),
+    slug: z.string().min(1).optional(),
     title: z.string(),
     'meta-description': z.string(),
        publishedAt: dateField,

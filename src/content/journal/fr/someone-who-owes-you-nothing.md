@@ -1,5 +1,7 @@
 ---
 lang: fr
+key: someone-who-owes-you-nothing
+slug: quelquun-qui-ne-vous-doit-rien
 title: Quelqu'un qui ne vous doit rien
 meta-description: Une note sur pourquoi l'attention d'un inconnu peut sembler plus limpide que celle d'un ami.
 publishedAt: '2026-08-15'

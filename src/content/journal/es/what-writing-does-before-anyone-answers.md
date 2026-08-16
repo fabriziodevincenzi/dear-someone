@@ -1,5 +1,7 @@
 ---
 lang: es
+key: what-writing-does-before-anyone-answers
+slug: lo-que-hace-la-escritura-antes-de-que-nadie-responda
 title: Lo que hace la escritura, antes de que nadie responda
 meta-description: Una nota sobre por qué el acto de escribir tiene su propio valor, mucho antes de que llegue —o no— una respuesta.
 publishedAt: '2026-08-15'
