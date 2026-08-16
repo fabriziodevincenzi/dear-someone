@@ -1,5 +1,6 @@
 ---
 lang: ja
+key: someone-who-owes-you-nothing
 title: 何も借りのない誰か
 meta-description: 見知らぬ人の関心が、友人のそれよりも澄んで感じられる理由についてのノート。
 publishedAt: '2026-08-15'

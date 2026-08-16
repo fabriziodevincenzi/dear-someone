@@ -1,5 +1,7 @@
 ---
 lang: nl
+key: someone-who-owes-you-nothing
+slug: iemand-die-je-niets-verschuldigd-is
 title: Iemand die je niets verschuldigd is
 meta-description: Een notitie over waarom de aandacht van een vreemde helderder kan aanvoelen dan die van een vriend.
 publishedAt: '2026-08-15'

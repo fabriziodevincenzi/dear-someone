@@ -1,5 +1,7 @@
 ---
 lang: pl
+key: what-writing-does-before-anyone-answers
+slug: co-robi-pisanie-zanim-ktos-odpowie
 title: Co robi pisanie, zanim ktoś odpowie
 meta-description: Notatka o tym, dlaczego sam akt pisania ma własną wartość, na długo zanim przyjdzie — lub nie przyjdzie — odpowiedź.
 publishedAt: '2026-08-15'

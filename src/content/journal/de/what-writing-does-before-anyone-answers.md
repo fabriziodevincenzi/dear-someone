@@ -1,5 +1,7 @@
 ---
 lang: de
+key: what-writing-does-before-anyone-answers
+slug: was-schreiben-bewirkt-bevor-jemand-antwortet
 title: Was Schreiben bewirkt, bevor jemand antwortet
 meta-description: Eine Notiz darüber, warum das Schreiben selbst einen Wert hat, lange bevor eine Antwort kommt — oder auch nicht.
 publishedAt: '2026-08-15'

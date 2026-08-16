@@ -7,6 +7,7 @@ import {
   formatJournalDate,
   getJournalDate,
   getJournalEntries,
+  getJournalKey,
   getJournalLocale,
   getJournalSlug,
   type JournalEntry,
@@ -17,22 +18,35 @@ export async function getStaticPaths() {
   const paths = [];
   for (const lang of siteLocales.filter((locale) => locale !== 'en')) {
     const entries = await getJournalEntries(lang);
-    paths.push(
-      ...entries.map((entry) => ({
-        params: { lang, slug: getJournalSlug(entry) },
-        props: { entry, lang },
-      })),
-    );
+    for (const entry of entries) {
+      const slug = getJournalSlug(entry);
+      paths.push({ params: { lang, slug }, props: { entry, lang } });
+      const legacySlug = getJournalKey(entry);
+      if (legacySlug !== slug) {
+        paths.push({ params: { lang, slug: legacySlug }, props: { entry, lang, redirectTo: `/${lang}/journal/${slug}/` } });
+      }
+    }
   }
   return paths;
 }
 
-const { entry, lang } = Astro.props as { entry: JournalEntry; lang: SiteLocale };
+const { entry, lang, redirectTo } = Astro.props as { entry: JournalEntry; lang: SiteLocale; redirectTo?: string };
+if (redirectTo) return Astro.redirect(redirectTo, 301);
+const allEntries: JournalEntry[] = (await Promise.all(siteLocales.map((locale) => getJournalEntries(locale)))).flat();
 const { Content } = await render(entry);
 const slug = getJournalSlug(entry);
 const publishedAt = getJournalDate(entry);
 const articleUrl = new URL(`/${lang}/journal/${slug}/`, Astro.site ?? Astro.url.origin);
 const socialImage = new URL(`/og/${slug}.png`, Astro.site ?? Astro.url.origin).toString();
+const alternateLocales = Object.fromEntries(
+  allEntries
+    .filter((candidate) => getJournalKey(candidate) === getJournalKey(entry))
+    .map((candidate) => {
+      const candidateLocale = getJournalLocale(candidate);
+      const prefix = candidateLocale === 'en' ? '' : `${candidateLocale}/`;
+      return [candidateLocale, new URL(`/${prefix}journal/${getJournalSlug(candidate)}/`, Astro.site ?? Astro.url.origin).toString()];
+    }),
+);
 const articleStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -53,6 +67,7 @@ const articleStructuredData = {
   description={entry.data['meta-description']}
   ogType="article"
   locale={lang}
+  alternateLocales={alternateLocales}
   socialImage={socialImage}
   socialImageAlt={entry.data.title}
 >

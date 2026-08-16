@@ -1,5 +1,7 @@
 ---
 lang: pt
+key: what-writing-does-before-anyone-answers
+slug: o-que-a-escrita-faz-antes-de-alguem-responder
 title: O que a escrita faz, antes de alguém responder
 meta-description: Uma nota sobre porque o próprio ato de escrever tem valor, muito antes de chegar — ou não — uma resposta.
 publishedAt: '2026-08-15'

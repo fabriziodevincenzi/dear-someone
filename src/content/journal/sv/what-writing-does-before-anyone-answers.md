@@ -1,5 +1,7 @@
 ---
 lang: sv
+key: what-writing-does-before-anyone-answers
+slug: vad-skrivandet-gor-innan-nagon-svarar
 title: Vad skrivandet gör, innan någon svarar
 meta-description: En notering om varför själva skrivandet har ett eget värde, långt innan ett svar kommer — eller inte.
 publishedAt: '2026-08-15'

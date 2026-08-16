@@ -1,5 +1,7 @@
 ---
 lang: nl
+key: what-writing-does-before-anyone-answers
+slug: wat-schrijven-doet-voordat-iemand-antwoordt
 title: Wat schrijven doet, voordat iemand antwoordt
 meta-description: Een notitie over waarom het schrijven zelf waarde heeft, lang voordat er een antwoord komt — of niet.
 publishedAt: '2026-08-15'

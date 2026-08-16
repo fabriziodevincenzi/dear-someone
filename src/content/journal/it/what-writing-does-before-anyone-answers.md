@@ -1,5 +1,7 @@
 ---
 lang: it
+key: what-writing-does-before-anyone-answers
+slug: quello-che-fa-la-scrittura-prima-ancora-di-una-risposta
 title: Quello che la scrittura fa, prima ancora di una risposta
 meta-description: Una nota sul perché l'atto di scrivere ha un valore proprio, molto prima che arrivi (o non arrivi) una risposta.
 publishedAt: '2026-08-15'

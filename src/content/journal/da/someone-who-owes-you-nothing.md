@@ -1,5 +1,7 @@
 ---
 lang: da
+key: someone-who-owes-you-nothing
+slug: nogen-der-ikke-skylder-dig-noget
 title: Nogen, der ikke skylder dig noget
 meta-description: En note om, hvorfor en fremmeds opmærksomhed kan føles klarere end en vens.
 publishedAt: '2026-08-15'

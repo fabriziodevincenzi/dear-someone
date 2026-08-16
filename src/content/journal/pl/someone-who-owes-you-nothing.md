@@ -1,5 +1,7 @@
 ---
 lang: pl
+key: someone-who-owes-you-nothing
+slug: ktos-ktory-nic-ci-nie-jest-winien
 title: Ktoś, kto nic ci nie jest winien
 meta-description: Notatka o tym, dlaczego uwaga nieznajomego może wydawać się czystsza niż uwaga przyjaciela.
 publishedAt: '2026-08-15'
