@@ -15,7 +15,7 @@ import { Input } from '../../components/ui/Input';
       <div class="mt-8 hidden border-y border-border py-5" data-plan-summary>
         <p class="eyebrow mb-3">Your starting plan</p>
         <p class="font-serif text-2xl" data-plan-name>Free</p>
-        <p class="mt-2 text-sm leading-6 text-muted-foreground" data-plan-description>One new correspondence every three months. No payment required.</p>
+        <p class="mt-2 text-sm leading-6 text-muted-foreground" data-plan-description>Your first opening is free. No payment required.</p>
       </div>
 
       <form class="mt-10 border-t border-border pt-8" data-magic-link-form>
@@ -82,7 +82,7 @@ import { Input } from '../../components/ui/Input';
       planName.textContent = plan === 'annual' ? `Annual membership · ${formattedPrice} / year` : 'Free plan';
       planDescription.textContent = plan === 'annual'
         ? 'One new opening every 24 hours. Payment happens only after email verification.'
-        : 'One new correspondence every three months. No payment required.';
+        : 'Your first opening is free. Receive letters and reply to open conversations without payment.';
       summary.classList.remove('hidden');
       signupConsents.classList.remove('hidden');
       termsCheckbox.required = true;

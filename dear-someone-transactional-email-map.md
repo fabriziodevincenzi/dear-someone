@@ -100,7 +100,7 @@ flowchart TD
 | ID | Caso | Cosa accade alla lettera | Contenuto dell'email | Priorità |
 |---|---|---|---|---|
 | PACE-01 | Free, prima apertura disponibile | Matching normale | Conferma di presa in carico con prossima data disponibile | MVP |
-| PACE-02 | Free, nuova apertura prima dei 90 giorni | Non inoltrare | Data e ora esatte; può continuare conversazioni aperte e ricevere fino a una nuova lettera al giorno; upgrade annuale come opzione secondaria | MVP |
+| PACE-02 | Ingresso gratuito, apertura già utilizzata | Non inoltrare | Può continuare conversazioni aperte e ricevere; l'annuale abilita una nuova apertura ogni 24 ore | MVP |
 | PACE-03 | Annual, nuova apertura prima delle 24 ore | Non inoltrare | Data/ora esatte; nessuna proposta di upgrade | MVP |
 | PACE-04 | Founding season, nuova apertura prima delle 24 ore | Non inoltrare | Data/ora esatte e data fine stagione, senza pressione | MVP |
 | PACE-05 | Più tentativi durante la stessa finestra bloccata | Deduplica per `member + next_available_at`; non accumula lettere | Prima risposta immediata, poi al massimo una risposta ogni 24 ore | MVP |
@@ -273,7 +273,7 @@ Questi flussi diventano effettivi solo quando Stripe o un provider equivalente �
 
 ### Decisioni ancora da chiudere prima del test reale
 
-1. **Cadenza Free:** usare 90 giorni mobili dall'ultima apertura effettivamente consegnata, oppure trimestri ancorati all'iscrizione. Raccomandazione: 90 giorni mobili e data esplicita.
+1. **Ingresso gratuito:** una sola apertura iniziale; dopo, ricezione e risposte restano disponibili senza scadenza, mentre l'annuale abilita nuove aperture ogni 24 ore.
 2. **Quando si consuma la cadenza:** arrivo, assegnazione o consegna. Raccomandazione: prima consegna riuscita.
 3. **Nessun lettore:** durata massima dell'attesa e momento del primo avviso. Raccomandazione: avviso dopo 15 minuti, massimo 7 giorni, annullamento disponibile.
 4. **Più lingue:** scelta esplicita nel subject, nel profilo o in una pagina di conferma. Non affidarsi a una selezione casuale.

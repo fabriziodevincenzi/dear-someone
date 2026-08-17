@@ -18,7 +18,18 @@ const formatAmount = (amount: number, currency: string) => `${amount.toLocaleStr
   <main class="shell max-w-5xl py-16 sm:py-24 lg:py-32">
     <p class="eyebrow mb-6">Annual membership</p>
     <h1 class="section-title balance max-w-3xl">One clear price, shown in the currency you use.</h1>
-    <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">The first number is the full annual price. The second is the founding-cohort price for the first three paid years after the free season. Local prices are fixed amounts, not a live exchange-rate conversion.</p>
+    <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">Your first opening is free. Annual membership gives you one new opening every 24 hours; receiving letters and replying to open conversations remain available either way.</p>
+
+    <section class="mt-14 border-y border-border py-10" aria-labelledby="checkout-heading">
+      <p class="eyebrow mb-4">Annual membership</p>
+      <h2 id="checkout-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Choose your currency and continue securely.</h2>
+      <div class="mt-8">
+        <stripe-pricing-table
+          pricing-table-id="prctbl_1U5Y85BA5ijGzHgS7j7DICML"
+          publishable-key="pk_live_dtYqmYXcYtuw5JX5nfugxesU"
+        ></stripe-pricing-table>
+      </div>
+    </section>
 
     <div class="mt-14 overflow-x-auto border-y border-border">
       <table class="w-full min-w-[38rem] border-collapse text-left text-sm">
@@ -50,4 +61,5 @@ const formatAmount = (amount: number, currency: string) => `${amount.toLocaleStr
     <p class="mt-6 max-w-2xl text-sm leading-6 text-muted-foreground">Ukraine has a separate declared-access path with a 100% promotion for the life of the subscription. The UAH row above is the reference price, not the amount due on that path.</p>
     <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-8'} href="/launch/">Back to One Reader</a>
   </main>
+  <script is:inline async src="https://js.stripe.com/v3/pricing-table.js"></script>
 </Layout>

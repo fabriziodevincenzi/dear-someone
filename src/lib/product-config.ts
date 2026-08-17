@@ -4,7 +4,9 @@ export const waitlistConfig = {
   count: parsePublicCount(import.meta.env.PUBLIC_WAITLIST_COUNT),
 };
 
-export const serviceIsOpen = (count = waitlistConfig.count) => count >= waitlistConfig.goal;
+// One Reader is now open to everyone. Keep the waitlist configuration around
+// for legacy data and reporting, but never gate account creation on it.
+export const serviceIsOpen = (_count = waitlistConfig.count) => true;
 
 export const launchCurrencies = [
   'EUR',

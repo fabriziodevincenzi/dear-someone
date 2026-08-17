@@ -280,6 +280,29 @@ async function reserveOpening(input: {
   attempt: number;
 }): Promise<ExistingLetter> {
   const admin = createAdminClient();
+
+  // Free members receive and reply without limits, but only the first
+  // opening is included. The rejected body is never stored.
+  if (input.sender.account_status === 'free') {
+    const { count, error: openingError } = await admin
+      .from('letters')
+      .select('id', { count: 'exact', head: true })
+      .eq('sender_id', input.sender.id)
+      .eq('kind', 'opening')
+      .neq('state', 'failed');
+    if (openingError) throw openingError;
+    if ((count ?? 0) > 0) {
+      await enqueueNotice({
+        eventType: 'cadence_limited_free',
+        recipientEmail: input.sender.email_address,
+        memberId: input.sender.id,
+        dedupeKey: `membership-required/${input.providerEmailId}`,
+        payload: { membershipRequired: true },
+      });
+      throw new JobOutcome('The Free opening has already been used; annual membership is required for another opening', 'complete');
+    }
+  }
+
   const correspondenceId = crypto.randomUUID();
   const letterId = crypto.randomUUID();
   const secret = requireEnvironment('ALIAS_HMAC_SECRET');
@@ -330,12 +353,30 @@ async function reserveOpening(input: {
     }
     if (reservation?.result === 'cadence_limited') {
       const nextAvailableAt = reservation.next_available_at ?? null;
+      const isFree = input.sender.account_status === 'free';
+      let freeAttemptCount = 0;
+      if (isFree) {
+        const { error: recordError } = await admin.rpc('record_free_cadence_attempt', {
+          p_sender_id: input.sender.id,
+        });
+        if (recordError) throw recordError;
+        const { count, error: attemptError } = await admin
+          .from('opening_attempts')
+          .select('id', { count: 'exact', head: true })
+          .eq('sender_id', input.sender.id)
+          .gte('attempted_at', new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString());
+        if (attemptError) throw attemptError;
+        freeAttemptCount = count ?? 0;
+      }
+      const upgradeReminder = isFree && freeAttemptCount === 2;
       await enqueueNotice({
-        eventType: input.sender.account_status === 'free' ? 'cadence_limited_free' : 'cadence_limited_daily',
+        eventType: isFree ? 'cadence_limited_free' : 'cadence_limited_daily',
         recipientEmail: input.sender.email_address,
         memberId: input.sender.id,
-        dedupeKey: `cadence/${input.sender.id}/${nextAvailableAt ?? input.providerEmailId}`,
-        payload: { nextAvailableAt },
+        dedupeKey: upgradeReminder
+          ? `cadence-upgrade/${input.sender.id}/${nextAvailableAt ?? input.providerEmailId}`
+          : `cadence/${input.sender.id}/${nextAvailableAt ?? input.providerEmailId}`,
+        payload: { nextAvailableAt, upgradeReminder },
       });
       throw new JobOutcome('The sender cadence is not available yet; letter not retained', 'complete');
     }

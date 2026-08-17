@@ -171,6 +171,32 @@ function emailCopy(eventType: TransactionalEmailEvent, payload: Record<string, u
         action: { label: 'Visit One Reader', href: siteUrl },
       };
     case 'cadence_limited_free':
+      if (payload.membershipRequired === true) {
+        return {
+          subject: 'Your first letter has been sent',
+          preheader: 'Annual membership opens a new correspondence every 24 hours.',
+          heading: 'Your first opening has been used.',
+          paragraphs: [
+            'This new letter was not kept or forwarded. Your Free account remains active: you can receive letters and reply to every open conversation.',
+            'Annual membership is €18/year and lets you begin a new correspondence every 24 hours.',
+          ],
+          action: { label: 'Become a member', href: pricingUrl },
+          secondary: { label: 'View your account', href: memberUrl },
+        };
+      }
+      if (payload.upgradeReminder === true) {
+        return {
+          subject: 'Write more often when you are ready',
+          preheader: 'Your Free account is still active; annual membership is there when you want it.',
+          heading: 'The next letter can wait. Or not.',
+          paragraphs: [
+            `Your Free membership can begin another correspondence ${nextAvailable}. This letter was not kept or forwarded.`,
+            'Your account stays active, and every open conversation can continue. If you would like to write again sooner, annual membership opens a new correspondence every 24 hours.',
+          ],
+          action: { label: 'See annual membership', href: pricingUrl },
+          secondary: { label: 'View your account', href: memberUrl },
+        };
+      }
       return {
         subject: `You can begin another letter ${nextAvailable}`,
         preheader: 'Your new letter was not sent.',

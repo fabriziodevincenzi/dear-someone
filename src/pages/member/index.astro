@@ -63,7 +63,7 @@ const currentYear = new Date().getUTCFullYear();
         <div class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
           <div>
             <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-membership-label>Free plan</p>
-            <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-copy>Free stays light: one new correspondence every three months.</p>
+            <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-copy>Free access includes your first opening, then receiving and replying.</p>
           </div>
           <span class="border border-border px-3 py-1 text-xs uppercase tracking-[0.12em] text-muted-foreground" data-membership-state>Active</span>
         </div>
@@ -71,7 +71,7 @@ const currentYear = new Date().getUTCFullYear();
         <div class="grid border-b border-border sm:grid-cols-2">
           <div class="border-b border-border py-5 sm:border-b-0 sm:border-r sm:pr-6">
             <p class="eyebrow mb-2">Starting letters</p>
-            <p class="m-0 text-sm leading-6" data-membership-pace>One every three months</p>
+            <p class="m-0 text-sm leading-6" data-membership-pace>First opening included</p>
           </div>
           <div class="py-5 sm:pl-6">
             <p class="eyebrow mb-2">Receiving and replies</p>
@@ -80,7 +80,7 @@ const currentYear = new Date().getUTCFullYear();
         </div>
 
         <div class="flex flex-wrap items-center gap-4 pt-6" data-membership-actions>
-          <a class={buttonVariants({ size: 'small' })} href="/sign-in/?mode=signup&plan=annual" data-membership-primary>Move to annual membership</a>
+          <a class={buttonVariants({ size: 'small' })} href="#checkout" data-membership-primary>Move to annual membership</a>
           <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=cancel" data-membership-cancel>Manage or cancel</a>
           <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="/sign-in/?mode=refund" data-membership-refund>Request a refund</a>
         </div>
@@ -232,7 +232,7 @@ const currentYear = new Date().getUTCFullYear();
       </form>
     </section>
 
-    <aside class="pt-6 text-xs leading-5 text-muted-foreground">Payment actions, preference changes, consent history and privacy requests stay connected to this account. Stripe subscription management and automated deletion processing will be connected before launch.</aside>
+    <aside class="pt-6 text-xs leading-5 text-muted-foreground">Payment actions, preference changes, consent history and privacy requests stay connected to this account. Payments open in Stripe's secure checkout and billing portal.</aside>
   </main>
 
   <script>
@@ -267,6 +267,19 @@ const currentYear = new Date().getUTCFullYear();
     const statStarted = document.querySelector<HTMLElement>('[data-stat-started]');
     const statOpen = document.querySelector<HTMLElement>('[data-stat-open]');
     const statLast = document.querySelector<HTMLElement>('[data-stat-last]');
+
+    const startStripeFlow = async (functionName: 'create-checkout' | 'create-portal') => {
+      if (!supabase) return;
+      if (membershipPrimary) membershipPrimary.setAttribute('aria-busy', 'true');
+      setNote(membershipNote, 'Opening the secure payment area…');
+      const { data, error } = await supabase.functions.invoke(functionName, { body: {} });
+      if (membershipPrimary) membershipPrimary.removeAttribute('aria-busy');
+      if (error || !data?.url) {
+        setNote(membershipNote, 'We could not open the secure payment area. Please try again in a moment.', true);
+        return;
+      }
+      window.location.assign(data.url);
+    };
 
     const setNote = (element: HTMLElement | null, message: string, error = false) => {
       if (!element) return;
@@ -313,10 +326,10 @@ const currentYear = new Date().getUTCFullYear();
       return saved;
     };
 
-    const setWritingReady = (ready: boolean) => {
+    const setWritingReady = (ready: boolean, canStartOpening: boolean) => {
       document.querySelectorAll<HTMLAnchorElement>('[data-write-letter]').forEach((link) => {
-        link.href = ready ? 'mailto:write@onereader.co?subject=One%20Reader' : '#profile';
-        link.textContent = ready ? 'Write a letter' : 'Complete your profile';
+        link.href = !ready ? '#profile' : canStartOpening ? 'mailto:write@onereader.co?subject=One%20Reader' : '#checkout';
+        link.textContent = !ready ? 'Complete your profile' : canStartOpening ? 'Write a letter' : 'Become a member to write again';
       });
       if (!ready && membershipPrimary?.href.startsWith('mailto:')) {
         membershipPrimary.href = '#profile';
@@ -332,7 +345,7 @@ const currentYear = new Date().getUTCFullYear();
       const status = profile?.account_status ?? 'free';
       const seasonEnd = formatDate(profile?.founding_season_ends_at);
       const renewal = formatDate(profile?.subscription_renews_at);
-      membershipPrimary.href = '/sign-in/?mode=signup&plan=annual';
+      membershipPrimary.href = '#checkout';
       membershipPrimary.textContent = 'Move to annual membership';
 
       if (status === 'waitlisted') {
@@ -357,16 +370,17 @@ const currentYear = new Date().getUTCFullYear();
         membershipState.textContent = 'Active';
         membershipPace.textContent = 'One new letter every 24 hours';
         membershipPrimary.textContent = 'Manage subscription';
-        membershipPrimary.href = '/sign-in/?mode=cancel';
+        membershipPrimary.href = '#billing-portal';
         membershipCancel?.classList.remove('hidden');
         membershipRefund?.classList.remove('hidden');
-        if (membershipNote) membershipNote.textContent = 'Subscription changes, cancellation and eligible refund requests will open through Stripe when payment integration is enabled.';
+        if (membershipNote) membershipNote.textContent = 'Manage payment details, cancellation and eligible billing requests through Stripe.';
       } else if (status === 'checkout_pending') {
         membershipLabel.textContent = 'Annual membership';
         membershipCopy.textContent = 'Your account is ready. Complete payment to remove the limit on starting new letters.';
         membershipState.textContent = 'Payment pending';
         membershipPace.textContent = 'One new letter every 24 hours after payment';
         membershipPrimary.textContent = 'Complete membership';
+        membershipPrimary.href = '#checkout';
         if (membershipNote) membershipNote.textContent = 'The secure payment step will open through Stripe.';
       } else if (status === 'delivery_paused') {
         membershipLabel.textContent = 'Delivery paused';
@@ -377,12 +391,29 @@ const currentYear = new Date().getUTCFullYear();
         membershipPrimary.href = '#profile';
       } else {
         membershipLabel.textContent = 'Free plan';
-        membershipCopy.textContent = 'Free plan — you can start a new letter every 3 months. Replies inside an open conversation are always unlimited, and you can receive new letters any time (up to one a day, like everyone).';
+        membershipCopy.textContent = 'Free access includes your first opening. You can always receive letters and reply to open conversations; annual membership lets you open a new correspondence every 24 hours.';
         membershipState.textContent = 'Active';
-        membershipPace.textContent = 'One new letter every three months';
-        if (membershipNote) membershipNote.textContent = 'Move to annual whenever you want to remove the limit on starting new letters.';
+        membershipPace.textContent = 'First opening included';
+        membershipPrimary.textContent = 'Become a member to write again';
+        membershipPrimary.href = '#checkout';
+        if (membershipNote) membershipNote.textContent = 'Your first opening is included. Annual membership is €18/year and lets you start a new correspondence every 24 hours.';
       }
     };
+
+    membershipPrimary?.addEventListener('click', (event) => {
+      const href = membershipPrimary.getAttribute('href');
+      if (href !== '#checkout' && href !== '#billing-portal') return;
+      event.preventDefault();
+      void startStripeFlow(href === '#checkout' ? 'create-checkout' : 'create-portal');
+    });
+
+    document.querySelectorAll<HTMLAnchorElement>('[data-write-letter]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (link.getAttribute('href') !== '#checkout') return;
+        event.preventDefault();
+        void startStripeFlow('create-checkout');
+      });
+    });
 
     const addLanguageRow = (languageCode = 'en', proficiency = 'good') => {
       if (!languageList || !languageTemplate || languageList.children.length >= 10) return;
@@ -445,9 +476,12 @@ const currentYear = new Date().getUTCFullYear();
         client.from('consent_events').select('granted').eq('user_id', session.user.id).eq('purpose', 'journal_marketing').order('created_at', { ascending: false }).limit(1).maybeSingle(),
       ]);
 
-      setMembership(profile);
       let birthDetailsSaved = setBirthDetails(profile ?? {});
-      setWritingReady(birthDetailsSaved);
+      const canStartOpening = profile?.account_status === 'annual'
+        || profile?.account_status === 'founding'
+        || (profile?.account_status === 'free' && (stats?.correspondences_started_count ?? 0) === 0);
+      setMembership(profile);
+      setWritingReady(birthDetailsSaved, canStartOpening);
       if (languageList && savedLanguages?.length) {
         languageList.innerHTML = '';
         savedLanguages.forEach((language) => addLanguageRow(language.language_code, language.proficiency));
@@ -494,7 +528,7 @@ const currentYear = new Date().getUTCFullYear();
             adult_pool_eligible_at: birthResult?.adultPoolEligibleAt,
           });
           setMembership(profile);
-          setWritingReady(birthDetailsSaved);
+          setWritingReady(birthDetailsSaved, canStartOpening);
         }
         const { data: existingLanguages } = await client.from('member_languages').select('language_code').eq('user_id', session.user.id);
         const selectedCodes = new Set(languagesToSave.map((language) => language.language_code));

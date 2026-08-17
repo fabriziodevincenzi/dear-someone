@@ -54,7 +54,9 @@ Deno.serve(async (request) => {
   if (!user.email) return response({ error: 'A verified email address is required' }, 400);
   const source = payload.source === 'waitlist' ? 'waitlist' : 'signup';
   const requestedAnnual = payload.plan === 'annual';
-  const accountStatus = source === 'waitlist' ? 'waitlisted' : requestedAnnual ? 'checkout_pending' : 'free';
+  // The old waitlist link remains usable for legacy signups, but it no longer
+  // creates a blocked account now that the service is open.
+  const accountStatus = requestedAnnual ? 'checkout_pending' : 'free';
   const countryCode = typeof payload.countryCode === 'string' && /^[A-Z]{2}$/.test(payload.countryCode)
     ? payload.countryCode
     : null;

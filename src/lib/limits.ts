@@ -2,7 +2,7 @@ export type MembershipPlan = 'free' | 'annual' | 'founding-season';
 export type OpeningStatus = 'available' | 'queued';
 
 const planIntervalsMs: Record<MembershipPlan, number> = {
-  free: 90 * 24 * 60 * 60 * 1000,
+  free: Number.POSITIVE_INFINITY,
   annual: 24 * 60 * 60 * 1000,
   'founding-season': 24 * 60 * 60 * 1000,
 };
@@ -13,7 +13,7 @@ export function nextCorrespondenceAt(plan: MembershipPlan, lastOpenedAt: Date, n
 }
 
 export function canOpenCorrespondence(plan: MembershipPlan, lastOpenedAt: Date | null, now = new Date()) {
-  return lastOpenedAt === null || nextCorrespondenceAt(plan, lastOpenedAt, now).getTime() <= now.getTime();
+  return lastOpenedAt === null || (plan !== 'free' && nextCorrespondenceAt(plan, lastOpenedAt, now).getTime() <= now.getTime());
 }
 
 export function correspondenceOpeningDecision(plan: MembershipPlan, lastOpenedAt: Date | null, now = new Date()) {
@@ -27,7 +27,7 @@ export function correspondenceOpeningDecision(plan: MembershipPlan, lastOpenedAt
 
   return {
     status: 'queued' as const,
-    nextAvailableAt: nextCorrespondenceAt(plan, lastOpenedAt as Date, now),
+    nextAvailableAt: plan === 'free' ? null : nextCorrespondenceAt(plan, lastOpenedAt as Date, now),
     shouldInviteUpgrade: plan === 'free',
   };
 }

@@ -21,7 +21,7 @@ Proposta di valore: *"One letter. One reader. Maybe a reply. No judgment."* — 
 
 ## 2. Modello economico
 
-- **Piano gratuito**: una nuova corrispondenza ogni tre mesi, con la cadenza ancorata alla data di iscrizione del singolo membro (non al calendario e non a una stagione comune). Le risposte e gli scambi dentro una corrispondenza già aperta non hanno un tetto massimo e non consumano questa cadenza.
+- **Ingresso gratuito**: una prima corrispondenza per entrare nella stanza. Dopo la prima apertura, il membro può continuare a ricevere lettere e rispondere alle conversazioni aperte; per iniziare nuove corrispondenze serve l'annuale.
 - **Piano annuale**: **18 euro / 12 mesi**, quota unica. Un membro pagante può aprire una nuova corrispondenza ogni 24 ore; le risposte non consumano il limite. Il prezzo pieno va comunicato fin dalla landing page, insieme al perché del periodo gratuito iniziale — nessun trial nascosto dietro le 8 settimane gratuite.
 - **Lancio in tre passaggi**:
   1. Waitlist pubblica, con obiettivo/cap interno indicativo di **100 iscritti**. Il contatore resta **nascosto fino al 10% dell'obiettivo** (10 iscritti) — sotto quella soglia un numero piccolo toglie prova sociale invece di darla; raggiunta la soglia, il contatore va mostrato sempre. Quando il tetto viene raggiunto, il servizio parte: non si raccolgono altri iscritti in una coda separata.
@@ -46,7 +46,7 @@ Proposta di valore: *"One letter. One reader. Maybe a reply. No judgment."* — 
 ## 3. Regole di funzionamento del club
 
 - Un membro del **piano annuale** può inviare **una nuova lettera ogni 24 ore** (finestra mobile, non giorno di calendario). Comunicazione: non va presentato come una restrizione da app freemium, ma come conseguenza del fatto che ogni membro è anche l'unico lettore possibile di qualcun altro — copy indicativo vicino all'azione "Write a letter": *"You get one letter a day, because someone will be its only reader."*
-- Un membro del **piano gratuito** può aprire una nuova corrispondenza ogni tre mesi, calcolati dalla propria data di iscrizione. Questa è una cadenza di accesso, non un contatore comparativo.
+- Un membro non pagante può aprire una sola corrispondenza iniziale. Questa è una soglia di ingresso, non un contatore comparativo: ricezione e risposte alle conversazioni aperte restano disponibili.
 - Le risposte all'interno di una conversazione già aperta **non** consumano alcun limite e non hanno un numero massimo per conversazione.
 - Se la cadenza non è ancora disponibile, la nuova lettera viene rifiutata senza conservarne il testo e non partirà automaticamente più avanti. Il membro riceve la prossima data esatta e, se Free, un invito secondario e senza pressione a valutare l'annuale.
 - La verifica della casella tramite magic link diventa anche un segnale operativo di disponibilità a ricevere. Se tre link consecutivi non vengono utilizzati e non c'è altra attività email riconoscibile per 30 giorni, il membro entra nello stato **delivery paused**: non riceve nuove assegnazioni, ma non viene escluso, cancellato o considerato disinteressato. L'account e le conversazioni esistenti restano intatti. Il recupero avviene utilizzando un nuovo magic link, rispondendo dall'alias verificato della conversazione oppure cambiando email da una sessione già autenticata; finché il recupero non avviene, non si instradano nuove lettere verso una casella potenzialmente non più accessibile.

@@ -12,18 +12,18 @@ const marketData = Object.fromEntries(Object.keys(currencyByCountry).map((countr
 const steps = [
   {
     number: '01',
-    title: 'Write from your inbox',
-    body: 'Send a plain-text letter from the email address you already use. No app, profile, or public post.',
+    title: 'Join the room',
+    body: 'Create a free account with the email address you already use. No public profile, feed, or performance.',
   },
   {
     number: '02',
-    title: 'A compatible reader is chosen at random',
-    body: 'We choose one available member who can read your language. There is no catalogue to browse and no matching by interests. Your real email address stays hidden.',
+    title: 'Write your first letter',
+    body: 'Your first opening is included. We choose one available member who can read your language, and your real email address stays hidden.',
   },
   {
     number: '03',
-    title: 'A letter may find you too',
-    body: 'When another member is matched with you, the letter arrives in your normal inbox from a private alias. You can read it without creating a profile or exposing your address.',
+    title: 'Become a member to open again',
+    body: `Annual membership is ${initialPrice} per year and lets you begin a new correspondence every 24 hours. You can receive letters and reply either way.`,
   },
   {
     number: '04',
@@ -85,7 +85,7 @@ const timelineStages = [
             <a class={buttonVariants({ size: 'large' })} href="/sign-in/?mode=signup&plan=free">Start free</a>
             <a class={buttonVariants({ variant: 'quiet', size: 'large' })} href="#how-it-works">See how it works</a>
           </div>
-          <p class="mt-5 max-w-md text-sm text-muted-foreground">Start free with one new correspondence every three months, or make more room with annual membership and a new opening every 24 hours.</p>
+          <p class="mt-5 max-w-md text-sm text-muted-foreground">Your first opening is free. After that, you can always receive letters and reply; annual membership lets you begin a new correspondence every 24 hours.</p>
         </div>
 
         <EmailPreview />
@@ -151,13 +151,13 @@ const timelineStages = [
         <div>
           <p class="eyebrow mb-5">Membership</p>
           <h2 class="section-title balance">Choose how you want to begin.</h2>
-          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Start free and keep the ritual occasional, or choose annual membership when you want a new opening available every day.</p>
+          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Begin with one free opening, then choose annual membership when you want to open a new correspondence every day. Receiving letters and replying remain part of the room.</p>
         </div>
         <div class="grid gap-8 border-t border-border pt-8 sm:grid-cols-2 sm:gap-10">
           <div class="flex flex-col">
             <p class="eyebrow mb-4">Free</p>
-            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">One correspondence every three months.</h3>
-            <p class="mt-4 text-sm leading-6 text-muted-foreground">The date follows your own sign-up day. Replies and open conversations continue without a cap.</p>
+            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">One opening to enter the room.</h3>
+            <p class="mt-4 text-sm leading-6 text-muted-foreground">Your first letter is free. You can always receive letters and reply to open conversations.</p>
             <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=free">Start free</a>
           </div>
           <div class="flex flex-col border-t border-border pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
@@ -165,7 +165,7 @@ const timelineStages = [
             <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]" data-market-price>{initialPrice} <span class="text-base text-muted-foreground">/ year</span></h3>
             <ul class="mt-5 grid gap-2 text-sm leading-6 text-muted-foreground">
               <li>One new opening every 24 hours.</li>
-              <li>Up to a year's worth of chances to write and receive.</li>
+              <li>Receive letters and continue open conversations.</li>
               <li>Replies inside open conversations never use the cadence.</li>
             </ul>
             <a class={buttonVariants({ size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=annual" data-join-membership>Join annual membership</a>

@@ -33,14 +33,13 @@ test('unknown senders are told that consent was not inferred', () => {
   assert.match(rendered.text, /Register explicitly/i);
 });
 
-test('Free cadence gives an exact date while preserving replies and receiving', () => {
+test('Free members can keep receiving and replying after the first opening', () => {
   const rendered = renderTransactionalEmail({
     eventType: 'cadence_limited_free',
-    payload: { nextAvailableAt: '2026-11-12T09:45:00.000Z' },
+    payload: { membershipRequired: true },
   });
-  assert.match(rendered.subject, /12 November 2026/);
-  assert.match(rendered.text, /still receive letters/i);
-  assert.match(rendered.text, /Replies never use your opening allowance/i);
+  assert.match(rendered.subject, /first letter/i);
+  assert.match(rendered.text, /receive letters and reply/i);
   assert.match(rendered.text, /annual membership/i);
 });
 
