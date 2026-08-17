@@ -32,26 +32,6 @@ const steps = [
   },
 ];
 
-const timelineStages = [
-  {
-    label: 'The beginning',
-    eyebrow: 'Complete',
-    title: 'The first room filled',
-    body: 'The opening group gave the service enough readers and writers for a letter to find a real person.',
-  },
-  {
-    label: 'The opening',
-    eyebrow: 'Complete',
-    title: 'One Reader opened',
-    body: 'The service moved from a small beginning to an open correspondence club. New members can join without an application.',
-  },
-  {
-    label: 'Now',
-    eyebrow: 'Open to everyone',
-    title: 'Choose your pace',
-    body: 'Start on Free or make more room with annual membership. You can change pace whenever you want.',
-  },
-];
 ---
 
 <Layout title="One Reader — One letter. One reader." description="A private correspondence club where one letter reaches one unknown reader. No profiles, no feed, no judgment.">
@@ -62,12 +42,11 @@ const timelineStages = [
       </a>
       <nav class="hidden items-center gap-8 text-sm text-muted-foreground md:flex" aria-label="Main navigation">
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#how-it-works">How it works</a>
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#timeline">Timeline</a>
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#membership">Membership</a>
       </nav>
       <div class="flex items-center gap-3">
         <a class="hidden text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline sm:inline" href="/sign-in/">Log in</a>
-        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/sign-in/?mode=signup&plan=free">Sign up</a>
+        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/sign-in/?mode=signup&plan=free">Start free</a>
       </div>
     </div>
   </header>
@@ -114,61 +93,29 @@ const timelineStages = [
       </div>
     </section>
 
-    <section class="border-b border-border py-20 sm:py-28" id="timeline">
-      <div class="shell">
-        <div class="grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:gap-20">
-          <div>
-            <p class="eyebrow mb-5">The first season</p>
-            <h2 class="section-title balance">The beginning is complete. The room is open.</h2>
-          </div>
-          <p class="max-w-2xl self-end text-lg leading-8 text-muted-foreground">The first group got the correspondence moving. Now the founding season is behind us and anyone can choose a way in.</p>
-        </div>
-
-        <div class="relative mt-16">
-          <div class="absolute bottom-0 left-4 top-0 border-l border-accent/40 md:bottom-auto md:left-0 md:right-0 md:top-4 md:border-l-0 md:border-t" aria-hidden="true"></div>
-          <div class="relative grid gap-12 md:grid-cols-3 md:gap-10">
-            {timelineStages.map((stage, index) => (
-              <article class="relative pl-12 md:pl-0 md:pt-12">
-                <span class:list={[
-                  'absolute left-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs md:left-0',
-                  index === timelineStages.length - 1 ? 'border-accent bg-accent text-primary-foreground' : 'border-accent bg-background text-accent',
-                ]} aria-label={index === timelineStages.length - 1 ? 'Current stage' : 'Completed stage'}>
-                  {index + 1}
-                </span>
-                <p class="eyebrow mb-3">{stage.label}</p>
-                <p class="mb-5 text-xs uppercase tracking-[0.12em] text-accent">{index === timelineStages.length - 1 ? 'Current stage · ' : ''}{stage.eyebrow}</p>
-                <h3 class="m-0 font-serif text-2xl font-normal tracking-[-0.025em]">{stage.title}</h3>
-                <p class="mt-4 m-0 leading-7 text-muted-foreground">{stage.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="border-b border-border py-20 sm:py-28" id="membership">
       <div class="shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
         <div>
           <p class="eyebrow mb-5">Membership</p>
-          <h2 class="section-title balance">Choose how you want to begin.</h2>
-          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Begin with one free opening, then choose annual membership when you want to open a new correspondence every day. Receiving letters and replying remain part of the room.</p>
+          <h2 class="section-title balance">Start free. Upgrade when you need more room.</h2>
+          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Create your account and send one free opening. You can always receive letters and reply; annual membership is there when you want to begin another correspondence.</p>
         </div>
         <div class="grid gap-8 border-t border-border pt-8 sm:grid-cols-2 sm:gap-10">
           <div class="flex flex-col">
             <p class="eyebrow mb-4">Free</p>
-            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">One opening to enter the room.</h3>
-            <p class="mt-4 text-sm leading-6 text-muted-foreground">Your first letter is free. You can always receive letters and reply to open conversations.</p>
+            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">Your first opening is free.</h3>
+            <p class="mt-4 text-sm leading-6 text-muted-foreground">Receive letters and reply to open conversations without a membership.</p>
             <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=free">Start free</a>
           </div>
           <div class="flex flex-col border-t border-border pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
             <p class="eyebrow mb-4 text-accent">Annual membership</p>
             <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]" data-market-price>{initialPrice} <span class="text-base text-muted-foreground">/ year</span></h3>
             <ul class="mt-5 grid gap-2 text-sm leading-6 text-muted-foreground">
-              <li>One new opening every 24 hours.</li>
+              <li>Begin another correspondence every 24 hours.</li>
               <li>Receive letters and continue open conversations.</li>
               <li>Replies inside open conversations never use the cadence.</li>
             </ul>
-            <a class={buttonVariants({ size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=annual" data-join-membership>Join annual membership</a>
+            <a class={buttonVariants({ size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=annual" data-join-membership>Choose annual membership</a>
           </div>
         </div>
       </div>
