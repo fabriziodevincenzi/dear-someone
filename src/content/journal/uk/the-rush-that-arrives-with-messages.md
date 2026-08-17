@@ -1,0 +1,13 @@
+---
+lang: uk
+key: the-rush-that-arrives-with-messages
+title: Поспіх, який приходить разом із повідомленнями
+meta-description: One Reader Journal.
+publishedAt: '2026-08-17'
+author: One Reader
+readingTime: 4 min read
+---
+
+Проблема сучасної комунікації не лише в кількості повідомлень, а в тому, що кожне може перервати будь-яку справу. Дослідження 2026 року за участю 774 дорослих пов’язує частіші листи й чат-сповіщення з відчуттям навантаження та поспіху. [Дослідження](https://biblio.ugent.be/publication/01K9PZ7MSM4NNRBAB57S360EWV) і праця в *Frontiers in Psychology* показують, що паралельна комунікація руйнує потік думки. Лист не перетворює затримку на оцінку.
+
+[Write to someone](https://onereader.co/)
