@@ -15,7 +15,14 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      // Legacy blog URLs redirect to the Journal and must not be advertised
+      // as indexable pages in the sitemap.
+      filter: (page) => !new URL(page).pathname.startsWith('/blog'),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
