@@ -254,11 +254,13 @@ const currentYear = new Date().getUTCFullYear();
       const { data, error } = await supabase.functions.invoke(functionName, { body: {} });
       if (membershipPrimary) membershipPrimary.removeAttribute('aria-busy');
       if (error || !data?.url) {
-        const detail = typeof data?.error === 'string'
-          ? ` ${data.error}`
-          : error?.message
-          ? ` ${error.message}`
-          : '';
+        let serverMessage = typeof data?.error === 'string' ? data.error : '';
+        const response = (error as { context?: Response } | null)?.context;
+        if (!serverMessage && response && typeof response.clone === 'function') {
+          const payload = await response.clone().json().catch(() => null) as { error?: unknown } | null;
+          if (typeof payload?.error === 'string') serverMessage = payload.error;
+        }
+        const detail = serverMessage ? ` ${serverMessage}` : error?.message ? ` ${error.message}` : '';
         setNote(membershipNote, `We could not open the secure payment area.${detail || ' Please try again in a moment.'}`, true);
         return;
       }
