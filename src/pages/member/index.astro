@@ -46,7 +46,7 @@ const currentYear = new Date().getUTCFullYear();
         <h1 class="section-title balance max-w-3xl">Everything practical, in one place.</h1>
         <p class="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">Your letters stay in your inbox. This is the small account space for your pace, preferences, consents, payments and privacy.</p>
       </div>
-      <a class={buttonVariants({ size: 'large' })} href="mailto:write@onereader.co?subject=One%20Reader" data-write-letter>Write to someone</a>
+      <a class={buttonVariants({ size: 'large' })} href="mailto:write@letters.onereader.co?subject=One%20Reader" data-write-letter>Write to someone</a>
     </section>
 
     <section id="membership" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="membership-heading">
@@ -308,7 +308,7 @@ const currentYear = new Date().getUTCFullYear();
 
     const setWritingReady = (ready: boolean, canStartOpening: boolean) => {
       document.querySelectorAll<HTMLAnchorElement>('[data-write-letter]').forEach((link) => {
-        link.href = !ready ? '#profile' : canStartOpening ? 'mailto:write@onereader.co?subject=One%20Reader' : '#checkout';
+        link.href = !ready ? '#profile' : canStartOpening ? 'mailto:write@letters.onereader.co?subject=One%20Reader' : '#checkout';
         link.textContent = !ready ? 'Complete your profile' : canStartOpening ? 'Write a letter' : 'Become a member to write again';
       });
       if (!ready && membershipPrimary?.href.startsWith('mailto:')) {
@@ -340,7 +340,7 @@ const currentYear = new Date().getUTCFullYear();
         membershipCopy.textContent = seasonEnd ? `Founding season — you can start a new letter once a day, free, until ${seasonEnd}.` : 'Founding season — you can start a new letter once a day, free, while the season is open.';
         membershipPace.textContent = 'One new letter every 24 hours';
         membershipPrimary.textContent = 'Write a letter';
-        membershipPrimary.href = 'mailto:write@onereader.co?subject=One%20Reader';
+        membershipPrimary.href = 'mailto:write@letters.onereader.co?subject=One%20Reader';
         if (membershipNote) membershipNote.textContent = 'After the season, choose Free or annual at the founding price for your first three paid years.';
       } else if (status === 'annual') {
         membershipLabel.textContent = 'Annual membership';

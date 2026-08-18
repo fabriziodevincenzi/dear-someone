@@ -203,7 +203,7 @@ async function processInbound(job: MailJob) {
     letter.correspondence_id,
     letter.recipient_id,
   );
-  const aliasDomain = Deno.env.get('LETTER_ALIAS_DOMAIN') ?? 'reply.onereader.co';
+  const aliasDomain = Deno.env.get('LETTER_ALIAS_DOMAIN') ?? 'letters.onereader.co';
   const replyAddress = `r-${aliasToken}@${aliasDomain}`;
   const subject = letter.kind === 'reply' ? 'Re: A letter for you' : 'A letter for you';
   const actionSecret = requireEnvironment('ALIAS_HMAC_SECRET');
@@ -486,7 +486,7 @@ async function memberEmail(memberId: string) {
 
 function inboundRoute(email: ReceivedEmail): { kind: 'opening' } | { kind: 'reply'; token: string } {
   const addresses = [...(email.to ?? []), ...(email.received_for ?? [])].map(normalizeEmailAddress);
-  const configuredWriteAddress = (Deno.env.get('LETTER_WRITE_ADDRESS') ?? 'write@onereader.co').toLowerCase();
+  const configuredWriteAddress = (Deno.env.get('LETTER_WRITE_ADDRESS') ?? 'write@letters.onereader.co').toLowerCase();
   const inboundWriteAddresses = new Set([
     configuredWriteAddress,
     'write@onereader.co',
@@ -494,7 +494,7 @@ function inboundRoute(email: ReceivedEmail): { kind: 'opening' } | { kind: 'repl
   ]);
   if (addresses.some((address) => inboundWriteAddresses.has(address))) return { kind: 'opening' };
 
-  const aliasDomain = (Deno.env.get('LETTER_ALIAS_DOMAIN') ?? 'reply.onereader.co').toLowerCase();
+  const aliasDomain = (Deno.env.get('LETTER_ALIAS_DOMAIN') ?? 'letters.onereader.co').toLowerCase();
   for (const address of addresses) {
     const match = address.match(new RegExp(`^r-([A-Za-z0-9_-]{20,64})@${escapeRegExp(aliasDomain)}$`));
     if (match) return { kind: 'reply', token: match[1] };
