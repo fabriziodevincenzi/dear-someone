@@ -69,6 +69,7 @@ Deno.serve(async (request) => {
       customer: customerId,
       client_reference_id: userData.user.id,
       line_items: [{ price: priceId, quantity: 1 }],
+      payment_method_types: ['card'],
       success_url: `${siteUrl}/member/?stripe=success`,
       cancel_url: `${siteUrl}/member/?stripe=cancelled`,
       billing_address_collection: 'auto',
