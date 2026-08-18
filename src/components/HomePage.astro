@@ -260,15 +260,13 @@ const steps = [
       return;
     }
     window.localStorage.removeItem(intentKey);
-    fields?.classList.add('hidden');
-    success?.classList.remove('hidden');
-    window.setTimeout(() => window.location.assign('/member/'), 700);
+    window.location.assign('/welcome/');
   };
 
   supabase?.auth.onAuthStateChange((event, session) => {
     const hasCallbackToken = window.location.hash.includes('access_token');
     if (session && hasCallbackToken && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
-      window.history.replaceState({}, document.title, '/');
+      window.history.replaceState({}, document.title, '/welcome/');
       window.setTimeout(() => void finishFreeSignup(session), 0);
     }
   });
@@ -298,7 +296,7 @@ const steps = [
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/welcome/`,
         captchaToken: captchaToken ?? undefined,
         data: {
           source: 'signup',
