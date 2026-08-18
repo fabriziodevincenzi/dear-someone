@@ -486,7 +486,7 @@ async function memberEmail(memberId: string) {
 
 function inboundRoute(email: ReceivedEmail): { kind: 'opening' } | { kind: 'reply'; token: string } {
   const addresses = [...(email.to ?? []), ...(email.received_for ?? [])].map(normalizeEmailAddress);
-  const configuredWriteAddress = (Deno.env.get('LETTER_WRITE_ADDRESS') ?? 'write@letters.onereader.co').toLowerCase();
+  const configuredWriteAddress = (Deno.env.get('LETTER_WRITE_ADDRESS') ?? 'write@onereader.co').toLowerCase();
   const inboundWriteAddresses = new Set([
     configuredWriteAddress,
     'write@onereader.co',
