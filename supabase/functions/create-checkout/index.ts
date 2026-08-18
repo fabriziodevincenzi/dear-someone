@@ -63,7 +63,7 @@ Deno.serve(async (request) => {
       if (error) throw error;
     }
 
-    const siteUrl = requireEnvironment('SITE_URL').replace(/\/$/, '');
+    const siteUrl = (Deno.env.get('SITE_URL') ?? 'https://onereader.co').replace(/\/$/, '');
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
