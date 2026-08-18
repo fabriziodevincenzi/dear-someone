@@ -11,23 +11,23 @@ const marketData = Object.fromEntries(Object.keys(currencyByCountry).map((countr
 
 const steps = [
   {
-    number: '01',
-    title: 'Join the room',
-    body: 'Create a free account with the email address you already use. No public profile, feed, or performance.',
+    icon: 'write',
+    title: 'Write a letter',
+    body: 'Write to someone you do not know, from the quiet of your own inbox.',
   },
   {
-    number: '02',
-    title: 'Write your first letter',
-    body: 'Your first opening is included. We choose one available member who can read your language, and your real email address stays hidden.',
+    icon: 'match',
+    title: 'We find a reader',
+    body: 'We choose one person who can read your language. Your address stays private.',
   },
   {
-    number: '03',
-    title: 'Become a member to open again',
-    body: `Annual membership is ${initialPrice} per year and lets you begin a new correspondence every 24 hours. You can receive letters and reply either way.`,
+    icon: 'inbox',
+    title: 'It arrives by email',
+    body: 'Your letter reaches their inbox. There is no public profile, feed, or performance.',
   },
   {
-    number: '04',
-    title: 'Reply, stop, or let it end',
+    icon: 'reply',
+    title: 'Reply if you want',
     body: 'You can answer in your own words, choose to stop the correspondence, or leave room for silence. None of those choices is a score.',
   },
 ];
@@ -81,15 +81,20 @@ const steps = [
           <p class="max-w-2xl self-end text-lg leading-8 text-muted-foreground">One Reader carries the letter and protects both addresses. Everything that matters happens between two people, by email.</p>
         </div>
 
-        <ol class="mt-16 border-t border-border">
+        <div class="mt-16 grid border-y border-border sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step) => (
-            <li class="grid gap-4 border-b border-border py-8 md:grid-cols-[5rem_0.65fr_1fr] md:gap-10 md:py-10">
-              <span class="eyebrow pt-1" aria-hidden="true">{step.number}</span>
+            <article class="border-b border-border px-0 py-8 sm:px-7 sm:py-9 lg:border-b-0 lg:border-r lg:px-8 lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0">
+              <div class="mb-7 flex h-11 w-11 items-center justify-center rounded-full border border-accent/50 text-accent" aria-hidden="true">
+                {step.icon === 'write' && <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>}
+                {step.icon === 'match' && <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12h7M12 8.5v7"/></svg>}
+                {step.icon === 'inbox' && <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5.5h16v13H4z"/><path d="m4 7 8 6 8-6M4 15h4l1.5 2h5L16 15h4"/></svg>}
+                {step.icon === 'reply' && <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 8 5 12l4 4"/><path d="M5 12h8a6 6 0 0 1 6 6v1"/></svg>}
+              </div>
               <h3 class="m-0 font-serif text-2xl font-normal tracking-[-0.025em]">{step.title}</h3>
-              <p class="m-0 max-w-xl leading-7 text-muted-foreground">{step.body}</p>
-            </li>
+              <p class="mt-4 m-0 leading-7 text-muted-foreground">{step.body}</p>
+            </article>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
 
@@ -102,13 +107,13 @@ const steps = [
         </div>
         <div class="grid gap-8 border-t border-border pt-8 sm:grid-cols-2 sm:gap-10">
           <div class="flex flex-col">
-            <p class="eyebrow mb-4">Free</p>
+            <p class="eyebrow mb-4">Reader</p>
             <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">Your first opening is free.</h3>
             <p class="mt-4 text-sm leading-6 text-muted-foreground">Receive letters and reply to open conversations without a membership.</p>
             <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=free">Start free</a>
           </div>
           <div class="flex flex-col border-t border-border pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
-            <p class="eyebrow mb-4 text-accent">Annual membership</p>
+            <p class="eyebrow mb-4 text-accent">Reader + Writer</p>
             <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]" data-market-price>{initialPrice} <span class="text-base text-muted-foreground">/ year</span></h3>
             <ul class="mt-5 grid gap-2 text-sm leading-6 text-muted-foreground">
               <li>Begin another correspondence every 24 hours.</li>

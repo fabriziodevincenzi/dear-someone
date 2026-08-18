@@ -14,7 +14,7 @@ import { Input } from '../../components/ui/Input';
 
       <div class="mt-8 hidden border-y border-border py-5" data-plan-summary>
         <p class="eyebrow mb-3">Your starting plan</p>
-        <p class="font-serif text-2xl" data-plan-name>Free</p>
+        <p class="font-serif text-2xl" data-plan-name>Reader</p>
         <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-plan-description>Your first opening is free. Receive letters and reply without paying. Upgrade later to begin another correspondence every 24 hours.</p>
       </div>
 
@@ -79,10 +79,10 @@ import { Input } from '../../components/ui/Input';
       description.textContent = plan === 'annual'
         ? `Create your account first. After you verify your email, continue to annual membership at ${formattedPrice} / year.`
         : 'Create your account and send one opening free. You can receive letters and reply; payment is only needed when you want to begin another correspondence.';
-      planName.textContent = plan === 'annual' ? `Annual · ${formattedPrice} / year` : 'Free · first opening included';
+      planName.textContent = plan === 'annual' ? `Reader + Writer · ${formattedPrice} / year` : 'Reader · first opening included';
       planDescription.textContent = plan === 'annual'
-        ? 'After payment, begin another correspondence every 24 hours. Receiving and replying remain available.'
-        : 'Send your first opening free. Receive letters and reply without paying. Upgrade later to open another correspondence every 24 hours.';
+        ? 'After payment, you can begin another correspondence every 24 hours. Receiving and replying remain available.'
+        : 'Start as a Reader with one free opening. Receive letters and reply without paying; upgrade later to write again.';
       summary.classList.remove('hidden');
       signupConsents.classList.remove('hidden');
       termsCheckbox.required = true;
