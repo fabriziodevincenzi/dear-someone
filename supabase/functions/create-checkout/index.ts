@@ -44,7 +44,11 @@ Deno.serve(async (request) => {
     const body = await request.json().catch(() => ({}));
     const requestedCurrency = typeof body.currency === 'string' ? body.currency.toUpperCase() : null;
     const currency = requestedCurrency || preferences.data?.market_currency || 'EUR';
-    const priceId = priceIds()[currency];
+    const configuredPrices = priceIds();
+    // A Stripe Price with currency_options has one Price ID for all its
+    // currencies. Keep EUR as a fallback when the JSON stores only the
+    // default currency entry.
+    const priceId = configuredPrices[currency] ?? configuredPrices.EUR;
     if (!priceId) return response({ error: `Stripe price is not configured for ${currency}` }, 422);
 
     const stripe = new Stripe(requireEnvironment('STRIPE_SECRET_KEY'), { apiVersion: '2025-03-31.basil' });
