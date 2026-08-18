@@ -10,10 +10,6 @@ const isChangeEmail = new URL(Astro.request.url).searchParams.get('mode') === 'c
   <header class="border-b border-border">
     <div class="shell flex min-h-20 items-center justify-between gap-6">
       <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
-      <nav class="flex items-center gap-6 text-sm text-muted-foreground" aria-label="Main navigation">
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/#how-it-works">How it works</a>
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/#start-free">Start free</a>
-      </nav>
     </div>
   </header>
 
@@ -53,6 +49,18 @@ const isChangeEmail = new URL(Astro.request.url).searchParams.get('mode') === 'c
     note.textContent = message;
     note.classList.remove('hidden', 'text-accent', 'text-destructive');
     note.classList.add(error ? 'text-destructive' : 'text-accent');
+  };
+
+  const showLeadNote = () => {
+    if (!note) return;
+    note.textContent = 'There is no account attached to this address yet. ';
+    const link = document.createElement('a');
+    link.href = '/#start-free';
+    link.textContent = 'Start free from the home page';
+    link.className = 'underline underline-offset-4';
+    note.append(link);
+    note.classList.remove('hidden', 'text-accent', 'text-destructive');
+    note.classList.add('text-accent');
   };
 
   supabase?.auth.onAuthStateChange((event, session) => {
@@ -99,6 +107,12 @@ const isChangeEmail = new URL(Astro.request.url).searchParams.get('mode') === 'c
     });
     if (submitButton) submitButton.disabled = false;
     if (error) {
+      if (/signups? not allowed|user not found|no user/i.test(error.message)) {
+        await supabase.from('leads').insert({ email_address: email, source: 'sign_in' });
+        if (submitButton) submitButton.disabled = false;
+        showLeadNote();
+        return;
+      }
       showNote('We could not send a sign-in link. Check the address or create an account from the home page first.', true);
       return;
     }
