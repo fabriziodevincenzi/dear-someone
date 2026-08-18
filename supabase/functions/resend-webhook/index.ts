@@ -46,7 +46,49 @@ Deno.serve(async (request) => {
       .select('id')
       .single();
 
-    if (eventError?.code === '23505') return jsonResponse({ ok: true, duplicate: true });
+    if (eventError?.code === '23505') {
+      // Resend replays keep the original svix-id. Treat a replay of a received
+      // email as a request to resume its internal job instead of discarding it
+      // as an ordinary duplicate webhook.
+      if (event.type === 'email.received' && providerEmailId) {
+        const { data: existingEvent, error: existingEventError } = await admin
+          .from('email_provider_events')
+          .select('id, status')
+          .eq('provider_event_id', webhookId)
+          .maybeSingle();
+        if (existingEventError) throw existingEventError;
+
+        if (existingEvent && existingEvent.status !== 'processed') {
+          const { data: existingJob, error: existingJobError } = await admin
+            .from('mail_jobs')
+            .select('id, status')
+            .eq('provider_event_id', existingEvent.id)
+            .order('id', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (existingJobError) throw existingJobError;
+
+          if (existingJob && existingJob.status !== 'completed') {
+            const { error: retryError } = await admin.rpc('retry_mail_job', {
+              p_job_id: existingJob.id,
+              p_error: 'Webhook replay requested',
+              p_delay_seconds: 1,
+              p_max_attempts: 8,
+            });
+            if (retryError) throw retryError;
+
+            await admin
+              .from('email_provider_events')
+              .update({ status: 'queued', processed_at: null })
+              .eq('id', existingEvent.id);
+            kickMailWorker();
+            return jsonResponse({ ok: true, replayed: true });
+          }
+        }
+      }
+
+      return jsonResponse({ ok: true, duplicate: true });
+    }
     if (eventError || !storedEvent) throw eventError ?? new Error('Could not record webhook event');
 
     if (event.type === 'email.received' && providerEmailId) {
@@ -62,13 +104,7 @@ Deno.serve(async (request) => {
         .update({ status: 'queued' })
         .eq('id', storedEvent.id);
 
-      const workerSecret = Deno.env.get('WORKER_SECRET');
-      if (workerSecret) {
-        EdgeRuntime.waitUntil(fetch(`${requireEnvironment('SUPABASE_URL')}/functions/v1/mail-worker`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${workerSecret}` },
-        }).catch(() => undefined));
-      }
+      kickMailWorker();
     } else if (event.type === 'email.delivered' && providerEmailId) {
       const { error } = await admin.rpc('record_provider_delivery', {
         p_provider_outbound_id: providerEmailId,
@@ -153,6 +189,16 @@ function kickTransactionalWorker() {
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   if (!secret || !supabaseUrl) return;
   EdgeRuntime.waitUntil(fetch(`${supabaseUrl}/functions/v1/transactional-worker`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${secret}` },
+  }).catch(() => undefined));
+}
+
+function kickMailWorker() {
+  const secret = Deno.env.get('WORKER_SECRET');
+  const supabaseUrl = Deno.env.get('SUPABASE_URL');
+  if (!secret || !supabaseUrl) return;
+  EdgeRuntime.waitUntil(fetch(`${supabaseUrl}/functions/v1/mail-worker`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${secret}` },
   }).catch(() => undefined));
