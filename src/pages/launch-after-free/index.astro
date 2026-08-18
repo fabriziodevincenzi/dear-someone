@@ -2,12 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import EmailPreview from '../../components/EmailPreview.astro';
 import { buttonVariants } from '../../components/ui/Button';
-import { currencyByCountry, fallbackMarket, formatAnnualPrice, marketForCountry } from '../../lib/market-pricing';
-
-// The static preview starts in EUR; deployment can pass a CDN country header once the site is server-rendered.
-const initialMarket = marketForCountry();
-const initialPrice = formatAnnualPrice(initialMarket.amount, initialMarket.currency);
-const marketData = Object.fromEntries(Object.keys(currencyByCountry).map((country) => [country, marketForCountry(country)]));
 
 const steps = [
   {
@@ -42,7 +36,7 @@ const steps = [
       </a>
       <nav class="hidden items-center gap-8 text-sm text-muted-foreground md:flex" aria-label="Main navigation">
         <a class="underline-offset-4 hover:text-foreground hover:underline" href="#how-it-works">How it works</a>
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#membership">Membership</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="#start-free">Start free</a>
       </nav>
       <div class="flex items-center gap-3">
         <a class="hidden text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline sm:inline" href="/sign-in/">Log in</a>
@@ -64,7 +58,7 @@ const steps = [
             <a class={buttonVariants({ size: 'large' })} href="/sign-in/?mode=signup&plan=free">Start free</a>
             <a class={buttonVariants({ variant: 'quiet', size: 'large' })} href="#how-it-works">See how it works</a>
           </div>
-          <p class="mt-5 max-w-md text-sm text-muted-foreground">Your first opening is free. After that, you can always receive letters and reply; annual membership lets you begin a new correspondence every 24 hours.</p>
+          <p class="mt-5 max-w-md text-sm text-muted-foreground">Your first letter is free. After sending it, you can always receive letters and reply; annual membership becomes available if you want to write to someone new again.</p>
         </div>
 
         <EmailPreview />
@@ -98,30 +92,21 @@ const steps = [
       </div>
     </section>
 
-    <section class="border-b border-border py-20 sm:py-28" id="membership">
+    <section class="border-b border-border py-20 sm:py-28" id="start-free">
       <div class="shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
         <div>
-          <p class="eyebrow mb-5">Membership</p>
-          <h2 class="section-title balance">Start free. Upgrade when you need more room.</h2>
-          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Create your account and send one free opening. You can always receive letters and reply; annual membership is there when you want to begin another correspondence.</p>
+          <p class="eyebrow mb-5">Start free</p>
+          <h2 class="section-title balance">One letter to send. Then a room to receive from.</h2>
+          <p class="mt-7 max-w-lg leading-7 text-muted-foreground">Create your free account with your email. You can send one first letter, then stay as a Reader: receive letters and reply to conversations already open.</p>
         </div>
-        <div class="grid gap-8 border-t border-border pt-8 sm:grid-cols-2 sm:gap-10">
-          <div class="flex flex-col">
-            <p class="eyebrow mb-4">Reader</p>
-            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]">Your first opening is free.</h3>
-            <p class="mt-4 text-sm leading-6 text-muted-foreground">Receive letters and reply to open conversations without a membership.</p>
-            <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=free">Start free</a>
-          </div>
-          <div class="flex flex-col border-t border-border pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
-            <p class="eyebrow mb-4 text-accent">Reader + Writer</p>
-            <h3 class="font-serif text-3xl font-normal tracking-[-0.03em]" data-market-price>{initialPrice} <span class="text-base text-muted-foreground">/ year</span></h3>
-            <ul class="mt-5 grid gap-2 text-sm leading-6 text-muted-foreground">
-              <li>Begin another correspondence every 24 hours.</li>
-              <li>Receive letters and continue open conversations.</li>
-              <li>Replies inside open conversations never use the cadence.</li>
-            </ul>
-            <a class={buttonVariants({ size: 'small' }) + ' mt-6 w-fit'} href="/sign-in/?mode=signup&plan=annual" data-join-membership>Choose annual membership</a>
-          </div>
+        <div class="border-t border-border pt-8">
+          <p class="max-w-xl text-lg leading-8">Your first letter is included. If you want to write to someone new again, annual membership becomes available after that first attempt.</p>
+          <form class="mt-8 grid gap-3 sm:grid-cols-[1fr_auto]" data-start-free-form>
+            <label class="sr-only" for="start-free-email">Email address</label>
+            <input class="h-12 border border-border bg-background px-4 text-base outline-none transition focus:border-accent" id="start-free-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+            <button class={buttonVariants({ size: 'large' })} type="submit">Start free</button>
+          </form>
+          <p class="mt-4 max-w-xl text-xs leading-5 text-muted-foreground">No payment details now. We’ll verify your address and take you to the short account setup.</p>
         </div>
       </div>
     </section>
@@ -153,21 +138,17 @@ const steps = [
   </footer>
 </Layout>
 
-<script is:inline define:vars={{ marketData, fallbackMarket }}>
-  const region = navigator.language.split('-')[1]?.toUpperCase();
-  const selected = (region && marketData[region]) || fallbackMarket;
-  const formatted = new Intl.NumberFormat(navigator.language, {
-    style: 'currency',
-    currency: selected.currency,
-    maximumFractionDigits: selected.currency === 'AUD' ? 2 : 0,
-  }).format(selected.amount);
-
+<script is:inline>
   document.querySelectorAll('[data-market-price]').forEach((element) => {
     element.firstChild.textContent = `${formatted} `;
   });
 
-  const membershipLink = document.querySelector('[data-join-membership]');
-  if (membershipLink instanceof HTMLAnchorElement && region) {
-    membershipLink.href = `/sign-in/?mode=signup&plan=annual&market=${region}`;
-  }
+  const startFreeForm = document.querySelector<HTMLFormElement>('[data-start-free-form]');
+  startFreeForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const emailField = startFreeForm.elements.namedItem('email');
+    const email = emailField instanceof HTMLInputElement ? emailField.value.trim() : '';
+    if (!email) return;
+    window.location.assign(`/sign-in/?mode=signup&plan=free&email=${encodeURIComponent(email)}`);
+  });
 </script>

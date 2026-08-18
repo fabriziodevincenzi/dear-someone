@@ -71,7 +71,11 @@ import { Input } from '../../components/ui/Input';
     const flowHelper = document.querySelector<HTMLElement>('[data-flow-helper]');
     const note = document.querySelector<HTMLElement>('[data-magic-link-note]');
     const form = document.querySelector<HTMLFormElement>('[data-magic-link-form]')!;
+    const emailInput = document.querySelector<HTMLInputElement>('#sign-in-email')!;
     const signupIntentKey = 'dear-someone:signup-intent';
+
+    const emailFromHome = params.get('email');
+    if (isSignup && emailFromHome) emailInput.value = emailFromHome;
 
     if (isSignup) {
       eyebrow.textContent = 'Create your account';
