@@ -18,5 +18,11 @@ export const jsonResponse = (body: Record<string, unknown>, status = 200) => new
 });
 
 export function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : String(error);
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
 }

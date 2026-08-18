@@ -434,7 +434,7 @@ async function reserveReply(input: {
     .eq('permitted_sender_id', input.senderId)
     .eq('active', true)
     .gt('expires_at', new Date().toISOString());
-  if (aliasError) throw aliasError;
+  if (aliasError) throw new Error(`Could not inspect conversation aliases: ${errorMessage(aliasError)}`);
   for (const alias of activeAliases ?? []) {
     const derivedToken = await deriveAliasToken(
       requireEnvironment('ALIAS_HMAC_SECRET'),
