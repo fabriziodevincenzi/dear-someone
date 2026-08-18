@@ -427,9 +427,28 @@ async function reserveReply(input: {
 }): Promise<ExistingLetter> {
   const admin = createAdminClient();
   const letterId = crypto.randomUUID();
+  let canonicalAliasToken = input.aliasToken;
+  const { data: activeAliases, error: aliasError } = await admin
+    .from('conversation_aliases')
+    .select('correspondence_id, permitted_sender_id, active, expires_at')
+    .eq('permitted_sender_id', input.senderId)
+    .eq('active', true)
+    .gt('expires_at', new Date().toISOString());
+  if (aliasError) throw aliasError;
+  for (const alias of activeAliases ?? []) {
+    const derivedToken = await deriveAliasToken(
+      requireEnvironment('ALIAS_HMAC_SECRET'),
+      alias.correspondence_id,
+      alias.permitted_sender_id,
+    );
+    if (derivedToken.toLowerCase() === input.aliasToken.toLowerCase()) {
+      canonicalAliasToken = derivedToken;
+      break;
+    }
+  }
   const { data, error } = await admin.rpc('reserve_reply_letter', {
     p_letter_id: letterId,
-    p_alias_hash: await hashAliasToken(input.aliasToken),
+    p_alias_hash: await hashAliasToken(canonicalAliasToken),
     p_sender_id: input.senderId,
     p_provider_inbound_id: input.providerEmailId,
     p_subject: 'Re: A letter for you',
