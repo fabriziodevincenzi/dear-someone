@@ -2,238 +2,106 @@
 import Layout from '../../layouts/Layout.astro';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+
+const isChangeEmail = new URL(Astro.request.url).searchParams.get('mode') === 'change-email';
 ---
 
-<Layout title="Access your account — One Reader" description="Create or access your private One Reader account with a one-time email link.">
-  <main class="shell min-h-[82vh] max-w-xl py-16 sm:py-24 lg:py-32">
-    <a class="text-sm text-muted-foreground underline underline-offset-4" href="/launch-after-free/">← Back to One Reader</a>
-    <div class="pt-24 sm:pt-32">
-      <p class="eyebrow mb-6" data-flow-eyebrow>Private area</p>
-      <h1 class="section-title balance" data-flow-title>A link, not a password.</h1>
-      <p class="mt-8 text-lg leading-8 text-muted-foreground" data-flow-description>Enter the email address connected to your account. We will send a one-time link that opens your private area.</p>
+<Layout title={isChangeEmail ? 'Change email — One Reader' : 'Sign in — One Reader'} description="Sign in to your private One Reader account with a one-time email link.">
+  <header class="border-b border-border">
+    <div class="shell flex min-h-20 items-center justify-between gap-6">
+      <a class="font-serif text-[1.35rem] tracking-[-0.025em] no-underline" href="/" aria-label="One Reader, home">One Reader</a>
+      <nav class="flex items-center gap-6 text-sm text-muted-foreground" aria-label="Main navigation">
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/#how-it-works">How it works</a>
+        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/#start-free">Start free</a>
+      </nav>
+    </div>
+  </header>
 
-      <div class="mt-8 hidden border-y border-border py-5" data-plan-summary>
-        <p class="eyebrow mb-3">Your starting plan</p>
-        <p class="font-serif text-2xl" data-plan-name>Reader</p>
-        <p class="mt-2 max-w-xl text-sm leading-6 text-muted-foreground" data-plan-description>Your first opening is free. Receive letters and reply without paying. Upgrade later to begin another correspondence every 24 hours.</p>
-      </div>
+  <main class="shell min-h-[82vh] max-w-xl py-20 sm:py-28 lg:py-36">
+    <div class="mx-auto max-w-lg">
+      <p class="eyebrow mb-6">{isChangeEmail ? 'Account details' : 'Sign in'}</p>
+      <h1 class="section-title balance">{isChangeEmail ? 'Confirm a new address.' : 'Welcome back.'}</h1>
+      <p class="mt-8 text-lg leading-8 text-muted-foreground">
+        {isChangeEmail
+          ? 'Enter the new email address for your One Reader account. We will send a confirmation link before changing it.'
+          : 'Enter your email and we’ll send a one-time sign-in link. There is no password to remember.'}
+      </p>
 
-      <form class="mt-10 border-t border-border pt-8" data-magic-link-form>
+      <form class="mt-12" data-magic-link-form>
         <label class="mb-2 block text-sm font-medium" for="sign-in-email">Email address</label>
         <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
           <Input id="sign-in-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
-          <Button type="submit" size="large" data-submit-label>Send my link</Button>
+          <Button type="submit" size="large" data-submit-label>{isChangeEmail ? 'Send confirmation' : 'Send sign-in link'}</Button>
         </div>
-
-        <div class="mt-6 hidden grid gap-4 border-t border-border pt-6 text-sm leading-6" data-signup-consents>
-          <label class="flex items-start gap-3">
-            <input class="mt-1" type="checkbox" name="termsAccepted" data-terms-checkbox />
-            <span>I have read and accept the <a class="underline underline-offset-4" href="/terms">Terms of Service</a>.</span>
-          </label>
-          <label class="flex items-start gap-3 text-muted-foreground">
-            <input class="mt-1" type="checkbox" name="journalOptIn" value="yes" />
-            <span>Send me occasional Journal notes and product news too. This is optional.</span>
-          </label>
-          <p class="m-0 text-xs leading-5 text-muted-foreground">We use your address to create the account, verify your mailbox and operate the service. Read the <a class="underline underline-offset-4" href="/privacy">Privacy notice</a>.</p>
-        </div>
-
-        <p class="mt-3 text-xs leading-5 text-muted-foreground" data-flow-helper>The link will be single-use and expire shortly. We will never ask you to create or remember a password.</p>
-        <p class="mt-5 hidden text-sm leading-6 text-accent" data-magic-link-note>In the local prototype, this is where the confirmation state appears. Production will send the link through the transactional email provider.</p>
+        <p class="mt-4 text-xs leading-5 text-muted-foreground" data-flow-helper>
+          {isChangeEmail ? 'Your current address stays active until you confirm the new one.' : 'The link is single-use and expires shortly.'}
+        </p>
+        <p class="mt-5 hidden text-sm leading-6 text-accent" data-magic-link-note aria-live="polite"></p>
       </form>
     </div>
   </main>
+</Layout>
 
-  <script>
-    import { supabase } from '../../lib/supabase';
-    import { fallbackMarket, marketForCountry } from '../../lib/market-pricing';
+<script>
+  import { supabase } from '../../lib/supabase';
 
-    const params = new URLSearchParams(window.location.search);
-    const isSignup = params.get('mode') === 'signup';
-    const isChangeEmail = params.get('mode') === 'change-email';
-    const plan = params.get('plan') === 'annual' ? 'annual' : 'free';
-    const region = (params.get('market') || navigator.language.split('-')[1] || '').toUpperCase();
-    const market = marketForCountry(region) || fallbackMarket;
-    const formattedPrice = new Intl.NumberFormat(navigator.language, {
-      style: 'currency',
-      currency: market.currency,
-      maximumFractionDigits: market.currency === 'AUD' ? 2 : 0,
-    }).format(market.amount);
+  const isChangeEmail = new URLSearchParams(window.location.search).get('mode') === 'change-email';
+  const form = document.querySelector<HTMLFormElement>('[data-magic-link-form]')!;
+  const note = document.querySelector<HTMLElement>('[data-magic-link-note]');
+  const showNote = (message: string, error = false) => {
+    if (!note) return;
+    note.textContent = message;
+    note.classList.remove('hidden', 'text-accent', 'text-destructive');
+    note.classList.add(error ? 'text-destructive' : 'text-accent');
+  };
 
-    const eyebrow = document.querySelector<HTMLElement>('[data-flow-eyebrow]')!;
-    const title = document.querySelector<HTMLElement>('[data-flow-title]')!;
-    const description = document.querySelector<HTMLElement>('[data-flow-description]')!;
-    const summary = document.querySelector<HTMLElement>('[data-plan-summary]')!;
-    const planName = document.querySelector<HTMLElement>('[data-plan-name]')!;
-    const planDescription = document.querySelector<HTMLElement>('[data-plan-description]')!;
-    const signupConsents = document.querySelector<HTMLElement>('[data-signup-consents]')!;
-    const termsCheckbox = document.querySelector<HTMLInputElement>('[data-terms-checkbox]')!;
-    const submitLabel = document.querySelector<HTMLElement>('[data-submit-label]')!;
-    const flowHelper = document.querySelector<HTMLElement>('[data-flow-helper]');
-    const note = document.querySelector<HTMLElement>('[data-magic-link-note]');
-    const form = document.querySelector<HTMLFormElement>('[data-magic-link-form]')!;
-    const emailInput = document.querySelector<HTMLInputElement>('#sign-in-email')!;
-    const signupIntentKey = 'dear-someone:signup-intent';
-
-    const emailFromHome = params.get('email');
-    if (isSignup && emailFromHome) emailInput.value = emailFromHome;
-
-    if (isSignup) {
-      eyebrow.textContent = 'Create your account';
-      title.textContent = plan === 'annual' ? 'Choose annual membership.' : 'Start free.';
-      description.textContent = plan === 'annual'
-        ? `Create your account first. After you verify your email, continue to annual membership at ${formattedPrice} / year.`
-        : 'Create your account and send one opening free. You can receive letters and reply; payment is only needed when you want to begin another correspondence.';
-      planName.textContent = plan === 'annual' ? `Reader + Writer · ${formattedPrice} / year` : 'Reader · first opening included';
-      planDescription.textContent = plan === 'annual'
-        ? 'After payment, you can begin another correspondence every 24 hours. Receiving and replying remain available.'
-        : 'Start as a Reader with one free opening. Receive letters and reply without paying; upgrade later to write again.';
-      summary.classList.remove('hidden');
-      signupConsents.classList.remove('hidden');
-      termsCheckbox.required = true;
-      submitLabel.textContent = plan === 'annual' ? 'Continue with email' : 'Create free account';
+  supabase?.auth.onAuthStateChange((event, session) => {
+    const hasCallbackToken = window.location.hash.includes('access_token');
+    if (session && (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && hasCallbackToken))) {
+      if (hasCallbackToken) window.history.replaceState({}, document.title, '/sign-in/');
+      if (!isChangeEmail) window.location.assign('/member/');
     }
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = String(new FormData(form).get('email') || '').trim().toLowerCase();
+    if (!email || !supabase) {
+      if (!supabase) showNote('Supabase is not configured in this environment.', true);
+      return;
+    }
+
+    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
+    showNote(isChangeEmail ? 'Sending the confirmation…' : 'Sending your sign-in link…');
 
     if (isChangeEmail) {
-      eyebrow.textContent = 'Account details';
-      title.textContent = 'A new address, confirmed by you.';
-      description.textContent = 'Enter the new email address for your One Reader account. We will send a confirmation link to that address before changing it.';
-      submitLabel.textContent = 'Send confirmation';
-      if (flowHelper) flowHelper.textContent = 'The current address stays active until you confirm the new one. You may receive a security notice at the current address too.';
-    }
-
-    const showNote = (message: string, tone: 'accent' | 'error' = 'accent') => {
-      if (!note) return;
-      note.textContent = message;
-      note.classList.remove('hidden', 'text-accent', 'text-destructive');
-      note.classList.add(tone === 'error' ? 'text-destructive' : 'text-accent');
-    };
-
-    const completeSignup = async (session: { access_token: string; user?: { user_metadata?: Record<string, unknown> } }) => {
-      if (!supabase) return;
-      const rawIntent = window.localStorage.getItem(signupIntentKey);
-      let intent: Record<string, unknown>;
-      if (!rawIntent) {
-        const metadata = session.user?.user_metadata;
-        if (metadata?.plan_intent !== 'free' && metadata?.plan_intent !== 'annual') {
-          window.location.assign('/member/');
-          return;
-        }
-        intent = {
-          source: 'signup',
-          plan: metadata.plan_intent,
-          countryCode: metadata.market_country ?? null,
-          marketCurrency: metadata.market_currency ?? null,
-          languageCode: navigator.language || 'en',
-          journalOptIn: metadata.journal_opt_in === true,
-          termsAccepted: metadata.terms_accepted === true,
-        };
-      } else {
-        try {
-          intent = JSON.parse(rawIntent);
-        } catch {
-          window.localStorage.removeItem(signupIntentKey);
-          return;
-        }
-      }
-      if (!intent) {
-        window.location.assign('/member/');
-        return;
-      }
-      const { error } = await supabase.functions.invoke('complete-signup', {
-        body: intent,
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      if (error) {
-        showNote('Your email is verified, but we could not finish setting up the account. Please try again from this page.', 'error');
-        return;
-      }
-      window.localStorage.removeItem(signupIntentKey);
-      showNote('Your email is verified. Your private area is ready to open.');
-      window.setTimeout(() => window.location.assign('/member/'), 450);
-    };
-
-    // A magic-link callback returns to this page with the session in the URL
-    // fragment. The session is persisted by the Supabase browser client.
-    supabase?.auth.onAuthStateChange((event, session) => {
-      const hasCallbackToken = window.location.hash.includes('access_token');
-      if (session && (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && hasCallbackToken))) {
-        if (hasCallbackToken) {
-          window.history.replaceState({}, document.title, '/sign-in/');
-        }
-        if (!isChangeEmail) window.setTimeout(() => void completeSignup(session), 0);
-      }
-    });
-
-    form?.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (isSignup && termsCheckbox && !termsCheckbox.checked) return;
-
-      const formData = new FormData(form);
-      const email = String(formData.get('email') || '').trim().toLowerCase();
-      if (!email) return;
-
-      if (!supabase) {
-        showNote('Supabase is not configured in this local environment.', 'error');
-        return;
-      }
-
-      const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-      if (submitButton) submitButton.disabled = true;
-      showNote(isChangeEmail ? 'Sending the confirmation…' : 'Sending your one-time link…');
-
-      if (isChangeEmail) {
-        const { data: currentSession } = await supabase.auth.getSession();
-        if (!currentSession.session) {
-          if (submitButton) submitButton.disabled = false;
-          showNote('Sign in to your account before changing the email address.', 'error');
-          return;
-        }
-        const { error } = await supabase.auth.updateUser({ email });
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
         if (submitButton) submitButton.disabled = false;
-        if (error) {
-          showNote(error.message || 'We could not start the email change. Please try again.', 'error');
-          return;
-        }
-        form.reset();
-        showNote('Check the new address. We will update your account after you confirm the link.');
+        showNote('Sign in before changing the email address.', true);
         return;
       }
-
-      if (isSignup) {
-        window.localStorage.setItem(signupIntentKey, JSON.stringify({
-          source: 'signup',
-          plan,
-          countryCode: region || null,
-          marketCurrency: market.currency,
-          languageCode: navigator.language || 'en',
-          journalOptIn: formData.get('journalOptIn') === 'yes',
-          termsAccepted: formData.get('termsAccepted') === 'on',
-        }));
-      }
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: isSignup,
-          emailRedirectTo: `${window.location.origin}/sign-in/`,
-          data: {
-            plan_intent: isSignup ? plan : null,
-            market_country: region || null,
-            market_currency: market.currency,
-            journal_opt_in: formData.get('journalOptIn') === 'yes',
-            terms_accepted: isSignup && formData.get('termsAccepted') === 'on',
-          },
-        },
-      });
-
+      const { error } = await supabase.auth.updateUser({ email });
       if (submitButton) submitButton.disabled = false;
       if (error) {
-        window.localStorage.removeItem(signupIntentKey);
-        showNote(error.message || 'We could not send the link. Please try again.', 'error');
+        showNote(error.message || 'We could not start the email change. Please try again.', true);
         return;
       }
+      form.reset();
+      showNote('Check the new address to confirm the change.');
+      return;
+    }
 
-      showNote('Check your inbox. The link is single-use and will open your private area.');
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/sign-in/` },
     });
-  </script>
-</Layout>
+    if (submitButton) submitButton.disabled = false;
+    if (error) {
+      showNote('We could not send a sign-in link. Check the address or create an account from the home page first.', true);
+      return;
+    }
+    showNote('Check your inbox. The link is single-use and will open your private area.');
+  });
+</script>
