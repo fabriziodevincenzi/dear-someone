@@ -81,7 +81,7 @@ Deno.serve(async (request) => {
               .from('email_provider_events')
               .update({ status: 'queued', processed_at: null })
               .eq('id', existingEvent.id);
-            kickMailWorker();
+            kickMailWorker(1200);
             return jsonResponse({ ok: true, replayed: true });
           }
         }
@@ -194,12 +194,15 @@ function kickTransactionalWorker() {
   }).catch(() => undefined));
 }
 
-function kickMailWorker() {
+function kickMailWorker(delayMs = 0) {
   const secret = Deno.env.get('WORKER_SECRET');
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   if (!secret || !supabaseUrl) return;
-  EdgeRuntime.waitUntil(fetch(`${supabaseUrl}/functions/v1/mail-worker`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${secret}` },
-  }).catch(() => undefined));
+  EdgeRuntime.waitUntil((async () => {
+    if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    await fetch(`${supabaseUrl}/functions/v1/mail-worker`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${secret}` },
+    }).catch(() => undefined);
+  })());
 }
