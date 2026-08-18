@@ -110,7 +110,7 @@ const steps = [
               <label class="mb-2 block text-sm font-medium" for="start-free-email">Email address</label>
               <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
                 <Input id="start-free-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required aria-describedby="start-free-note" className="bg-background" />
-                <Button type="submit" size="large">Start free</Button>
+                <Button type="submit" size="large">Sign up</Button>
               </div>
               <label class="mt-6 flex items-start gap-3 text-sm leading-6">
                 <input class="mt-1" type="checkbox" name="termsAccepted" required />
@@ -123,10 +123,8 @@ const steps = [
               <input class="absolute -left-[9999px] h-px w-px opacity-0" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
             </div>
             {turnstileSiteKey && (
-              <div class="hidden mt-8 rounded-sm bg-background p-5 sm:p-6" data-start-free-captcha-step>
-                <p class="eyebrow mb-4">One small check</p>
-                <p class="m-0 max-w-md leading-7 text-muted-foreground">Complete the security check and we’ll send the confirmation link.</p>
-                <div class="mt-6 min-h-[65px] w-full max-w-full overflow-x-auto" data-turnstile-widget data-sitekey={turnstileSiteKey} aria-label="Security check"></div>
+              <div class="hidden mt-8 rounded-sm bg-background p-5 sm:p-8" data-start-free-captcha-step>
+                <div class="min-h-[65px] w-full max-w-full" data-turnstile-widget data-sitekey={turnstileSiteKey} aria-label="Security check"></div>
               </div>
             )}
             <p class="mt-4 text-xs leading-5 text-muted-foreground" id="start-free-note" data-start-free-note>We’ll use your address to create the account, verify your mailbox and operate the service. Optional Journal messages are separate and can be withdrawn later.</p>
@@ -200,6 +198,7 @@ const steps = [
   const showNote = (message: string, error = false) => {
     if (!note) return;
     note.textContent = message;
+    note.classList.remove('hidden');
     note.classList.toggle('text-destructive', error);
     note.classList.toggle('text-muted-foreground', !error);
   };
@@ -211,7 +210,7 @@ const steps = [
     captchaWidgetId = turnstile.render(captchaWidget, {
       sitekey,
       theme: 'light',
-      size: 'compact',
+      size: 'flexible',
       appearance: 'always',
       language: 'en',
       callback: handleCaptchaSuccess,
@@ -226,6 +225,8 @@ const steps = [
 
   const revealCaptcha = () => {
     if (!captchaStep) return;
+    fields?.classList.add('hidden');
+    note?.classList.add('hidden');
     captchaStep.classList.remove('hidden');
     window.setTimeout(renderCaptcha, 0);
   };
@@ -282,7 +283,7 @@ const steps = [
     }
     const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     if (submitButton) submitButton.disabled = true;
-    showNote('Sending your confirmation link…');
+    if (!captchaToken) showNote('Sending your confirmation link…');
     window.localStorage.setItem(intentKey, JSON.stringify({
       source: 'signup',
       plan: 'free',
@@ -316,9 +317,12 @@ const steps = [
       const turnstile = (window as Window & { turnstile?: TurnstileApi }).turnstile;
       if (turnstile && captchaWidgetId) turnstile.reset(captchaWidgetId);
       window.localStorage.removeItem(intentKey);
+      fields?.classList.remove('hidden');
+      captchaStep?.classList.add('hidden');
       showNote(error.message || 'We could not send the link. Please try again.', true);
       return;
     }
+    captchaStep?.classList.add('hidden');
     fields?.classList.add('hidden');
     success?.classList.remove('hidden');
     pendingSignup = null;
@@ -342,11 +346,8 @@ const steps = [
       return;
     }
     if (honeypot) return;
-    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     if (captchaWidget && !captchaToken) {
       pendingSignup = data;
-      if (submitButton) submitButton.textContent = 'Complete security check';
-      showNote('Complete the security check to send your confirmation link.');
       revealCaptcha();
       return;
     }
