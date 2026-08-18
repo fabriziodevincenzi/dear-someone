@@ -254,7 +254,8 @@ const currentYear = new Date().getUTCFullYear();
       const { data, error } = await supabase.functions.invoke(functionName, { body: {} });
       if (membershipPrimary) membershipPrimary.removeAttribute('aria-busy');
       if (error || !data?.url) {
-        setNote(membershipNote, 'We could not open the secure payment area. Please try again in a moment.', true);
+        const detail = typeof data?.error === 'string' ? ` ${data.error}` : '';
+        setNote(membershipNote, `We could not open the secure payment area.${detail || ' Please try again in a moment.'}`, true);
         return;
       }
       window.location.assign(data.url);

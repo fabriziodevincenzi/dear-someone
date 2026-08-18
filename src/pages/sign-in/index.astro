@@ -95,6 +95,13 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     pendingEmail = null;
   };
 
+  const showSuccessState = (message: string) => {
+    fields?.classList.add('hidden');
+    flowHelper?.classList.add('hidden');
+    captchaStep?.classList.add('hidden');
+    showNote(message);
+  };
+
   const sendSignInLink = async () => {
     if (!pendingEmail || !supabase) return;
     const email = pendingEmail;
@@ -130,8 +137,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       return;
     }
     resetCaptcha();
-    restoreFields();
-    showNote('Check your inbox. The link is single-use and will open your private area.');
+    showSuccessState('Your sign-in link is on its way. Check your inbox — it is single-use and will open your private area.');
   };
 
   const renderCaptcha = () => {
