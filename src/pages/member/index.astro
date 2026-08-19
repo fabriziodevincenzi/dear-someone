@@ -86,7 +86,7 @@ const currentYear = new Date().getUTCFullYear();
             <div class="grid gap-3 sm:grid-cols-2">
               <label class="grid gap-2 text-xs">
                 <span class="text-muted-foreground">Month</span>
-                <select class="select-control min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent pl-3 text-sm" name="birthMonth" required data-birth-month>
+                <select class="select-control min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent pl-3 text-sm disabled:opacity-60" name="birthMonth" required data-birth-month>
                   <option value="">Choose month</option>
                   {birthMonths.map(([value, label]) => <option value={value}>{label}</option>)}
                 </select>
