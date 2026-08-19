@@ -68,21 +68,23 @@ const currentYear = new Date().getUTCFullYear();
       <div>
         <p class="eyebrow mb-4">Practical details</p>
         <h2 id="profile-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Delivery details</h2>
-        <p class="mt-3 text-sm leading-6 text-muted-foreground">We use these details to deliver letters and make a thoughtful match. Your email address is never shown to the person you write to.</p>
+        <p class="mt-3 text-sm leading-6 text-muted-foreground">Your email stays private. Your age group and languages help us make a suitable match.</p>
       </div>
-      <form class="grid gap-6" data-profile-form>
-        <div>
-          <p class="mb-2 text-sm text-muted-foreground">Email address</p>
-          <p class="m-0 text-sm" data-profile-email>you@example.com</p>
-          <a class="mt-2 inline-block text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
+      <form class="grid max-w-2xl gap-0" data-profile-form>
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-border pb-5">
+          <div>
+            <p class="mb-1 text-xs text-muted-foreground">Email address</p>
+            <p class="m-0 text-sm" data-profile-email>you@example.com</p>
+          </div>
+          <a class="text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
         </div>
 
-        <fieldset class="grid gap-4 border-y border-border py-5" data-birth-details>
-          <legend class="px-2 text-sm text-muted-foreground">Month and year of birth</legend>
+        <fieldset class="grid gap-4 border-0 border-b border-border py-5" data-birth-details>
+          <legend class="text-sm">Month and year of birth</legend>
           <div class="grid gap-3 sm:grid-cols-2">
             <label class="grid gap-2 text-sm">
               <span class="text-muted-foreground">Month</span>
-              <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3 disabled:opacity-60" name="birthMonth" required data-birth-month>
+              <select class="select-control min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent pl-3" name="birthMonth" required data-birth-month>
                 <option value="">Choose month</option>
                 {birthMonths.map(([value, label]) => <option value={value}>{label}</option>)}
               </select>
@@ -92,19 +94,17 @@ const currentYear = new Date().getUTCFullYear();
               <input class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3 disabled:opacity-60" type="number" name="birthYear" min={currentYear - 120} max={currentYear - 14} inputmode="numeric" placeholder={String(currentYear - 18)} required data-birth-year />
             </label>
           </div>
-          <p class="m-0 text-xs leading-5 text-muted-foreground" data-age-pool-status>Used only to keep age groups separate. Not shown to other members.</p>
-          <p class="m-0 hidden text-xs leading-5 text-muted-foreground" data-birth-lock-note>These details are locked after saving. Use the correction request below if they need to be changed.</p>
+          <p class="m-0 text-xs leading-5 text-muted-foreground">Month and year only. Used to keep age groups separate.</p>
         </fieldset>
 
-        <fieldset class="grid gap-4 border-0 border-b border-border p-0 pb-6">
-          <legend class="text-sm text-muted-foreground">Languages for letters</legend>
-          <p class="m-0 text-xs leading-5 text-muted-foreground">Choose the languages you can write and read. No level required.</p>
+        <fieldset class="grid gap-4 border-0 border-b border-border py-5">
+          <legend class="text-sm">Languages for letters</legend>
           <div class="grid gap-3" data-language-list></div>
           <template data-language-template>
-            <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end" data-language-row>
-              <label class="grid gap-2 text-sm">
-                <span class="text-muted-foreground">Language</span>
-                <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3" data-language-select>
+            <div class="grid gap-3 sm:grid-cols-[minmax(0,28rem)_auto] sm:items-center" data-language-row>
+              <label class="text-sm">
+                <span class="sr-only">Language</span>
+                <select class="select-control min-h-11 w-full rounded-[var(--radius-control)] border border-input bg-transparent pl-3" data-language-select>
                   {languages.map(([value, label]) => <option value={value}>{label}</option>)}
                 </select>
               </label>
@@ -114,7 +114,7 @@ const currentYear = new Date().getUTCFullYear();
           <button class="w-fit border-b border-foreground pb-1 text-sm" type="button" data-add-language>Add another language</button>
         </fieldset>
 
-        <div class="flex flex-wrap items-center gap-4">
+        <div class="flex flex-wrap items-center gap-4 pt-6">
           <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="submit">Save details</button>
           <p class="hidden text-sm text-accent" data-profile-note></p>
         </div>
@@ -225,8 +225,7 @@ const currentYear = new Date().getUTCFullYear();
     const addLanguageButton = document.querySelector<HTMLButtonElement>('[data-add-language]');
     const birthMonthInput = document.querySelector<HTMLSelectElement>('[data-birth-month]');
     const birthYearInput = document.querySelector<HTMLInputElement>('[data-birth-year]');
-    const agePoolStatus = document.querySelector<HTMLElement>('[data-age-pool-status]');
-    const birthLockNote = document.querySelector<HTMLElement>('[data-birth-lock-note]');
+    const birthDetails = document.querySelector<HTMLFieldSetElement>('[data-birth-details]');
     const journalCheckbox = document.querySelector<HTMLInputElement>('[name="journalOptIn"]');
     const statStarted = document.querySelector<HTMLElement>('[data-stat-started]');
     const statOpen = document.querySelector<HTMLElement>('[data-stat-open]');
@@ -283,18 +282,7 @@ const currentYear = new Date().getUTCFullYear();
         birthYearInput.disabled = saved;
         birthYearInput.required = !saved;
       }
-      birthLockNote?.classList.toggle('hidden', !saved);
-      if (agePoolStatus) {
-        if (!saved) {
-          agePoolStatus.textContent = 'Your account becomes eligible after you save these details.';
-        } else {
-          const adultDate = new Date(`${details.adult_pool_eligible_at}T00:00:00Z`);
-          const isAdultPool = adultDate.getTime() <= Date.now();
-          agePoolStatus.textContent = isAdultPool
-            ? 'You are in the adult matching pool.'
-            : `You are in the 14–17 matching pool. New matches move to the adult pool on ${new Intl.DateTimeFormat(undefined, { dateStyle: 'long', timeZone: 'UTC' }).format(adultDate)}.`;
-        }
-      }
+      birthDetails?.classList.toggle('hidden', saved);
       return saved;
     };
 
