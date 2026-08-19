@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import EmailPreview from '../components/EmailPreview.astro';
 import { Button, buttonVariants } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import SiteFooter from './SiteFooter.astro';
 
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -152,17 +153,7 @@ const steps = [
     </section>
   </main>
 
-  <footer class="border-t border-border py-8">
-    <div class="shell flex flex-col gap-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-      <p class="m-0">© 2026 One Reader</p>
-      <p class="m-0 font-serif text-base italic text-foreground/75">Someone who pays attention without asking you to perform.</p>
-      <div class="flex gap-5">
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/journal/">Journal</a>
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/privacy">Privacy</a>
-        <a class="underline-offset-4 hover:text-foreground hover:underline" href="/terms">Terms</a>
-      </div>
-    </div>
-  </footer>
+  <SiteFooter />
 </Layout>
 
 <script>

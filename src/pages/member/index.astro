@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
+import SiteFooter from '../../components/SiteFooter.astro';
 import { languageOptions as languages } from '../../lib/i18n';
 
 const birthMonths = [
@@ -217,8 +218,9 @@ const currentYear = new Date().getUTCFullYear();
       </form>
     </section>
 
-    <aside class="pt-6 text-xs leading-5 text-muted-foreground">Payment actions, preference changes, consent history and privacy requests stay connected to this account. Payments open in Stripe's secure checkout and billing portal.</aside>
   </main>
+
+  <SiteFooter />
 
   <script>
     import { supabase } from '../../lib/supabase';
