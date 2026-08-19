@@ -71,12 +71,12 @@ const currentYear = new Date().getUTCFullYear();
         <p class="mt-3 text-sm leading-6 text-muted-foreground">Your email stays private. Your age group and languages help us make a suitable match.</p>
       </div>
       <form class="grid max-w-2xl gap-5" data-profile-form>
-        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-          <div>
-            <p class="m-0 text-sm font-medium">Email address</p>
-            <p class="mb-0 mt-1 text-sm text-muted-foreground" data-profile-email>you@example.com</p>
+        <div class="grid gap-2">
+          <p class="m-0 text-sm font-medium">Email address</p>
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+            <p class="m-0 text-sm text-muted-foreground" data-profile-email>you@example.com</p>
+            <a class="text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
           </div>
-          <a class="text-xs underline underline-offset-4" href="/sign-in/?mode=change-email">Change email</a>
         </div>
 
         <fieldset class="border-0 border-t border-border p-0 pt-5" data-birth-details>
@@ -154,26 +154,22 @@ const currentYear = new Date().getUTCFullYear();
         <p class="eyebrow mb-4">Email-first by design</p>
         <h2 id="letters-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Your letters stay in your inbox.</h2>
       </div>
-      <div class="max-w-xl">
-        <p class="m-0 leading-7 text-muted-foreground">There is no feed here, and nothing compares you to anyone else. Just a quick picture of your own letters:</p>
-        <div class="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-border py-5 sm:grid-cols-3">
-          <div>
-            <p class="eyebrow mb-2">Started</p>
-            <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-stat-started>0</p>
-            <p class="mt-1 text-xs text-muted-foreground">correspondences</p>
+      <div class="max-w-2xl">
+        <div class="divide-y divide-border border-y border-border">
+          <div class="flex items-baseline justify-between gap-6 py-4">
+            <p class="m-0 text-sm font-medium">Correspondences started</p>
+            <p class="m-0 font-mono text-xs uppercase tracking-[0.12em]"><span data-stat-started>0</span> total</p>
           </div>
-          <div>
-            <p class="eyebrow mb-2">Open now</p>
-            <p class="m-0 font-serif text-3xl tracking-[-0.04em]" data-stat-open>0</p>
-            <p class="mt-1 text-xs text-muted-foreground">correspondences</p>
+          <div class="flex items-baseline justify-between gap-6 py-4">
+            <p class="m-0 text-sm font-medium">Open now</p>
+            <p class="m-0 font-mono text-xs uppercase tracking-[0.12em]"><span data-stat-open>0</span> active</p>
           </div>
-          <div class="col-span-2 sm:col-span-1">
-            <p class="eyebrow mb-2">Last letter</p>
-            <p class="m-0 font-serif text-xl tracking-[-0.03em]" data-stat-last>None yet</p>
-            <p class="mt-1 text-xs text-muted-foreground">sent or received</p>
+          <div class="flex items-baseline justify-between gap-6 py-4">
+            <p class="m-0 text-sm font-medium">Last letter</p>
+            <p class="m-0 text-right font-mono text-xs uppercase tracking-[0.12em]" data-stat-last>None yet</p>
           </div>
         </div>
-        <p class="mt-5 border-l border-border pl-5 text-sm leading-6 text-muted-foreground">Read, reply and keep your letters in the email account you already use. You can stop a conversation from its first letter whenever you want.</p>
+        <p class="mt-5 max-w-xl text-sm leading-6 text-muted-foreground">Letters remain in the email account you already use. You can stop a conversation from its first letter whenever you want.</p>
       </div>
     </section>
 
@@ -183,22 +179,40 @@ const currentYear = new Date().getUTCFullYear();
         <h2 id="privacy-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Privacy</h2>
         <p class="mt-3 text-sm leading-6 text-muted-foreground">You don't need to email support to exercise your rights — use the buttons below to request your data or read how it's handled.</p>
       </div>
-      <div class="flex flex-wrap items-start gap-4">
-        <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="button" data-privacy-request="access">Request my data</button>
-        <button class={buttonVariants({ variant: 'outline', size: 'small' })} type="button" data-privacy-request="rectification">Correct my birth details</button>
-        <a class={buttonVariants({ variant: 'outline', size: 'small' })} href="/privacy">Read the privacy notice</a>
-        <p class="hidden basis-full text-sm leading-6 text-accent" data-privacy-note></p>
+      <div class="max-w-2xl divide-y divide-border border-y border-border">
+        <div class="grid gap-4 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div>
+            <p class="m-0 text-sm font-medium">Your personal data</p>
+            <p class="mb-0 mt-1 text-xs leading-5 text-muted-foreground">Receive a copy of the information connected to your account.</p>
+          </div>
+          <button class={buttonVariants({ variant: 'outline', size: 'small' }) + ' w-full sm:w-44'} type="button" data-privacy-request="access">Request data</button>
+        </div>
+        <div class="grid gap-4 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div>
+            <p class="m-0 text-sm font-medium">Birth details</p>
+            <p class="mb-0 mt-1 text-xs leading-5 text-muted-foreground">Ask us to correct the saved month or year if either is inaccurate.</p>
+          </div>
+          <button class={buttonVariants({ variant: 'outline', size: 'small' }) + ' w-full sm:w-44'} type="button" data-privacy-request="rectification">Request correction</button>
+        </div>
+        <div class="grid gap-4 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div>
+            <p class="m-0 text-sm font-medium">Privacy notice</p>
+            <p class="mb-0 mt-1 text-xs leading-5 text-muted-foreground">See how One Reader uses, stores and removes personal data.</p>
+          </div>
+          <a class={buttonVariants({ variant: 'outline', size: 'small' }) + ' w-full sm:w-44'} href="/privacy">Read the notice</a>
+        </div>
+        <p class="hidden py-4 text-sm leading-6 text-accent" data-privacy-note></p>
       </div>
     </section>
 
-    <section id="close-account" class="grid gap-8 border-b border-accent py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="close-heading">
+    <section id="close-account" class="grid gap-8 border-b border-border py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16" aria-labelledby="close-heading">
       <div>
-        <p class="eyebrow mb-4 text-accent">Permanent action</p>
+        <p class="eyebrow mb-4">Permanent action</p>
         <h2 id="close-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Close your account</h2>
       </div>
       <form data-delete-account>
         <p class="m-0 max-w-xl text-sm leading-6 text-muted-foreground">This starts a permanent deletion request. Active membership and correspondence data will follow the retention policy before removal.</p>
-        <button class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-5 text-accent'} type="submit">Request account deletion</button>
+        <button class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-5 border-accent text-accent hover:border-accent hover:bg-transparent'} type="submit">Request account deletion</button>
         <p class="mt-4 hidden text-sm leading-6 text-accent" data-delete-note></p>
       </form>
     </section>
