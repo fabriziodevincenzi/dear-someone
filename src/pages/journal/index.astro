@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
 import JournalFooter from '../../components/JournalFooter.astro';
-import { getJournalEntries, getJournalSlug } from '../../lib/journal';
+import { formatJournalDate, getJournalDate, getJournalEntries, getJournalSlug } from '../../lib/journal';
 
 const [latestArticle, ...earlierArticles] = await getJournalEntries('en');
 ---
@@ -15,29 +15,29 @@ const [latestArticle, ...earlierArticles] = await getJournalEntries('en');
     </div>
   </header>
 
-  <main id="main-content" class="shell py-16 sm:py-24 lg:py-32">
-    <div class="max-w-3xl">
-      <a class="eyebrow mb-5 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/journal/">Journal</a>
-      <h1 class="section-title balance max-w-3xl">Notes on writing to strangers, paying attention, and finding a way to begin.</h1>
-      <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">
+  <main id="main-content" class="shell py-20 sm:py-28 lg:py-40">
+    <div class="max-w-5xl">
+      <p class="eyebrow mb-7 text-accent">One Reader · Journal</p>
+      <h1 class="journal-title balance">Notes on writing to strangers, paying attention, and finding a way to begin.</h1>
+      <p class="journal-deck mt-9 text-muted-foreground">
         Thoughts on correspondence, attention, and the strange, hopeful work of beginning a conversation with someone you do not know.
       </p>
     </div>
 
-    <section class="mt-16 max-w-3xl border-y border-border py-8 sm:mt-20 sm:py-10" aria-labelledby="featured-heading">
-      <p class="eyebrow mb-4 text-accent">Featured note</p>
-      <h2 id="featured-heading" class="font-serif text-3xl font-normal tracking-[-0.03em] sm:text-4xl">{latestArticle.data.title}</h2>
-      <p class="mt-3 max-w-2xl leading-7 text-muted-foreground">{latestArticle.data['meta-description']}</p>
-      <a class="mt-6 inline-block text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href={`/journal/${getJournalSlug(latestArticle)}/`}>Read the note →</a>
+    <section class="mt-20 max-w-4xl border-y border-border py-10 sm:mt-28 sm:py-14" aria-labelledby="featured-heading">
+      <p class="journal-meta mb-5 text-accent">Featured note · {formatJournalDate(getJournalDate(latestArticle))} · {latestArticle.data.readingTime}</p>
+      <h2 id="featured-heading" class="max-w-3xl font-serif text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.08] tracking-[-0.04em]">{latestArticle.data.title}</h2>
+      <p class="journal-deck mt-5 text-muted-foreground">{latestArticle.data['meta-description']}</p>
+      <a class="mt-7 inline-block text-sm font-medium text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href={`/journal/${getJournalSlug(latestArticle)}/`}>Read the note →</a>
     </section>
 
-    {earlierArticles.length > 0 && <section class="mt-16 max-w-3xl" aria-labelledby="earlier-heading">
+    {earlierArticles.length > 0 && <section class="mt-20 max-w-4xl sm:mt-28" aria-labelledby="earlier-heading">
       <p id="earlier-heading" class="eyebrow mb-5">Earlier notes</p>
       <div class="border-t border-border">
         {earlierArticles.map((article) => (
-          <a class="flex items-baseline justify-between gap-6 border-b border-border py-5 no-underline transition-colors hover:text-accent" href={`/journal/${getJournalSlug(article)}/`}>
-            <span class="font-serif text-2xl font-normal tracking-[-0.025em]">{article.data.title}</span>
-            <time class="shrink-0 text-sm text-muted-foreground" datetime={article.data.publishedAt}>{article.data.publishedAt}</time>
+          <a class="grid gap-3 border-b border-border py-7 no-underline transition-colors hover:text-accent sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8" href={`/journal/${getJournalSlug(article)}/`}>
+            <span class="font-serif text-2xl font-normal leading-tight tracking-[-0.025em] sm:text-[1.7rem]">{article.data.title}</span>
+            <time class="journal-meta shrink-0" datetime={getJournalDate(article)}>{formatJournalDate(getJournalDate(article))}</time>
           </a>
         ))}
       </div>

@@ -1,5 +1,77 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans-400.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans-500.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans-600.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans-700.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/fonts/dm-mono-400.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/fonts/dm-mono-500.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("/fonts/libre-baskerville-400.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("/fonts/libre-baskerville-400-italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("/fonts/libre-baskerville-700.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -15,6 +87,7 @@
   --color-ring: var(--ring);
   --font-sans: var(--font-interface);
   --font-serif: var(--font-letter);
+  --font-mono: var(--font-metadata);
 }
 
 :root {
@@ -31,8 +104,9 @@
   --accent: #9b5943;
   --ring: #9b5943;
   --radius-control: 0.1875rem;
-  --font-interface: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-letter: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --font-interface: "DM Sans", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-letter: "Libre Baskerville", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-metadata: "DM Mono", "SFMono-Regular", Consolas, monospace;
 }
 
 *,
@@ -61,7 +135,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -72,8 +148,9 @@ input {
 
 .eyebrow {
   color: var(--muted-foreground);
-  font-size: 0.72rem;
-  font-weight: 650;
+  font-family: var(--font-metadata);
+  font-size: 0.68rem;
+  font-weight: 500;
   letter-spacing: 0.14em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -92,10 +169,38 @@ input {
 .section-title {
   margin: 0;
   font-family: var(--font-letter);
-  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 400;
   letter-spacing: -0.035em;
-  line-height: 1;
+  line-height: 1.04;
+}
+
+.journal-title {
+  max-width: 15ch;
+  margin: 0;
+  font-family: var(--font-letter);
+  font-size: clamp(3rem, 6.5vw, 6.25rem);
+  font-weight: 400;
+  letter-spacing: -0.048em;
+  line-height: 1.02;
+}
+
+.journal-deck {
+  max-width: 42rem;
+  font-family: var(--font-letter);
+  font-size: clamp(1.12rem, 1.02rem + 0.4vw, 1.42rem);
+  line-height: 1.65;
+}
+
+.metadata,
+.journal-meta {
+  color: var(--muted-foreground);
+  font-family: var(--font-metadata);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
 .balance {
@@ -105,8 +210,9 @@ input {
 .prose-journal {
   color: color-mix(in srgb, var(--foreground) 90%, transparent);
   font-family: var(--font-letter);
-  font-size: clamp(1.18rem, 1.1rem + 0.35vw, 1.35rem);
-  line-height: 1.85;
+  font-size: clamp(1.16rem, 1.08rem + 0.34vw, 1.34rem);
+  letter-spacing: -0.008em;
+  line-height: 1.9;
 }
 
 .prose-journal p {
@@ -118,6 +224,38 @@ input {
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
   text-underline-offset: 0.18em;
+}
+
+.prose-journal h2,
+.prose-journal h3 {
+  margin: 2.2em 0 0.75em;
+  color: var(--foreground);
+  font-family: var(--font-letter);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.prose-journal h2 {
+  font-size: clamp(1.8rem, 1.55rem + 0.8vw, 2.35rem);
+}
+
+.prose-journal h3 {
+  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.8rem);
+}
+
+.prose-journal blockquote {
+  margin: 2.5em 0;
+  border-left: 1px solid var(--accent);
+  padding-left: clamp(1.25rem, 4vw, 2.25rem);
+  color: var(--foreground);
+  font-size: 1.16em;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.prose-journal blockquote p:last-child {
+  margin-bottom: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

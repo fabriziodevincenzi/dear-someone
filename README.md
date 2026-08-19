@@ -24,7 +24,7 @@ pnpm build
 
 - Astro 7, Tailwind CSS 4, TypeScript and native Astro i18n scaffolding.
 - React is limited to server-rendered Shadcn-style UI primitives; no client JavaScript is shipped for them by default.
-- Editorial, near-monochrome design tokens live in `src/styles/global.css`.
+- Editorial, near-monochrome design tokens live in `src/styles/global.css`. The shared type system uses Libre Baskerville for editorial and human-voice content, DM Sans for product UI, and DM Mono for metadata; font files are self-hosted under `public/fonts/`.
 - The landing, privacy draft and terms placeholder are implemented.
 - Supabase persistence, passwordless verification and `complete-signup` are connected to the active project.
 - The public waitlist counter is environment-driven and remains hidden until it reaches 100 people (`PUBLIC_WAITLIST_COUNT`).

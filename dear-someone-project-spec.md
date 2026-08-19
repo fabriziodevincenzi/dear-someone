@@ -160,7 +160,7 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 - Usare **Cooper** come scaffolding tecnico iniziale, non come riferimento visivo: mantenere la struttura Astro, TypeScript, Tailwind, i18n, primitive accessibili e configurazione dei test; importare i componenti Shadcn necessari per form, bottoni e input, poi ristilizzarli tramite token.
 - Eliminare subito ciò che non appartiene al prodotto: documentazione del template, changelog, ricerca, logo cloud, feature grid, testimonial, dashboard analytics, temi decorativi, dark-mode toggle se non viene progettato esplicitamente, animazioni e sezioni SaaS. **Mantenere invece il blog editoriale**, in sottocartella `/blog/`, perché è previsto come canale pubblico fin dal lancio.
 - Non mantenere React come default per ogni superficie: usarlo solo per le isole realmente interattive. Landing, pagine editoriali e gran parte dell'area riservata devono restare Astro-first e leggere.
-- Ricostruire quasi completamente tipografia, densità, palette e superfici secondo il brief visuale: serif per titoli e voce umana, sans neutro per struttura, palette calda quasi monocroma, un solo accento, bordi sottili, zero ombre e spaziatura generosa.
+- Ricostruire quasi completamente tipografia, densità, palette e superfici secondo il brief visuale: Libre Baskerville per titoli, voce umana e lettura editoriale; DM Sans per struttura e controlli; DM Mono per metadati, date, categorie e stati brevi; palette calda quasi monocroma, un solo accento, bordi sottili, zero ombre e spaziatura generosa.
 - Prima di costruire pagine complete, definire token semantici per colore, tipografia, spaziatura, raggi, bordi, focus e stati. I componenti Cooper/Shadcn sono implementazioni sostituibili; i token sono il contratto visivo del prodotto.
 
 - pagina pubblica con presentazione, regole e pagamento;
@@ -226,7 +226,8 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 
 Il prodotto ha pochissime superfici UI (sito pubblico, checkout, verifica email, area riservata con gestione sottoscrizione, consensi e privacy controls) — l'esperienza principale resta nella casella email del membro. Per le schermate web:
 
-- tono **editoriale e silenzioso**: serif per titoli e testo delle lettere/anteprime (per far percepire la voce umana), sans neutro per etichette e struttura;
+- tono **editoriale e silenzioso**: Libre Baskerville per titoli, sottotitoli editoriali e testo delle lettere/anteprime; DM Sans per navigazione, CTA, form, etichette e struttura; DM Mono per metadati, categorie, date, tempi di lettura e stati brevi;
+- titoli principali grandi e molto distanziati; corpo editoriale in colonna stretta con interlinea generosa; metadati piccoli, discreti e in maiuscolo;
 - palette quasi monocroma, un solo accento discreto per stati tipo "nuovo" — niente colori decorativi diffusi;
 - un solo bordo sottile, zero ombre, nessun elemento che "urla" — coerente con la promessa di calma e assenza di gamification;
 - metadati minimi ma umani nelle anteprime (es. area geografica generica e lingua del mittente), mai identità.

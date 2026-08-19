@@ -24,7 +24,8 @@ L'esperienza principale del membro avviene **nella sua normale casella email**, 
 
 **Parola chiave: editoriale e silenzioso.** Pensa più a una rivista di carta ben fatta o a un set di carta da lettere di qualità che a un prodotto digitale "smart".
 
-- **Tipografia**: un serif con carattere per i titoli e per ogni testo che riporta le parole di un membro (anteprime di lettere, citazioni) — deve percepirsi come voce umana, quasi scrittura a mano. Un sans neutro per etichette, navigazione, elementi di struttura. Il contrasto tra i due font è lo strumento principale per distinguere "parole di una persona" da "chrome del prodotto".
+- **Tipografia**: il sistema tipografico approvato usa **Libre Baskerville** per titoli editoriali, sottotitoli editoriali, citazioni, anteprime di lettere e corpo degli articoli; **DM Sans** per navigazione, interfaccia, CTA, form e testi funzionali; **DM Mono** per categorie, date, tempi di lettura, stati e metadati brevi. Il contrasto tra serif, sans e mono è lo strumento principale per distinguere voce umana, struttura del prodotto e informazioni di orientamento.
+- **Gerarchia**: i titoli principali sono grandi, con linee compatte e molto spazio intorno. Il testo editoriale usa una colonna di lettura stretta e un'interlinea generosa. I metadati sono piccoli, discreti, in maiuscolo e mai trattati come elementi decorativi.
 - **Palette**: quasi monocroma. Toni caldi e neutri (pensa a carta, inchiostro, non a un dashboard). Un solo colore di accento, usato con estrema parsimonia (es. per un singolo badge di stato "nuovo"), mai diffuso su più elementi contemporaneamente.
 - **Superfici**: un solo bordo sottile per separare i blocchi, zero ombre, zero gradienti. Niente che "urli" o attiri l'occhio con forza — coerente con la promessa di calma.
 - **Spaziatura**: generosa. Molto white space. Il prodotto non deve avere fretta di mostrare tutto.
@@ -33,7 +34,7 @@ L'esperienza principale del membro avviene **nella sua normale casella email**, 
 
 ## 4. Riferimento visivo già validato
 
-È già stato prodotto e approvato un esempio di card che esemplifica questa direzione: una notifica "You have a letter" con badge "New" discreto, titolo in serif, anteprima della lettera in serif corsivo, metadati minimi in sans, singolo bordo sottile, palette pressoché monocroma. Usalo come riferimento diretto per tono, gerarchia e rapporto tra i due font — è il punto di partenza più concreto che hai.
+È già stato prodotto e approvato un esempio di card che esemplifica questa direzione: una notifica "You have a letter" con badge "New" discreto, titolo in Libre Baskerville, anteprima della lettera in Libre Baskerville corsivo, metadati minimi in DM Mono, interfaccia in DM Sans, singolo bordo sottile e palette pressoché monocroma. Usalo come riferimento diretto per tono e gerarchia.
 
 ## 5. Schermate da includere nel primo mockup
 

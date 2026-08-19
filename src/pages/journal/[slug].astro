@@ -50,17 +50,17 @@ const articleStructuredData = {
     </div>
   </header>
 
-  <main id="main-content" class="shell py-16 sm:py-24 lg:py-32">
-    <header class="mx-auto max-w-[42rem]">
-      <a class="eyebrow mb-6 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/journal/">Journal</a>
-      <h1 class="section-title balance">{entry.data.title}</h1>
-      <p class="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">{entry.data['meta-description']}</p>
-      <p class="mt-5 text-sm text-muted-foreground">
-        <time datetime={publishedAt}>{formatJournalDate(publishedAt)}</time> · {entry.data.readingTime}
+  <main id="main-content" class="shell py-20 sm:py-28 lg:py-40">
+    <header class="mx-auto max-w-[50rem]">
+      <a class="eyebrow mb-8 inline-block text-accent underline decoration-accent/50 underline-offset-4 hover:text-foreground" href="/journal/">One Reader · Journal</a>
+      <h1 class="journal-title balance">{entry.data.title}</h1>
+      <p class="journal-deck mt-9 text-muted-foreground">{entry.data['meta-description']}</p>
+      <p class="journal-meta mt-7">
+        <time datetime={publishedAt}>{formatJournalDate(publishedAt)}</time> · {entry.data.readingTime} · {entry.data.author}
       </p>
     </header>
 
-    <article class="prose-journal mx-auto mt-14 max-w-[42rem] border-t border-border pt-10 sm:mt-16 sm:pt-12">
+    <article class="prose-journal mx-auto mt-16 max-w-[42rem] border-t border-border pt-12 sm:mt-20 sm:pt-16">
       <Content />
       <div class="mt-14 flex flex-wrap items-center justify-between gap-5 border-t border-border pt-6">
         <a class="text-sm text-muted-foreground underline decoration-border underline-offset-4 hover:text-foreground" href="/journal/">Back to Journal</a>
