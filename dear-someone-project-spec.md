@@ -129,10 +129,8 @@ La casualità deve restare percepibile e reale — niente selezione da catalogo,
 ## 8. Gestione delle lingue
 
 - **Nessuna traduzione automatica** nell'MVP: incompatibile con l'identità del prodotto (voce autentica del mittente) e con il modello di crittografia/privacy (richiederebbe l'invio dei testi a un servizio terzo).
-- Modello dati per lingua ispirato al pattern Upwork: **una sola lista "lingue"** per membro, ciascuna riga con lingua + livello di padronanza su 4 livelli (Base / Buono / Fluente / Madrelingua o bilingue), riformulati in chiave "scrittura di lettere" anziché lavoro freelance. Nessun limite rigido di righe (indicativamente fino a 5-6).
-  - Il filtro di matching in scrittura considera idonee le lingue con livello ≥ "Buono".
+- Modello dati essenziale: **una sola lista "lingue"** per membro, senza livelli di padronanza. Ogni lingua selezionata è considerata utilizzabile per la corrispondenza.
   - Ogni lingua mantiene due segnali distinti: **disposto a scrivere** e **disposto a leggere**. Il filtro di matching usa l'incrocio dei due segnali tra mittente e destinatario.
-  - La lingua madre viene indicata separatamente nel profilo, per distinguere una voce nativa da una lingua semplicemente conosciuta; può alimentare il peso opzionale del matching senza diventare un criterio di selezione.
 - **Roadmap linguistica**: lancio english first (mercato anglofono principale), poi spagnolo, francese, tedesco, lingue scandinave, ucraino, giapponese, italiano — sia per la localizzazione del sito sia per le lingue di corrispondenza disponibili. L'accesso agevolato per l'Ucraina può essere attivato prima della localizzazione completa, purché il percorso e il supporto essenziale siano disponibili in ucraino.
 
 ### Mercati e valute

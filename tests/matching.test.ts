@@ -10,7 +10,7 @@ const member = (overrides: Record<string, unknown> = {}) => ({
   availableToReceive: true,
   receivedLast30Days: 0,
   blockedMemberIds: [],
-  languages: [{ code: 'en', level: 'fluent' as const, willingToWrite: true, willingToRead: true }],
+  languages: [{ code: 'en', willingToWrite: true, willingToRead: true }],
   ...overrides,
 });
 
@@ -18,7 +18,11 @@ test('requires a compatible writable and readable language', () => {
   assert.equal(hasCompatibleLanguage(member(), member({ id: 'member-b' })), true);
   assert.equal(hasCompatibleLanguage(member(), member({
     id: 'member-b',
-    languages: [{ code: 'en', level: 'basic', willingToWrite: true, willingToRead: true }],
+    languages: [{ code: 'it', willingToWrite: true, willingToRead: true }],
+  })), false);
+  assert.equal(hasCompatibleLanguage(member(), member({
+    id: 'member-b',
+    languages: [{ code: 'en', willingToWrite: true, willingToRead: false }],
   })), false);
 });
 

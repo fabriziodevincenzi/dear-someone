@@ -391,7 +391,7 @@ const currentYear = new Date().getUTCFullYear();
       });
     });
 
-    const addLanguageRow = (languageCode = 'en', proficiency = 'good') => {
+    const addLanguageRow = (languageCode = 'en') => {
       if (!languageList || !languageTemplate || languageList.children.length >= 10) return;
       const fragment = languageTemplate.content.cloneNode(true) as DocumentFragment;
       const row = fragment.querySelector<HTMLElement>('[data-language-row]');
@@ -399,10 +399,6 @@ const currentYear = new Date().getUTCFullYear();
       const removeButton = fragment.querySelector<HTMLButtonElement>('[data-remove-language]');
       if (!row || !languageSelect || !removeButton) return;
       languageSelect.value = languageCode;
-      row.dataset.proficiency = ['basic', 'good', 'fluent', 'native'].includes(proficiency) ? proficiency : 'good';
-      languageSelect.addEventListener('change', () => {
-        row.dataset.proficiency = 'good';
-      });
       removeButton.addEventListener('click', () => {
         row.remove();
         updateLanguageControls();
@@ -428,9 +424,7 @@ const currentYear = new Date().getUTCFullYear();
         const languageCode = row.querySelector<HTMLSelectElement>('[data-language-select]')?.value;
         if (!languageCode || seen.has(languageCode)) return [];
         seen.add(languageCode);
-        const savedProficiency = row instanceof HTMLElement ? row.dataset.proficiency : undefined;
-        const proficiency = savedProficiency && ['basic', 'good', 'fluent', 'native'].includes(savedProficiency) ? savedProficiency : 'good';
-        return [{ language_code: languageCode, proficiency, sort_order: sortOrder }];
+        return [{ language_code: languageCode, sort_order: sortOrder }];
       });
     };
 
@@ -450,7 +444,7 @@ const currentYear = new Date().getUTCFullYear();
       const [{ data: profile }, { data: preferences }, { data: savedLanguages }, { data: stats }, { data: journalConsent }] = await Promise.all([
         client.from('profiles').select('account_status, founding_season_ends_at, subscription_renews_at, birth_month, birth_year, service_eligible_at, adult_pool_eligible_at').eq('id', session.user.id).maybeSingle(),
         client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle(),
-        client.from('member_languages').select('language_code, proficiency, sort_order').eq('user_id', session.user.id).order('sort_order', { ascending: true }),
+        client.from('member_languages').select('language_code, sort_order').eq('user_id', session.user.id).order('sort_order', { ascending: true }),
         client.from('member_stats').select('correspondences_started_count, correspondences_open_count, last_letter_sent_at, last_letter_received_at').eq('user_id', session.user.id).maybeSingle(),
         client.from('consent_events').select('granted').eq('user_id', session.user.id).eq('purpose', 'journal_marketing').order('created_at', { ascending: false }).limit(1).maybeSingle(),
       ]);
@@ -466,7 +460,7 @@ const currentYear = new Date().getUTCFullYear();
       setWritingReady(birthDetailsSaved, canStartOpening);
       if (languageList && savedLanguages?.length) {
         languageList.innerHTML = '';
-        savedLanguages.forEach((language) => addLanguageRow(language.language_code, language.proficiency));
+        savedLanguages.forEach((language) => addLanguageRow(language.language_code));
       } else if (languageList && preferences?.language_code) {
         languageList.innerHTML = '';
         addLanguageRow(preferences.language_code);

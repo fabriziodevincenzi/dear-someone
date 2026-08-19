@@ -1,8 +1,5 @@
-export type LanguageLevel = 'basic' | 'good' | 'fluent' | 'native';
-
 export interface LanguageAbility {
   code: string;
-  level: LanguageLevel;
   willingToWrite: boolean;
   willingToRead: boolean;
 }
@@ -18,15 +15,11 @@ export interface MatchingMember {
   languages: LanguageAbility[];
 }
 
-const writableLevels: LanguageLevel[] = ['good', 'fluent', 'native'];
-
 export function hasCompatibleLanguage(sender: MatchingMember, candidate: MatchingMember) {
   return sender.languages.some((senderLanguage) =>
     candidate.languages.some(
       (candidateLanguage) =>
         senderLanguage.code === candidateLanguage.code &&
-        writableLevels.includes(senderLanguage.level) &&
-        writableLevels.includes(candidateLanguage.level) &&
         senderLanguage.willingToWrite &&
         candidateLanguage.willingToRead,
     ),
