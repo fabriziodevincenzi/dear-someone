@@ -3,13 +3,6 @@ import Layout from '../../layouts/Layout.astro';
 import { buttonVariants } from '../../components/ui/Button';
 import { languageOptions as languages } from '../../lib/i18n';
 
-const proficiencies = [
-  ['basic', 'Basic'],
-  ['good', 'Good'],
-  ['fluent', 'Fluent'],
-  ['native', 'Native'],
-];
-
 const birthMonths = [
   [1, 'January'],
   [2, 'February'],
@@ -86,7 +79,6 @@ const currentYear = new Date().getUTCFullYear();
 
         <fieldset class="grid gap-4 border-y border-border py-5" data-birth-details>
           <legend class="px-2 text-sm text-muted-foreground">Month and year of birth</legend>
-          <p class="m-0 text-xs leading-5 text-muted-foreground">We ask for the month and year only to keep younger and adult matching pools separate. This information is never shown to another member.</p>
           <div class="grid gap-3 sm:grid-cols-2">
             <label class="grid gap-2 text-sm">
               <span class="text-muted-foreground">Month</span>
@@ -100,26 +92,20 @@ const currentYear = new Date().getUTCFullYear();
               <input class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3 disabled:opacity-60" type="number" name="birthYear" min={currentYear - 120} max={currentYear - 14} inputmode="numeric" placeholder={String(currentYear - 18)} required data-birth-year />
             </label>
           </div>
-          <p class="m-0 text-xs leading-5 text-muted-foreground" data-age-pool-status>Your account becomes eligible after you save these details.</p>
-          <p class="m-0 hidden text-xs leading-5 text-muted-foreground" data-birth-lock-note>These details are locked after saving. If they are inaccurate, use the correction request below so One Reader can update them safely.</p>
+          <p class="m-0 text-xs leading-5 text-muted-foreground" data-age-pool-status>Used only to keep age groups separate. Not shown to other members.</p>
+          <p class="m-0 hidden text-xs leading-5 text-muted-foreground" data-birth-lock-note>These details are locked after saving. Use the correction request below if they need to be changed.</p>
         </fieldset>
 
-        <fieldset class="grid gap-4 border-0 p-0">
+        <fieldset class="grid gap-4 border-0 border-b border-border p-0 pb-6">
           <legend class="text-sm text-muted-foreground">Languages for letters</legend>
-          <p class="m-0 text-xs leading-5 text-muted-foreground">Tell us which languages you can comfortably write and read. You can update these at any time.</p>
+          <p class="m-0 text-xs leading-5 text-muted-foreground">Choose the languages you can write and read. No level required.</p>
           <div class="grid gap-3" data-language-list></div>
           <template data-language-template>
-            <div class="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end" data-language-row>
+            <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end" data-language-row>
               <label class="grid gap-2 text-sm">
                 <span class="text-muted-foreground">Language</span>
                 <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3" data-language-select>
                   {languages.map(([value, label]) => <option value={value}>{label}</option>)}
-                </select>
-              </label>
-              <label class="grid gap-2 text-sm">
-                <span class="text-muted-foreground">Level</span>
-                <select class="min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent px-3" data-proficiency-select>
-                  {proficiencies.map(([value, label]) => <option value={value}>{label}</option>)}
                 </select>
               </label>
               <button class="w-fit border-b border-border pb-1 text-sm text-muted-foreground hover:border-foreground hover:text-foreground" type="button" data-remove-language>Remove</button>
@@ -410,11 +396,13 @@ const currentYear = new Date().getUTCFullYear();
       const fragment = languageTemplate.content.cloneNode(true) as DocumentFragment;
       const row = fragment.querySelector<HTMLElement>('[data-language-row]');
       const languageSelect = fragment.querySelector<HTMLSelectElement>('[data-language-select]');
-      const proficiencySelect = fragment.querySelector<HTMLSelectElement>('[data-proficiency-select]');
       const removeButton = fragment.querySelector<HTMLButtonElement>('[data-remove-language]');
-      if (!row || !languageSelect || !proficiencySelect || !removeButton) return;
+      if (!row || !languageSelect || !removeButton) return;
       languageSelect.value = languageCode;
-      proficiencySelect.value = proficiency;
+      row.dataset.proficiency = ['basic', 'good', 'fluent', 'native'].includes(proficiency) ? proficiency : 'good';
+      languageSelect.addEventListener('change', () => {
+        row.dataset.proficiency = 'good';
+      });
       removeButton.addEventListener('click', () => {
         row.remove();
         updateLanguageControls();
@@ -438,9 +426,10 @@ const currentYear = new Date().getUTCFullYear();
       const seen = new Set<string>();
       return Array.from(languageList.querySelectorAll('[data-language-row]')).flatMap((row, sortOrder) => {
         const languageCode = row.querySelector<HTMLSelectElement>('[data-language-select]')?.value;
-        const proficiency = row.querySelector<HTMLSelectElement>('[data-proficiency-select]')?.value;
-        if (!languageCode || !proficiency || seen.has(languageCode)) return [];
+        if (!languageCode || seen.has(languageCode)) return [];
         seen.add(languageCode);
+        const savedProficiency = row instanceof HTMLElement ? row.dataset.proficiency : undefined;
+        const proficiency = savedProficiency && ['basic', 'good', 'fluent', 'native'].includes(savedProficiency) ? savedProficiency : 'good';
         return [{ language_code: languageCode, proficiency, sort_order: sortOrder }];
       });
     };
@@ -480,7 +469,7 @@ const currentYear = new Date().getUTCFullYear();
         savedLanguages.forEach((language) => addLanguageRow(language.language_code, language.proficiency));
       } else if (languageList && preferences?.language_code) {
         languageList.innerHTML = '';
-        addLanguageRow(preferences.language_code, 'good');
+        addLanguageRow(preferences.language_code);
       }
       if (journalCheckbox && typeof journalConsent?.granted === 'boolean') journalCheckbox.checked = journalConsent.granted;
       if (statStarted) statStarted.textContent = String(stats?.correspondences_started_count ?? 0);
