@@ -225,7 +225,6 @@ const currentYear = new Date().getUTCFullYear();
     const addLanguageButton = document.querySelector<HTMLButtonElement>('[data-add-language]');
     const birthMonthInput = document.querySelector<HTMLSelectElement>('[data-birth-month]');
     const birthYearInput = document.querySelector<HTMLInputElement>('[data-birth-year]');
-    const birthDetails = document.querySelector<HTMLFieldSetElement>('[data-birth-details]');
     const journalCheckbox = document.querySelector<HTMLInputElement>('[name="journalOptIn"]');
     const statStarted = document.querySelector<HTMLElement>('[data-stat-started]');
     const statOpen = document.querySelector<HTMLElement>('[data-stat-open]');
@@ -282,7 +281,6 @@ const currentYear = new Date().getUTCFullYear();
         birthYearInput.disabled = saved;
         birthYearInput.required = !saved;
       }
-      birthDetails?.classList.toggle('hidden', saved);
       return saved;
     };
 

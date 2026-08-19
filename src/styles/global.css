@@ -150,6 +150,11 @@ textarea {
   padding-right: 2.75rem;
 }
 
+.select-control:disabled {
+  background-image: none;
+  padding-right: 0.75rem;
+}
+
 .shell {
   width: min(100% - 2rem, 74rem);
   margin-inline: auto;
