@@ -334,6 +334,7 @@ const currentYear = new Date().getUTCFullYear();
     const setMembership = (profile: { account_status?: string; founding_season_ends_at?: string | null; subscription_renews_at?: string | null; subscription_current_period_start?: string | null; subscription_current_period_end?: string | null } | null | undefined, startedCount = 0) => {
       membershipRefund?.classList.add('hidden');
       membershipPeriod?.classList.add('hidden');
+      membershipCopy?.classList.remove('hidden');
       if (!membershipLabel || !membershipCopy || !membershipPace || !membershipPrimary) return;
 
       const status = profile?.account_status ?? 'free';
@@ -358,7 +359,8 @@ const currentYear = new Date().getUTCFullYear();
         if (membershipNote) membershipNote.textContent = 'After the season, choose Free or annual at the founding price for your first three paid years.';
       } else if (status === 'annual') {
         membershipLabel.textContent = 'Annual membership';
-        membershipCopy.textContent = renewal ? `Annual membership — start one new letter every 24 hours. Renews ${renewal}.` : 'Annual membership — start one new letter every 24 hours.';
+        membershipCopy.textContent = '';
+        membershipCopy.classList.add('hidden');
         membershipPace.textContent = 'One new letter every 24 hours';
         const periodStart = formatDate(profile?.subscription_current_period_start);
         const periodEnd = formatDate(profile?.subscription_current_period_end || profile?.subscription_renews_at);
