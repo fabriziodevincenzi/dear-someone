@@ -37,7 +37,7 @@ Deno.serve(async (request) => {
     if (profileError) throw profileError;
     if (!profile.stripe_customer_id) return response({ error: 'No Stripe customer exists for this account' }, 409);
     const stripe = new Stripe(requireEnvironment('STRIPE_SECRET_KEY'), { apiVersion: '2025-03-31.basil' });
-    const siteUrl = requireEnvironment('SITE_URL').replace(/\/$/, '');
+    const siteUrl = (Deno.env.get('SITE_URL')?.trim() || 'https://onereader.co').replace(/\/$/, '');
     const session = await stripe.billingPortal.sessions.create({ customer: profile.stripe_customer_id, return_url: `${siteUrl}/member/` });
     return response({ url: session.url });
   } catch (error) {

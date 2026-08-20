@@ -59,8 +59,16 @@ const currentYear = new Date().getUTCFullYear();
         <div class="pt-6" data-membership-actions>
           <a class={buttonVariants({ size: 'small' })} href="#checkout" data-membership-primary>Become a member</a>
           <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="#billing-portal" data-membership-cancel>Manage or cancel</a>
-          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="mailto:write@onereader.co?subject=One%20Reader%20refund%20request" data-membership-refund>Request a refund</a>
+          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="#refund-request" data-membership-refund>Request a refund</a>
           <p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-note>Annual membership opens one new correspondence every 24 hours. The price is shown in your local currency at checkout.</p>
+          <form id="refund-request" class="mt-6 hidden max-w-xl border-t border-border pt-6" data-refund-form>
+            <p class="m-0 text-sm font-medium">Refund request</p>
+            <p class="mt-2 text-sm leading-6 text-muted-foreground">Choose the reason and tell us what happened. Submitting it does not issue an automatic refund.</p>
+            <label class="mt-4 grid gap-2 text-sm"><span>Request type</span><select class="select-control min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent pl-3 text-sm" required data-refund-type><option value="withdrawal_14_day">Right of withdrawal (within 14 days)</option><option value="service_issue">Problem with the service</option><option value="goodwill">Other request</option></select></label>
+            <label class="mt-4 grid gap-2 text-sm"><span>Details</span><textarea class="min-h-28 rounded-[var(--radius-control)] border border-input bg-transparent p-3 text-sm" required minlength="10" maxlength="2000" data-refund-reason></textarea></label>
+            <div class="mt-4 flex flex-wrap items-center gap-4"><button class={buttonVariants({ size: 'small' })} type="submit">Send request</button><button class="text-sm underline underline-offset-4" type="button" data-refund-cancel>Cancel</button></div>
+            <p class="mt-4 hidden text-sm leading-6" data-refund-note></p>
+          </form>
         </div>
       </div>
     </section>
@@ -234,6 +242,11 @@ const currentYear = new Date().getUTCFullYear();
     const membershipPrimary = document.querySelector<HTMLAnchorElement>('[data-membership-primary]');
     const membershipCancel = document.querySelector<HTMLAnchorElement>('[data-membership-cancel]');
     const membershipRefund = document.querySelector<HTMLAnchorElement>('[data-membership-refund]');
+    const refundForm = document.querySelector<HTMLFormElement>('[data-refund-form]');
+    const refundType = document.querySelector<HTMLSelectElement>('[data-refund-type]');
+    const refundReason = document.querySelector<HTMLTextAreaElement>('[data-refund-reason]');
+    const refundCancel = document.querySelector<HTMLButtonElement>('[data-refund-cancel]');
+    const refundNote = document.querySelector<HTMLElement>('[data-refund-note]');
     const membershipNote = document.querySelector<HTMLElement>('[data-membership-note]');
     const profileForm = document.querySelector<HTMLFormElement>('[data-profile-form]');
     const profileNote = document.querySelector<HTMLElement>('[data-profile-note]');
@@ -394,6 +407,28 @@ const currentYear = new Date().getUTCFullYear();
     membershipCancel?.addEventListener('click', (event) => {
       event.preventDefault();
       void startStripeFlow('create-portal');
+    });
+
+    membershipRefund?.addEventListener('click', (event) => {
+      event.preventDefault();
+      refundForm?.classList.remove('hidden');
+      refundForm?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    refundCancel?.addEventListener('click', () => refundForm?.classList.add('hidden'));
+    refundForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!supabase || !refundType || !refundReason || !refundNote) return;
+      refundNote.className = 'mt-4 text-sm leading-6 text-muted-foreground';
+      refundNote.textContent = 'Sending your request…';
+      const { data, error } = await supabase.functions.invoke('refund-request', { body: { request_type: refundType.value, reason: refundReason.value } });
+      if (error || !data?.request_id) {
+        refundNote.className = 'mt-4 text-sm leading-6 text-destructive';
+        refundNote.textContent = error?.message || 'We could not send the request. Please try again.';
+        return;
+      }
+      refundNote.className = 'mt-4 text-sm leading-6 text-accent';
+      refundNote.textContent = 'Your request was received. We will review it and email you with the next step.';
+      refundForm.querySelector('button[type="submit"]')?.setAttribute('disabled', 'true');
     });
 
     document.querySelectorAll<HTMLAnchorElement>('[data-write-letter]').forEach((link) => {
