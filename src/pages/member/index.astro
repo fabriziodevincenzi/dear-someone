@@ -56,11 +56,10 @@ const currentYear = new Date().getUTCFullYear();
           <p class="mt-4 text-sm leading-6" data-membership-pace>You still have your free first opening.</p>
         </div>
 
-        <div class="pt-6" data-membership-actions>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3 pt-6" data-membership-actions>
           <a class={buttonVariants({ size: 'small' })} href="#checkout" data-membership-primary>Become a member</a>
-          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="#billing-portal" data-membership-cancel>Manage or cancel</a>
           <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="#refund-request" data-membership-refund>Request a refund</a>
-          <p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-note>Annual membership opens one new correspondence every 24 hours. The price is shown in your local currency at checkout.</p>
+          <p class="mt-1 basis-full max-w-xl text-sm leading-6 text-muted-foreground" data-membership-note>Annual membership opens one new correspondence every 24 hours. The price is shown in your local currency at checkout.</p>
           <form id="refund-request" class="mt-6 hidden max-w-xl border-t border-border pt-6" data-refund-form>
             <p class="m-0 text-sm font-medium">Refund request</p>
             <p class="mt-2 text-sm leading-6 text-muted-foreground">Choose the reason and tell us what happened. Submitting it does not issue an automatic refund.</p>
@@ -240,7 +239,6 @@ const currentYear = new Date().getUTCFullYear();
     const membershipCopy = document.querySelector<HTMLElement>('[data-membership-copy]');
     const membershipPace = document.querySelector<HTMLElement>('[data-membership-pace]');
     const membershipPrimary = document.querySelector<HTMLAnchorElement>('[data-membership-primary]');
-    const membershipCancel = document.querySelector<HTMLAnchorElement>('[data-membership-cancel]');
     const membershipRefund = document.querySelector<HTMLAnchorElement>('[data-membership-refund]');
     const refundForm = document.querySelector<HTMLFormElement>('[data-refund-form]');
     const refundType = document.querySelector<HTMLSelectElement>('[data-refund-type]');
@@ -332,7 +330,6 @@ const currentYear = new Date().getUTCFullYear();
     };
 
     const setMembership = (profile: { account_status?: string; founding_season_ends_at?: string | null; subscription_renews_at?: string | null } | null | undefined, startedCount = 0) => {
-      membershipCancel?.classList.add('hidden');
       membershipRefund?.classList.add('hidden');
       if (!membershipLabel || !membershipCopy || !membershipPace || !membershipPrimary) return;
 
@@ -362,7 +359,6 @@ const currentYear = new Date().getUTCFullYear();
         membershipPace.textContent = 'One new letter every 24 hours';
         membershipPrimary.textContent = 'Manage subscription';
         membershipPrimary.href = '#billing-portal';
-        membershipCancel?.classList.remove('hidden');
         membershipRefund?.classList.remove('hidden');
         if (membershipNote) membershipNote.textContent = 'Manage payment details and cancellation through Stripe. Refund requests are reviewed by One Reader.';
       } else if (status === 'checkout_pending') {
@@ -402,11 +398,6 @@ const currentYear = new Date().getUTCFullYear();
       if (href !== '#checkout' && href !== '#billing-portal') return;
       event.preventDefault();
       void startStripeFlow(href === '#checkout' ? 'create-checkout' : 'create-portal');
-    });
-
-    membershipCancel?.addEventListener('click', (event) => {
-      event.preventDefault();
-      void startStripeFlow('create-portal');
     });
 
     membershipRefund?.addEventListener('click', (event) => {
