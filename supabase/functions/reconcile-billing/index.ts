@@ -1,7 +1,9 @@
 import { Resend } from 'npm:resend@6.18.1';
 import Stripe from 'npm:stripe@18.5.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
-import { createAdminClient, errorMessage, requireEnvironment } from '../_shared/runtime.ts';
+const requireEnvironment = (name: string) => { const value = Deno.env.get(name)?.trim(); if (!value) throw new Error(`${name} is not configured`); return value; };
+const createAdminClient = () => createClient(requireEnvironment('SUPABASE_URL'), requireEnvironment('SUPABASE_SERVICE_ROLE_KEY'), { auth: { persistSession: false, autoRefreshToken: false } });
+const errorMessage = (error: unknown) => error instanceof Error ? error.message : typeof error === 'string' ? error : JSON.stringify(error);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -52,6 +54,7 @@ Deno.serve(async (request) => {
       account_status: accountStatus,
       plan: accountStatus === 'annual' ? 'annual' : 'free',
       stripe_subscription_id: subscription.id,
+      subscription_current_period_start: new Date(subscription.items.data[0]?.current_period_start * 1000).toISOString(),
       subscription_status: subscription.status,
       subscription_current_period_end: new Date(subscription.items.data[0]?.current_period_end * 1000).toISOString(),
       subscription_cancel_at_period_end: Boolean(subscription.cancel_at_period_end),
