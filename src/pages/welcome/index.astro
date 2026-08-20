@@ -34,7 +34,7 @@ import { buttonVariants } from '../../components/ui/Button';
         <section aria-labelledby="privacy-heading">
           <h2 id="privacy-heading" class="font-serif text-2xl font-normal tracking-[-0.025em] text-foreground">What stays private</h2>
           <p class="mt-4">There is no public profile, follower count or feed. We use your email address to deliver the service, not to build an advertising audience or sell personal data. Letter contents are encrypted before they are stored, and real email addresses are kept away from the person on the other side.</p>
-          <p class="mt-6">The annual membership is a small contribution to operating the service: €18 a year, just under five cents a day at the current price. It pays for delivery, storage, moderation and the work of keeping the room quiet. If two people decide they would rather continue outside One Reader, we are happy for the correspondence to become their own.</p>
+          <p class="mt-6">The annual membership is a small contribution to operating the service: <span data-membership-price>€18 a year, just under five cents a day</span>. It pays for delivery, storage, moderation and the work of keeping the room quiet. If two people decide they would rather continue outside One Reader, we are happy for the correspondence to become their own.</p>
         </section>
 
         <section aria-labelledby="advice-heading">
@@ -57,8 +57,15 @@ import { buttonVariants } from '../../components/ui/Button';
 
   <script>
     import { supabase } from '../../lib/supabase';
+    import { marketForCountry } from '../../lib/market-pricing';
 
     const intentKey = 'dear-someone:signup-intent';
+    const priceCopy = document.querySelector<HTMLElement>('[data-membership-price]');
+    const countryCode = (navigator.language.split('-')[1] || '').toUpperCase() || undefined;
+    const market = marketForCountry(countryCode);
+    const annual = new Intl.NumberFormat(navigator.language || 'en', { style: 'currency', currency: market.currency, maximumFractionDigits: market.currency === 'AUD' ? 2 : 0 }).format(market.amount);
+    const daily = new Intl.NumberFormat(navigator.language || 'en', { style: 'currency', currency: market.currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(market.amount / 365);
+    if (priceCopy) priceCopy.textContent = `${annual} a year, about ${daily} a day`;
     const sessionResult = supabase ? await supabase.auth.getSession() : { data: { session: null } };
     const session = sessionResult.data.session;
     if (!session) {
