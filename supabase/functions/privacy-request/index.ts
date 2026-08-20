@@ -89,6 +89,21 @@ Deno.serve(async (request) => {
       }
     }
 
+    if (requestType === 'deletion') {
+      const { error: closeError } = await admin
+        .from('profiles')
+        .update({ account_status: 'closed', updated_at: new Date().toISOString() })
+        .eq('id', userData.user.id)
+        .neq('account_status', 'closed');
+      if (closeError) throw closeError;
+
+      const { error: pauseError } = await admin
+        .from('member_preferences')
+        .update({ is_available_to_receive: false, updated_at: new Date().toISOString() })
+        .eq('user_id', userData.user.id);
+      if (pauseError) throw pauseError;
+    }
+
     let notification: Record<string, unknown>;
     try {
       notification = await processPrivacyNotification(admin, privacyRequest, requestType, userData.user.email);

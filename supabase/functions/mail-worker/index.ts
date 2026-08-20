@@ -196,6 +196,20 @@ async function processInbound(job: MailJob) {
   }
 
   if (!letter) throw new Error('Letter reservation did not return a letter');
+  const { data: recipientProfile, error: recipientProfileError } = await admin
+    .from('profiles')
+    .select('account_status')
+    .eq('id', letter.recipient_id)
+    .maybeSingle();
+  if (recipientProfileError) throw recipientProfileError;
+  if (!recipientProfile || recipientProfile.account_status === 'closed') {
+    await admin.rpc('record_letter_failure', {
+      p_letter_id: letter.id,
+      p_reason: 'Recipient account is closed and does not accept new letters',
+      p_bounced: false,
+    });
+    throw new JobOutcome('Recipient account is closed; letter not delivered', 'complete');
+  }
   await ensureConversationAliases(letter);
   const recipientEmail = await memberEmail(letter.recipient_id);
   const aliasToken = await deriveAliasToken(

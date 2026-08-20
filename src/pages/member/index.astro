@@ -212,7 +212,7 @@ const currentYear = new Date().getUTCFullYear();
         <h2 id="close-heading" class="font-serif text-3xl font-normal tracking-[-0.03em]">Close your account</h2>
       </div>
       <form data-delete-account>
-        <p class="m-0 max-w-xl text-sm leading-6 text-muted-foreground">This starts a permanent deletion request. Active membership and correspondence data will follow the retention policy before removal.</p>
+        <p class="m-0 max-w-xl text-sm leading-6 text-muted-foreground">Your service access and incoming deliveries stop immediately. We retain only the minimum records needed for up to 30 days to handle the request or a related dispute, then remove them unless a longer legal obligation applies.</p>
         <button class={buttonVariants({ variant: 'outline', size: 'small' }) + ' mt-5 border-accent text-accent hover:border-accent hover:bg-transparent'} type="submit">Request account deletion</button>
         <p class="mt-4 hidden text-sm leading-6 text-accent" data-delete-note></p>
       </form>
@@ -359,6 +359,12 @@ const currentYear = new Date().getUTCFullYear();
         membershipPrimary.textContent = 'Complete membership';
         membershipPrimary.href = '#checkout';
         if (membershipNote) membershipNote.textContent = `The secure payment step will open through Stripe at ${annualPriceLabel} per year.`;
+      } else if (status === 'closed') {
+        membershipLabel.textContent = 'Account closed';
+        membershipCopy.textContent = 'Your account is closed and no new letters will be delivered.';
+        membershipPace.textContent = 'Service access ended';
+        membershipPrimary.textContent = 'Read the privacy notice';
+        membershipPrimary.href = '/privacy#rights';
       } else if (status === 'delivery_paused') {
         membershipLabel.textContent = 'Delivery paused';
         membershipCopy.textContent = 'Your account is kept, but new openings are paused until you choose to resume.';
@@ -486,7 +492,7 @@ const currentYear = new Date().getUTCFullYear();
           deleteButton.disabled = true;
           deleteButton.textContent = 'Deletion request recorded';
         }
-        setNote(deleteNote, 'Your deletion request is already recorded. We will contact you with next steps.');
+        setNote(deleteNote, 'Your account is closed and new deliveries are stopped. We will retain only the minimum records needed for up to 30 days, then remove them unless a longer legal obligation applies.');
         void client.functions.invoke('privacy-request', { body: { request_type: 'deletion' } });
       }
 
@@ -587,8 +593,8 @@ const currentYear = new Date().getUTCFullYear();
           deleteButton.textContent = 'Deletion request recorded';
         }
         setNote(deleteNote, data?.already_recorded
-          ? 'Your deletion request is already recorded. We will contact you with next steps.'
-          : 'Your deletion request is recorded. We will contact you with next steps.');
+          ? 'Your account is closed and new deliveries are stopped. We will retain only the minimum records needed for up to 30 days, then remove them unless a longer legal obligation applies.'
+          : 'Your account is now closed and new deliveries are stopped. We will retain only the minimum records needed for up to 30 days, then remove them unless a longer legal obligation applies.');
       });
     }
 
