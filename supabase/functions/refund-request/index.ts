@@ -33,7 +33,7 @@ Deno.serve(async (request) => {
       const resend = new Resend(env('RESEND_API_KEY'));
       const from = Deno.env.get('SERVICE_FROM_ADDRESS')?.trim() || 'One Reader <letters@onereader.co>';
       const summary = `Type: ${requestType}\nAccount: ${userData.user.email}\nRequest: ${reason}\nRequest ID: ${refundRequest.id}`;
-      await resend.emails.send({ from, to: ['write@onereader.co'], subject: `Refund request from ${userData.user.email}`, text: summary });
+      await resend.emails.send({ from, to: ['customers@onereader.co'], subject: `Refund request from ${userData.user.email}`, text: summary });
       await resend.emails.send({ from, to: [userData.user.email], subject: 'Your One Reader refund request was received', text: `We received your request and will review it. No refund is automatic.\n\nRequest ID: ${refundRequest.id}\n\n${summary}` });
     } catch (notificationError) { console.error('Refund notification failed', notificationError); }
     return response({ request_id: refundRequest.id, request_status: 'requested' });
