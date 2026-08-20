@@ -18,9 +18,15 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      // Legacy blog URLs redirect to the Journal and must not be advertised
-      // as indexable pages in the sitemap.
-      filter: (page) => !new URL(page).pathname.startsWith('/blog'),
+      // Only public, indexable content belongs in the sitemap. Legacy blog
+      // URLs redirect to the Journal, while these routes are functional or
+      // intended for authenticated/email flows.
+      filter: (page) => {
+        const pathname = new URL(page).pathname;
+        return !['/blog', '/email', '/member', '/sign-in', '/welcome'].some(
+          (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+        );
+      },
     }),
   ],
   vite: {

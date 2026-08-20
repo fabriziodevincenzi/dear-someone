@@ -16,6 +16,7 @@ const canSubmit = action === 'stop' || action === 'report';
   title={`${copy.label} — One Reader`}
   description="A private One Reader correspondence action."
   referrerPolicy="no-referrer"
+  indexable={false}
 >
   <main id="main-content" class="shell min-h-[78vh] max-w-3xl py-16 sm:py-24 lg:py-32" data-letter-action={action}>
     <a class="text-sm text-muted-foreground underline underline-offset-4" href="/">← One Reader</a>
