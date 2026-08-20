@@ -38,7 +38,17 @@ Deno.serve(async (request) => {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.supabase_user_id || session.client_reference_id;
       if (userId && session.subscription) {
-        const { error } = await admin.from('profiles').update({ stripe_customer_id: String(session.customer), stripe_subscription_id: String(session.subscription) }).eq('id', userId);
+        const subscription = await stripe.subscriptions.retrieve(String(session.subscription));
+        const accountStatus = stripeStatusToAccount(subscription.status);
+        const { error } = await admin.from('profiles').update({
+          account_status: accountStatus,
+          plan: accountStatus === 'annual' ? 'annual' : 'free',
+          stripe_customer_id: String(session.customer),
+          stripe_subscription_id: subscription.id,
+          subscription_status: subscription.status,
+          subscription_current_period_end: new Date(subscription.items.data[0]?.current_period_end * 1000).toISOString(),
+          subscription_cancel_at_period_end: Boolean(subscription.cancel_at_period_end),
+        }).eq('id', userId);
         if (error) throw error;
       }
     }
