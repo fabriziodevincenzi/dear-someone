@@ -487,6 +487,7 @@ const currentYear = new Date().getUTCFullYear();
           deleteButton.textContent = 'Deletion request recorded';
         }
         setNote(deleteNote, 'Your deletion request is already recorded. We will contact you with next steps.');
+        void client.functions.invoke('privacy-request', { body: { request_type: 'deletion' } });
       }
 
       profileForm?.addEventListener('submit', async (event) => {
@@ -560,7 +561,9 @@ const currentYear = new Date().getUTCFullYear();
       document.querySelectorAll<HTMLButtonElement>('[data-privacy-request]').forEach((button) => {
         button.addEventListener('click', async () => {
           const requestType = button.dataset.privacyRequest === 'rectification' ? 'rectification' : 'access';
-          const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: requestType });
+          button.disabled = true;
+          const { error } = await client.functions.invoke('privacy-request', { body: { request_type: requestType } });
+          if (error) button.disabled = false;
           const success = requestType === 'rectification'
             ? 'Your correction request is recorded. We will follow up by email before making any change.'
             : 'Your access request is recorded. We will follow up by email.';
@@ -573,20 +576,19 @@ const currentYear = new Date().getUTCFullYear();
         if (deletionRequestRecorded) return;
         if (!window.confirm('Request permanent deletion of your One Reader account?')) return;
         if (deleteButton) deleteButton.disabled = true;
-        const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: 'deletion' });
+        const { data, error } = await client.functions.invoke('privacy-request', { body: { request_type: 'deletion' } });
         if (error) {
-          const duplicate = error.code === '23505';
-          if (!duplicate && deleteButton) deleteButton.disabled = false;
-          setNote(deleteNote, duplicate ? 'Your deletion request is already recorded. We will contact you with next steps.' : 'We could not record the deletion request. Please try again.', !duplicate && Boolean(error));
-          deletionRequestRecorded = duplicate;
-          if (duplicate && deleteButton) deleteButton.textContent = 'Deletion request recorded';
+          if (deleteButton) deleteButton.disabled = false;
+          setNote(deleteNote, 'We could not record the deletion request. Please try again.', true);
           return;
         }
         deletionRequestRecorded = true;
         if (deleteButton) {
           deleteButton.textContent = 'Deletion request recorded';
         }
-        setNote(deleteNote, 'Your deletion request is recorded. We will contact you with next steps.');
+        setNote(deleteNote, data?.already_recorded
+          ? 'Your deletion request is already recorded. We will contact you with next steps.'
+          : 'Your deletion request is recorded. We will contact you with next steps.');
       });
     }
 
