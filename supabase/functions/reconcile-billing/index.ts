@@ -1,3 +1,4 @@
+import { Resend } from 'npm:resend@6.18.1';
 import Stripe from 'npm:stripe@18.5.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
 import { createAdminClient, errorMessage, requireEnvironment } from '../_shared/runtime.ts';
@@ -57,6 +58,19 @@ Deno.serve(async (request) => {
       updated_at: new Date().toISOString(),
     }).eq('id', userData.user.id);
     if (updateError) throw updateError;
+    try {
+      const resend = new Resend(requireEnvironment('RESEND_API_KEY'));
+      await resend.emails.send({
+        from: Deno.env.get('SERVICE_FROM_ADDRESS') ?? 'One Reader <letters@onereader.co>',
+        to: userData.user.email ?? '',
+        subject: 'Your One Reader membership is active',
+        html: '<p>Your One Reader annual membership is now active.</p><p>You can start a new letter every 24 hours. Your next billing date is shown in your account.</p>',
+        text: 'Your One Reader annual membership is now active. You can start a new letter every 24 hours. Your next billing date is shown in your account.',
+        headers: { 'Auto-Submitted': 'auto-generated', 'X-One-Reader-Event': 'membership_activated' },
+      }, { idempotencyKey: `membership-activated/${subscription.id}` });
+    } catch (notificationError) {
+      console.error('Membership confirmation email failed', notificationError);
+    }
     return response({ status: accountStatus, subscription_status: subscription.status, reconciled: true });
   } catch (error) {
     console.error('Billing reconciliation failed', error);
