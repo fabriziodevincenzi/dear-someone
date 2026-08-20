@@ -456,6 +456,8 @@ const currentYear = new Date().getUTCFullYear();
       if (accountEmail) accountEmail.textContent = email;
       if (profileEmail) profileEmail.textContent = email;
 
+      await client.functions.invoke('reconcile-billing');
+
       const [{ data: profile }, { data: preferences }, { data: savedLanguages }, { data: stats }, { data: journalConsent }, { data: activeDeletionRequest }] = await Promise.all([
         client.from('profiles').select('account_status, founding_season_ends_at, subscription_renews_at, birth_month, birth_year, service_eligible_at, adult_pool_eligible_at').eq('id', session.user.id).maybeSingle(),
         client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle(),
