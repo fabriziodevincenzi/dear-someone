@@ -241,6 +241,7 @@ const currentYear = new Date().getUTCFullYear();
     const consentNote = document.querySelector<HTMLElement>('[data-consent-note]');
     const privacyNote = document.querySelector<HTMLElement>('[data-privacy-note]');
     const deleteForm = document.querySelector<HTMLFormElement>('[data-delete-account]');
+    const deleteButton = deleteForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
     const deleteNote = document.querySelector<HTMLElement>('[data-delete-note]');
     const languageList = document.querySelector<HTMLElement>('[data-language-list]');
     const languageTemplate = document.querySelector<HTMLTemplateElement>('[data-language-template]');
@@ -449,12 +450,13 @@ const currentYear = new Date().getUTCFullYear();
       if (accountEmail) accountEmail.textContent = email;
       if (profileEmail) profileEmail.textContent = email;
 
-      const [{ data: profile }, { data: preferences }, { data: savedLanguages }, { data: stats }, { data: journalConsent }] = await Promise.all([
+      const [{ data: profile }, { data: preferences }, { data: savedLanguages }, { data: stats }, { data: journalConsent }, { data: activeDeletionRequest }] = await Promise.all([
         client.from('profiles').select('account_status, founding_season_ends_at, subscription_renews_at, birth_month, birth_year, service_eligible_at, adult_pool_eligible_at').eq('id', session.user.id).maybeSingle(),
         client.from('member_preferences').select('country_code, market_currency, language_code, is_available_to_receive').eq('user_id', session.user.id).maybeSingle(),
         client.from('member_languages').select('language_code, sort_order').eq('user_id', session.user.id).order('sort_order', { ascending: true }),
         client.from('member_stats').select('correspondences_started_count, correspondences_open_count, last_letter_sent_at, last_letter_received_at').eq('user_id', session.user.id).maybeSingle(),
         client.from('consent_events').select('granted').eq('user_id', session.user.id).eq('purpose', 'journal_marketing').order('created_at', { ascending: false }).limit(1).maybeSingle(),
+        client.from('privacy_requests').select('id, status, created_at').eq('user_id', session.user.id).eq('request_type', 'deletion').in('status', ['requested', 'in_progress']).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       ]);
 
       let birthDetailsSaved = setBirthDetails(profile ?? {});
@@ -478,6 +480,14 @@ const currentYear = new Date().getUTCFullYear();
       if (statOpen) statOpen.textContent = String(stats?.correspondences_open_count ?? 0);
       const lastActivity = [stats?.last_letter_sent_at, stats?.last_letter_received_at].filter(Boolean).sort().at(-1);
       if (statLast) statLast.textContent = formatDate(lastActivity) ?? 'None yet';
+      let deletionRequestRecorded = Boolean(activeDeletionRequest);
+      if (deletionRequestRecorded) {
+        if (deleteButton) {
+          deleteButton.disabled = true;
+          deleteButton.textContent = 'Deletion request recorded';
+        }
+        setNote(deleteNote, 'Your deletion request is already recorded. We will contact you with next steps.');
+      }
 
       profileForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -560,9 +570,23 @@ const currentYear = new Date().getUTCFullYear();
 
       deleteForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (deletionRequestRecorded) return;
         if (!window.confirm('Request permanent deletion of your One Reader account?')) return;
+        if (deleteButton) deleteButton.disabled = true;
         const { error } = await client.from('privacy_requests').insert({ user_id: session.user.id, request_type: 'deletion' });
-        setNote(deleteNote, error ? 'We could not record the deletion request. Please try again.' : 'Your deletion request is recorded. We will confirm the next steps by email.', Boolean(error));
+        if (error) {
+          const duplicate = error.code === '23505';
+          if (!duplicate && deleteButton) deleteButton.disabled = false;
+          setNote(deleteNote, duplicate ? 'Your deletion request is already recorded. We will contact you with next steps.' : 'We could not record the deletion request. Please try again.', !duplicate && Boolean(error));
+          deletionRequestRecorded = duplicate;
+          if (duplicate && deleteButton) deleteButton.textContent = 'Deletion request recorded';
+          return;
+        }
+        deletionRequestRecorded = true;
+        if (deleteButton) {
+          deleteButton.textContent = 'Deletion request recorded';
+        }
+        setNote(deleteNote, 'Your deletion request is recorded. We will contact you with next steps.');
       });
     }
 
