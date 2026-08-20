@@ -59,7 +59,7 @@ const currentYear = new Date().getUTCFullYear();
         <div class="pt-6" data-membership-actions>
           <a class={buttonVariants({ size: 'small' })} href="#checkout" data-membership-primary>Become a member</a>
           <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="#billing-portal" data-membership-cancel>Manage or cancel</a>
-          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="#billing-portal" data-membership-refund>Request a refund</a>
+          <a class="hidden border-b border-border px-1 pb-1 text-sm underline-offset-4 hover:border-foreground" href="mailto:write@onereader.co?subject=One%20Reader%20refund%20request" data-membership-refund>Request a refund</a>
           <p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground" data-membership-note>Annual membership opens one new correspondence every 24 hours. The price is shown in your local currency at checkout.</p>
         </div>
       </div>
@@ -351,7 +351,7 @@ const currentYear = new Date().getUTCFullYear();
         membershipPrimary.href = '#billing-portal';
         membershipCancel?.classList.remove('hidden');
         membershipRefund?.classList.remove('hidden');
-        if (membershipNote) membershipNote.textContent = 'Manage payment details, cancellation and eligible billing requests through Stripe.';
+        if (membershipNote) membershipNote.textContent = 'Manage payment details and cancellation through Stripe. Refund requests are reviewed by One Reader.';
       } else if (status === 'checkout_pending') {
         membershipLabel.textContent = 'Annual membership';
         membershipCopy.textContent = 'Your account is ready. Complete payment to remove the limit on starting new letters.';
@@ -391,11 +391,9 @@ const currentYear = new Date().getUTCFullYear();
       void startStripeFlow(href === '#checkout' ? 'create-checkout' : 'create-portal');
     });
 
-    [membershipCancel, membershipRefund].forEach((link) => {
-      link?.addEventListener('click', (event) => {
-        event.preventDefault();
-        void startStripeFlow('create-portal');
-      });
+    membershipCancel?.addEventListener('click', (event) => {
+      event.preventDefault();
+      void startStripeFlow('create-portal');
     });
 
     document.querySelectorAll<HTMLAnchorElement>('[data-write-letter]').forEach((link) => {
