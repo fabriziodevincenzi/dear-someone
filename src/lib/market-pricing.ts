@@ -26,8 +26,8 @@ export const currencyByCountry: Record<string, string> = Object.fromEntries([
 ]);
 
 export const fallbackMarket = {
-  currency: 'EUR' as PriceCurrency,
-  amount: priceGrid.EUR.full,
+  currency: 'USD' as PriceCurrency,
+  amount: priceGrid.USD.full,
   fallback: true,
 };
 
