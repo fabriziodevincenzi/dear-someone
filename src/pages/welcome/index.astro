@@ -40,8 +40,35 @@ import { buttonVariants } from '../../components/ui/Button';
         <h2 id="service-heading" class="section-title balance">One opening is free. The room is not a feed.</h2>
       </div>
       <div class="text-lg leading-8 text-muted-foreground">
-        <p class="m-0">You can send one first letter for free. We find a reader who can understand your language, deliver the letter by email, and keep both addresses private. You can always receive letters and reply to conversations that are already open.</p>
-        <p class="mt-6">If you want to write to someone new again, annual membership gives you one new opening every 24 hours. For the price of a few cappuccinos, you can keep opening new correspondences throughout the year.</p>
+        <p class="m-0">You write an email to <a class="underline underline-offset-4" href="mailto:write@onereader.co">write@onereader.co</a>. We receive it, remove the address you wrote from the letter, and look for one person who can read the language you chose and is available to receive a new correspondence. The match is based on language, age group and recent activity, with care taken not to pair people who already know one another through One Reader.</p>
+        <p class="mt-6">The letter then arrives from One Reader. The reader does not see your real email address. Instead, each correspondence gets its own private reply address: an opaque, randomly generated alias that belongs only to that conversation. Another conversation gets another alias. The aliases are stored as one-way hashes rather than as readable addresses.</p>
+        <p class="mt-6">Replies keep using that same conversation-specific address. It remains active while the exchange is alive, and expires after 30 days without a reply. Either person can also click <em>End this correspondence</em> at the bottom of any conversation email. Ending one exchange does not affect another.</p>
+      </div>
+    </section>
+
+    <section class="grid gap-10 border-b border-border py-16 md:grid-cols-[0.78fr_1.22fr] md:gap-20 md:py-24" aria-labelledby="privacy-heading">
+      <div>
+        <p class="eyebrow mb-5">What stays private</p>
+        <h2 id="privacy-heading" class="section-title balance">A letter, not a profile.</h2>
+      </div>
+      <div class="text-lg leading-8 text-muted-foreground">
+        <p class="m-0">There is no public profile, follower count or feed. We use your email address to deliver the service, not to build an advertising audience or sell personal data. Letter contents are encrypted before they are stored, and real email addresses are kept away from the person on the other side.</p>
+        <p class="mt-6">The annual membership is a small contribution to operating the service: €18 a year, just under five cents a day at the current price. It pays for delivery, storage, moderation and the work of keeping the room quiet. If two people decide they would rather continue outside One Reader, we are happy for the correspondence to become their own.</p>
+      </div>
+    </section>
+
+    <section class="grid gap-10 border-b border-border py-16 md:grid-cols-2 md:gap-20" aria-labelledby="after-heading">
+      <div>
+        <p class="eyebrow mb-5">After you join</p>
+        <h2 id="after-heading" class="section-title balance">A few things worth knowing.</h2>
+      </div>
+      <div class="text-lg leading-8 text-muted-foreground">
+        <ul class="grid gap-5">
+          <li><strong class="font-medium text-foreground">You can always receive.</strong> Free accounts can receive new letters and reply to conversations already open. Membership controls how often you can start a new correspondence.</li>
+          <li><strong class="font-medium text-foreground">A reply is not a debt.</strong> Write when you have something to say, and allow the other person the same freedom. Silence is sometimes part of the exchange.</li>
+          <li><strong class="font-medium text-foreground">Keep the room safe.</strong> Do not include passwords, financial details, exact addresses or anything you would not want a stranger to know. No sexual content, harassment, hate, spam or requests for personal information.</li>
+          <li><strong class="font-medium text-foreground">Use the links in the email.</strong> You can end a correspondence or report a letter without replying to the other person.</li>
+        </ul>
       </div>
     </section>
 
