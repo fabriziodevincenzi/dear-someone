@@ -25,8 +25,12 @@ Deno.serve(async (request) => {
     if (!['withdrawal_14_day', 'service_issue', 'goodwill'].includes(String(requestType))) return response({ error: 'Choose a valid request type' }, 400);
     if (reason.length < 10 || reason.length > 2000) return response({ error: 'Please provide between 10 and 2000 characters' }, 400);
     const admin = createClient(supabaseUrl, env('SUPABASE_SERVICE_ROLE_KEY'), { auth: { persistSession: false, autoRefreshToken: false } });
-    const { data: profile, error: profileError } = await admin.from('profiles').select('stripe_customer_id, stripe_subscription_id').eq('id', userData.user.id).single();
+    const { data: profile, error: profileError } = await admin.from('profiles').select('stripe_customer_id, stripe_subscription_id, subscription_current_period_start').eq('id', userData.user.id).single();
     if (profileError) throw profileError;
+    const activatedAt = profile.subscription_current_period_start ? new Date(profile.subscription_current_period_start).getTime() : NaN;
+    const ageDays = Number.isFinite(activatedAt) ? Math.max(0, (Date.now() - activatedAt) / 86400000) : 0;
+    if (requestType === 'withdrawal_14_day' && ageDays > 14) return response({ error: 'The 14-day withdrawal window has passed. You can still request a review for a service problem or incorrect charge.' }, 422);
+    if (requestType === 'goodwill' && ageDays > 30) return response({ error: 'The 30-day commercial refund window has passed. You can still request a review for a service problem or incorrect charge.' }, 422);
     const { data: refundRequest, error: insertError } = await admin.from('refund_requests').insert({ user_id: userData.user.id, request_type: requestType, reason, stripe_customer_id: profile.stripe_customer_id, stripe_subscription_id: profile.stripe_subscription_id }).select('id, created_at').single();
     if (insertError) throw insertError;
     try {

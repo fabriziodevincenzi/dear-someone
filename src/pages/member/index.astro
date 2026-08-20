@@ -63,7 +63,7 @@ const currentYear = new Date().getUTCFullYear();
           <p class="mt-1 basis-full max-w-xl text-sm leading-6 text-muted-foreground" data-membership-note>Annual membership opens one new correspondence every 24 hours. The price is shown in your local currency at checkout.</p>
           <form id="refund-request" class="mt-6 hidden max-w-xl border-t border-border pt-6" data-refund-form>
             <p class="m-0 text-sm font-medium">Refund request</p>
-            <p class="mt-2 text-sm leading-6 text-muted-foreground">Choose the reason and tell us what happened. Submitting it does not issue an automatic refund.</p>
+            <p class="mt-2 text-sm leading-6 text-muted-foreground" data-refund-policy>Choose the reason and tell us what happened. Submitting it does not issue an automatic refund.</p>
             <label class="mt-4 grid gap-2 text-sm"><span>Request type</span><select class="select-control min-h-11 rounded-[var(--radius-control)] border border-input bg-transparent pl-3 text-sm" required data-refund-type><option value="withdrawal_14_day">Right of withdrawal (within 14 days)</option><option value="service_issue">Problem with the service</option><option value="goodwill">Other request</option></select></label>
             <label class="mt-4 grid gap-2 text-sm"><span>Details</span><textarea class="min-h-28 rounded-[var(--radius-control)] border border-input bg-transparent p-3 text-sm" required minlength="10" maxlength="2000" data-refund-reason></textarea></label>
             <div class="mt-4 flex flex-wrap items-center gap-4"><button class={buttonVariants({ size: 'small' })} type="submit">Send request</button><button class="text-sm underline underline-offset-4" type="button" data-refund-cancel>Cancel</button></div>
@@ -247,6 +247,7 @@ const currentYear = new Date().getUTCFullYear();
     const refundReason = document.querySelector<HTMLTextAreaElement>('[data-refund-reason]');
     const refundCancel = document.querySelector<HTMLButtonElement>('[data-refund-cancel]');
     const refundNote = document.querySelector<HTMLElement>('[data-refund-note]');
+    const refundPolicy = document.querySelector<HTMLElement>('[data-refund-policy]');
     const membershipNote = document.querySelector<HTMLElement>('[data-membership-note]');
     const profileForm = document.querySelector<HTMLFormElement>('[data-profile-form]');
     const profileNote = document.querySelector<HTMLElement>('[data-profile-note]');
@@ -367,6 +368,17 @@ const currentYear = new Date().getUTCFullYear();
         if (membershipPeriod && periodStart && periodEnd) {
           membershipPeriod.textContent = `Current membership: ${periodStart} — ${periodEnd}.`;
           membershipPeriod.classList.remove('hidden');
+        }
+        if (refundType) {
+          const startTime = profile?.subscription_current_period_start ? new Date(profile.subscription_current_period_start).getTime() : NaN;
+          const ageDays = Number.isFinite(startTime) ? Math.max(0, (Date.now() - startTime) / 86400000) : 0;
+          const withdrawal = refundType.querySelector<HTMLOptionElement>('option[value="withdrawal_14_day"]');
+          const goodwill = refundType.querySelector<HTMLOptionElement>('option[value="goodwill"]');
+          if (withdrawal) withdrawal.hidden = ageDays > 14;
+          if (goodwill) goodwill.hidden = ageDays > 30;
+          if (refundPolicy) refundPolicy.textContent = ageDays <= 30
+            ? 'Requests within 14 days may qualify as statutory withdrawal; One Reader also reviews commercial refund requests within 30 days of activation. Submitting a request does not issue an automatic refund.'
+            : 'After 30 days, refund requests are reviewed only for a service problem, failure to provide the service, or an incorrect charge. Submitting a request does not issue an automatic refund.';
         }
         membershipPrimary.textContent = 'Manage subscription';
         membershipPrimary.href = '#billing-portal';
